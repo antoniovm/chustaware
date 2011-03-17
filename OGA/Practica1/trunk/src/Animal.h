@@ -43,7 +43,7 @@ public:
 			char backbone, char breathes, char venomous, char fins, int legs,
 			char tail, char domestic, char catsize, int type);
 	virtual ~Animal();
-	friend ostream& operator<<(ostream&, Animal);
+
     bool getAirborne() const;
     bool getAquatic() const;
     bool getBackbone() const;
@@ -80,6 +80,8 @@ public:
     void setToothed(bool toothed);
     void setType(int type);
     void setVenomous(bool venomous);
+
+    friend ostream& operator<<(ostream&, Animal);
 };
 
 #endif /* ANIMAL_H_ */

@@ -17,7 +17,9 @@ using namespace std;
 
 class EntradaSalida {
 private:
-	list<Animal*> animales;
+	list<Animal*> animals;
+
+	void generarCabecera(fstream&);
 public:
 	EntradaSalida();
 	virtual ~EntradaSalida();
