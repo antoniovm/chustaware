@@ -26,7 +26,7 @@ void EntradaSalida::leer() {
 		getline(archivo, buffer);
 		cadena = new char[buffer.size()];
 		strcpy(cadena, buffer.data());
-		animal = new Animal();
+		animal = new Animal();cout<<"h";
 	}
 }
 
