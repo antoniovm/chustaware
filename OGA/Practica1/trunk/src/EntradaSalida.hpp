@@ -17,11 +17,12 @@ using namespace std;
 
 class EntradaSalida {
 private:
-	list<Animal> animales;
+	list<Animal*> animales;
 public:
 	EntradaSalida();
 	virtual ~EntradaSalida();
-	void leer();
+	void leerTexto();
+	void leerBinario();
 	void escribir();
 };
 
