@@ -2,7 +2,7 @@
  * Animal.h
  *
  *  Created on: 16/03/2011
- *      Author: Miguel
+ *      Author: Miguel Vicente Linares, Antonio Vicente Martin y Sergio Revueltas Estrada
  */
 
 #ifndef ANIMAL_H_
