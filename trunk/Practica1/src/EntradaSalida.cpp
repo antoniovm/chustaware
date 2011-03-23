@@ -75,6 +75,7 @@ void EntradaSalida::escribir() {
 
 	while (!archivo.eof()) {
 		archivo.read(cadena, sizeof(Animal));
+		// terminar
 	}
 }
 
