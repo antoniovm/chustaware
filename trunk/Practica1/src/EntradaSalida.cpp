@@ -27,6 +27,7 @@ void EntradaSalida::leerTexto() {
 	Animal* animal;	//Objeto temporal
 	while(!archivo.eof()){
 		getline(archivo, buffer);
+		if(archivo.eof())break;
 		cadena = new char[buffer.size()];	//Reserva de memoria para un registro
 		strcpy(cadena, buffer.data());
 		animal = new Animal(strtok(cadena, ","), *strtok(NULL, ","), *strtok(NULL, ","),
@@ -36,6 +37,7 @@ void EntradaSalida::leerTexto() {
 				*strtok(NULL, ","), *strtok(NULL, ","), atoi(strtok(NULL, ",")));	//Construccion de un animal
 
 		animals.push_back(animal);
+		cout << *animals.back();
 		delete [] cadena;		//Borrado de buffer
 	}
 }
@@ -63,20 +65,31 @@ void EntradaSalida::leerBinario() {
 }
 
 void EntradaSalida::escribir() {
-	fstream archivo("zoo-data.dat", fstream::in | fstream::binary | fstream::ate);
+	fstream archivoEntrada("zoo-data.dat", fstream::in | fstream::binary);
+	fstream archivoSalida("zoo-data.dat", fstream::out | fstream::binary | fstream::app);
 	string buffer;
 	char* cadena;
 	Animal* animal;
-	if(archivo.eof()) {
-		generarCabecera(archivo);
+	Cabecera cabecera;
+	if(archivoEntrada.eof()) {
+		generarCabecera(archivoSalida);
 	} else {
-		archivo.read(cadena, 250);
+		archivoEntrada.read((char*)(&cabecera), sizeof(Cabecera));
 	}
 
-	while (!archivo.eof()) {
-		archivo.read(cadena, sizeof(Animal));
+	while (!archivoEntrada.eof()) {
+		//archivo.read(cadena, sizeof(Animal));
 		// terminar
 	}
 }
+
+void EntradaSalida::mostrar() {
+	list<Animal*>::iterator it;
+	for(it=animals.begin(); it!=animals.end(); it++) {
+		cout << (*it) << endl;
+	}
+}
+
+
 
 

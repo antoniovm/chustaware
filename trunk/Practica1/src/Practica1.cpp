@@ -3,13 +3,16 @@
 // Author      : Miguel Vicente Linares
 // Version     :
 // Copyright   : OGA 2011
-// Description : Hello World in C++, Ansi-style
 //============================================================================
 
 #include <iostream>
+#include "EntradaSalida.hpp"
+
 using namespace std;
 
 int main() {
-	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
+	EntradaSalida* es = new EntradaSalida();
+	es->leerTexto();
+	//es.mostrar();
 	return 0;
 }

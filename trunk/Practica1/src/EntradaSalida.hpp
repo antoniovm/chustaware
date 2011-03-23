@@ -18,7 +18,7 @@ using namespace std;
 
 class EntradaSalida {
 private:
-	Cabecera cabecera;
+	//Cabecera cabecera;
 	list<Animal*> animals;
 
 	void generarCabecera(fstream&);
@@ -28,6 +28,7 @@ public:
 	void leerTexto();
 	void leerBinario();
 	void escribir();
+	void mostrar();
 };
 
 #endif /* ENTRADASALIDA_HPP_ */
