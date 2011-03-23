@@ -18,6 +18,7 @@ private:
 	long primerHueco;
 public:
 	Cabecera();
+	Cabecera(long,long,long,long);
 	virtual ~Cabecera();
     long getNEliminados() const;
     long getPrimerHueco() const;

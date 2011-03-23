@@ -16,16 +16,7 @@ EntradaSalida::~EntradaSalida() {
 }
 
 void EntradaSalida::generarCabecera(fstream & archivo) {
-	/*char* cabecera = new char[250];
-	memset(cabecera, 0, 250);
-	long primerHueco = -1;
-	strncpy(&cabecera[8],((char*)&primerHueco), sizeof(long));	//Copia 4 bytes
-	archivo.write(cabecera, 250);
-	delete[]cabecera;*/
-	cabecera.setNRegistros(0);
-	cabecera.setNEliminados(0);
-	cabecera.setTamRegistro(sizeof(Animal)+1);
-	cabecera.setPrimerHueco(-1);
+	Cabecera cabecera(0,0,sizeof(Animal)+1,-1);
 	archivo.write((char*)(&cabecera), sizeof(Cabecera));
 }
 

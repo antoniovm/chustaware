@@ -51,6 +51,14 @@ void Cabecera::setNRegistros(long  nRegistros)
     this->nRegistros = nRegistros;
 }
 
+Cabecera::Cabecera(long  nReg, long  nElim, long  tamReg, long  primHueco)
+{
+	this->nRegistros=nReg;
+	this->nEliminados=nElim;
+	this->tamRegistro=tamReg;
+	this->primerHueco=primHueco;
+}
+
 void Cabecera::setTamRegistro(long  tamRegistro)
 {
     this->tamRegistro = tamRegistro;
