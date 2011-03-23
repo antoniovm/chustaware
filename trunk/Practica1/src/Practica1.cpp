@@ -11,8 +11,8 @@
 using namespace std;
 
 int main() {
-	EntradaSalida* es = new EntradaSalida();
-	es->leerTexto();
-	//es.mostrar();
+	EntradaSalida es;
+	es.leerTexto();
+	es.mostrar();
 	return 0;
 }

@@ -279,7 +279,7 @@ ostream& operator <<(ostream & os, Animal animal) {
 	if (animal.catsize) {
 		os << "catsize|";
 	}
-	os << "type: " << animal.type << endl;
+	os << "type: " << animal.type;
 	return os;
 }
 

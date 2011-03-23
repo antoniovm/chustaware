@@ -37,7 +37,7 @@ void EntradaSalida::leerTexto() {
 				*strtok(NULL, ","), *strtok(NULL, ","), atoi(strtok(NULL, ",")));	//Construccion de un animal
 
 		animals.push_back(animal);
-		cout << *animals.back();
+
 		delete [] cadena;		//Borrado de buffer
 	}
 }
@@ -50,7 +50,7 @@ void EntradaSalida::leerBinario() {
 
 	archivo.read((char*)&cabecera,sizeof(Cabecera));
 
-	if(cabecera.nRegistros==0) // No hay ná que leer
+	if(cabecera.getNRegistros()==0) // No hay ná que leer
 		return;
 
 	while(!archivo.eof()){	//Bucle de lectura
@@ -91,8 +91,9 @@ void EntradaSalida::escribir() {
 
 void EntradaSalida::mostrar() {
 	list<Animal*>::iterator it;
-	for(it=animals.begin(); it!=animals.end(); it++) {
-		cout << (*it) << endl;
+	int i=1;
+	for(it=animals.begin(); it!=animals.end(); it++, i++) {
+		cout <<i<<"-"<< **it << endl;
 	}
 }
 
