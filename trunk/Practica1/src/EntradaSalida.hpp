@@ -18,7 +18,7 @@ using namespace std;
 
 class EntradaSalida {
 private:
-	Cabecera* cabecera;
+	Cabecera cabecera;
 	list<Animal*> animals;
 
 	void generarCabecera(fstream&);
