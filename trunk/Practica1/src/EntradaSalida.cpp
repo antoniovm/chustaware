@@ -43,25 +43,31 @@ void EntradaSalida::leerTexto() {
 }
 
 void EntradaSalida::leerBinario() {
-	/*fstream archivo("zoo-data.txt", fstream::in | fstream::binary);
-	string buffer;
-	char* cadena;
+	fstream archivo("zoo-data.dat", fstream::in | fstream::binary);
+	Cabecera cabecera;
 	Animal* animal;
-	while(!archivo.eof()){
-		archivo.read(cadena, sizeof(Animal));
-		cadena = new char[buffer.size()];
-		strcpy(cadena, buffer.data());
-		animal = new Animal(strtok(cadena, ","), *strtok(cadena, ","), *strtok(cadena, ","),
-				*strtok(cadena, ","), *strtok(cadena, ","),
-				*strtok(cadena, ","), *strtok(cadena, ","),
-				*strtok(cadena, ","), *strtok(cadena, ","),
-				*strtok(cadena, ","), *strtok(cadena, ","),
-				*strtok(cadena, ","), *strtok(cadena, ","),
-				atoi(strtok(cadena, ",")), *strtok(cadena, ","), *strtok(cadena, ","),
-				*strtok(cadena, ","), atoi(strtok(cadena, ",")));
-		animales.push_back(animal);
-		delete [] cadena;
-	}*/
+	long tamano=sizeof(Animal)+sizeof(long)+sizeof(char);//Registro Animal+validez+direccion
+
+	archivo.read((char*)&cabecera,sizeof(Cabecera));
+
+	if(cabecera.nRegistros==0) // No hay ná que leer
+		return;
+
+	while(!archivo.eof()){	//Bucle de lectura
+		char * temp=new char[tamano];
+		archivo.read(temp,tamano);
+		if(temp[0]!=0){ //Validar registro
+			animal=new Animal();
+			memcpy((char*)animal,&temp[5],sizeof(Animal));	//Hacemos una copia de la memoria que nos interesa
+			animals.push_back(animal);	//Añadimos animal
+		}
+		delete [] temp;
+
+
+	}
+
+
+
 }
 
 void EntradaSalida::escribir() {
