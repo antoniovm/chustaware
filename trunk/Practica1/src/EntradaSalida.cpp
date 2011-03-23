@@ -22,21 +22,21 @@ void EntradaSalida::generarCabecera(fstream & archivo) {
 
 void EntradaSalida::leerTexto() {
 	fstream archivo("zoo-data.txt", fstream::in);
-	string buffer;
-	char* cadena;
-	Animal* animal;
+	string buffer;	//Cadena temporal
+	char* cadena;	//Puntero buffer
+	Animal* animal;	//Objeto temporal
 	while(!archivo.eof()){
 		getline(archivo, buffer);
-		cadena = new char[buffer.size()];
+		cadena = new char[buffer.size()];	//Reserva de memoria para un registro
 		strcpy(cadena, buffer.data());
 		animal = new Animal(strtok(cadena, ","), *strtok(NULL, ","), *strtok(NULL, ","),
 				*strtok(NULL, ","), *strtok(NULL, ","),	*strtok(NULL, ","), *strtok(NULL, ","),
 				*strtok(NULL, ","), *strtok(NULL, ","), *strtok(NULL, ","), *strtok(NULL, ","),
 				*strtok(NULL, ","), *strtok(NULL, ","),	atoi(strtok(NULL, ",")), *strtok(NULL, ","),
-				*strtok(NULL, ","), *strtok(NULL, ","), atoi(strtok(NULL, ",")));
+				*strtok(NULL, ","), *strtok(NULL, ","), atoi(strtok(NULL, ",")));	//Construccion de un animal
 
 		animals.push_back(animal);
-		delete [] cadena;
+		delete [] cadena;		//Borrado de buffer
 	}
 }
 
