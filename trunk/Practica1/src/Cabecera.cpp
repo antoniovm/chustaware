@@ -2,7 +2,7 @@
  * Cabecera.cpp
  *
  *  Created on: 23/03/2011
- *      Author: Miguel
+ *  Author: Miguel Vicente Linares, Antonio Vicente Martin y Sergio Revueltas Estrada
  */
 
 #include "Cabecera.h"
