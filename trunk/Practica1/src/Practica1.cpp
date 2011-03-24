@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : Practica1.cpp
-// Author      : Miguel Vicente Linares
+// Author      : Miguel Vicente Linares, Antonio Vicente Martin y Sergio Revueltas Estrada
 // Version     :
 // Copyright   : OGA 2011
 //============================================================================

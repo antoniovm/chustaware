@@ -63,14 +63,14 @@ void EntradaSalida::leerBinario() {
 
 
 	while(!archivo.eof()){	//Bucle de lectura
-		char * temp=new char[tamano];
-		archivo.read(temp,tamano);
+		Registro* registro = new Registro();
+		/*archivo.read(temp,tamano);
 		if(temp[0]!=0){ //Validar registro
 			animal=new Animal();
 			memcpy((char*)animal,&temp[5],sizeof(Animal));	//Hacemos una copia de la memoria que nos interesa
 			animals.push_back(animal);	//Añadimos animal
 		}
-		delete [] temp;
+		delete [] temp;*/
 
 
 	}

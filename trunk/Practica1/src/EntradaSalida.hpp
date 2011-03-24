@@ -13,6 +13,7 @@
 #include <fstream>
 #include "Animal.h"
 #include "Cabecera.h"
+#include "Registro.h"
 
 using namespace std;
 
