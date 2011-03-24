@@ -94,7 +94,7 @@ void EntradaSalida::escribir() {
 	archivoEntrada.read((char*)(&cabecera), sizeof(Cabecera));
 
 
-	//while (!archivoEntrada.eof()) {
+	while (!animals.empty()) {
 		if(cabecera.getPrimerHueco()!=-1){	//Si no apunta a "NULL"
 			archivoEntrada.seekp(cabecera.getPrimerHueco()+1);	//Posicionamos para leer la direccion del siguiente eliminado saltandonos el byte de validez
 			archivoEntrada.read((char*)&direccion, sizeof(long));	//Leemos la direccion del siguiente hueco
@@ -104,7 +104,7 @@ void EntradaSalida::escribir() {
 		archivoSalida.write((char*)animal,sizeof(Animal));//Escribimos el animal
 		cabecera.setPrimerHueco(direccion);	//Almacenamos en la cabecera el primer hueco
 		// terminar
-	//}
+	}
 }
 
 void EntradaSalida::mostrar() {

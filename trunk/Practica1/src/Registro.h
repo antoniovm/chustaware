@@ -21,6 +21,12 @@ public:
 	Registro();
 	Registro(bool valido, long dir, Animal* animal);
 	virtual ~Registro();
+    Animal *getAnimal() const;
+    long getDireccion() const;
+    bool getValido() const;
+    void setAnimal(Animal *animal);
+    void setDireccion(long  direccion);
+    void setValido(bool valido);
 
 };
 
