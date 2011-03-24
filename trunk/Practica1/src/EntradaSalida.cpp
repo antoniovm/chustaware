@@ -96,7 +96,7 @@ void EntradaSalida::escribir() {
 
 	while (!animals.empty()) {
 		if(cabecera.getPrimerHueco()!=-1){	//Si no apunta a "NULL"
-			archivoEntrada.seekp(cabecera.getPrimerHueco()+1);	//Posicionamos para leer la direccion del siguiente eliminado saltandonos el byte de validez
+			archivoEntrada.seekp(cabecera.getPrimerHueco());	//Posicionamos para leer la direccion del siguiente eliminado saltandonos el byte de validez
 			archivoEntrada.read((char*)&direccion, sizeof(long));	//Leemos la direccion del siguiente hueco
 			archivoEntrada.seekp(cabecera.getPrimerHueco()+sizeof(long)+1);	//Posicionamos para escribir un animal (saltando validez y direccion)
 		}
