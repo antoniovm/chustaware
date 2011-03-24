@@ -8,19 +8,22 @@
 #include "Registro.h"
 
 Registro::Registro() {
-	// TODO Auto-generated constructor stub
-
+	this->valido = true;
+	this->direccion = 0;
 }
 
-Registro::Registro(bool valido, long  dir, Animal *animal) {
+Registro::Registro(bool valido, long  dir, Animal* animal) {
 	this->valido = valido;
 	this->direccion = dir;
-	this->animal = animal;
+	memcpy(&(this->animal), animal, sizeof(Animal));
 }
 
 Animal *Registro::getAnimal() const
 {
-    return animal;
+	// Devolvemos una copia dinamica del animal.
+	Animal* a = new Animal();
+	memcpy(a, &animal, sizeof(Animal));
+    return a;
 }
 
 long Registro::getDireccion() const
@@ -35,7 +38,7 @@ bool Registro::getValido() const
 
 void Registro::setAnimal(Animal *animal)
 {
-    this->animal = animal;
+	memcpy(&(this->animal), animal, sizeof(Animal));
 }
 
 void Registro::setDireccion(long  direccion)

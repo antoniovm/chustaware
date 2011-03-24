@@ -16,7 +16,7 @@ class Registro {
 private:
 	bool valido;
 	long direccion;
-	Animal* animal;
+	Animal animal;
 public:
 	Registro();
 	Registro(bool valido, long dir, Animal* animal);
