@@ -46,10 +46,11 @@ void EntradaSalida::leerTexto() {
 void EntradaSalida::leerBinario() {
 	fstream archivo("zoo-data.dat", fstream::in | fstream::binary);
 	Cabecera cabecera;
+	Registro *registro;
 	Animal* animal;
 	long tamano=sizeof(Animal)+sizeof(long)+sizeof(char);//Registro Animal+validez+direccion
 
-	archivo.read((char*)&cabecera,sizeof(Cabecera));
+	archivo.read((char*)&cabecera,sizeof(Cabecera)); //Leemos cabecera
 
 	if(archivo.bad()){
 		cout<< "No existe el archivo"<<endl;
@@ -63,14 +64,12 @@ void EntradaSalida::leerBinario() {
 
 
 	while(!archivo.eof()){	//Bucle de lectura
-		Registro* registro = new Registro();
-		/*archivo.read(temp,tamano);
-		if(temp[0]!=0){ //Validar registro
-			animal=new Animal();
-			memcpy((char*)animal,&temp[5],sizeof(Animal));	//Hacemos una copia de la memoria que nos interesa
-			animals.push_back(animal);	//Añadimos animal
+		registro = new Registro();
+		archivo.read((char*)registro,sizeof(registro));
+		if(registro->getValido()){ //Validar registro
+			animals.push_back(registro->getAnimal());	//Añadimos animal
 		}
-		delete [] temp;*/
+		delete registro;
 
 
 	}
