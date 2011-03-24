@@ -40,6 +40,7 @@ void EntradaSalida::leerTexto() {
 
 		delete [] cadena;		//Borrado de buffer
 	}
+	archivo.close();
 }
 
 void EntradaSalida::leerBinario() {
@@ -50,8 +51,16 @@ void EntradaSalida::leerBinario() {
 
 	archivo.read((char*)&cabecera,sizeof(Cabecera));
 
-	if(cabecera.getNRegistros()==0) // No hay ná que leer
+	if(archivo.bad()){
+		cout<< "No existe el archivo"<<endl;
 		return;
+	}
+
+	if(archivo.eof()||(cabecera.getNRegistros()==0)){  // No hay ná que leer
+		cout<< "Archivo vacio"<<endl;
+		return;
+	}
+
 
 	while(!archivo.eof()){	//Bucle de lectura
 		char * temp=new char[tamano];
@@ -65,6 +74,7 @@ void EntradaSalida::leerBinario() {
 
 
 	}
+	archivo.close();
 
 
 
@@ -74,19 +84,27 @@ void EntradaSalida::escribir() {
 	fstream archivoEntrada("zoo-data.dat", fstream::in | fstream::binary);
 	fstream archivoSalida("zoo-data.dat", fstream::out | fstream::binary | fstream::app);
 	string buffer;
+	long direccion;	//Variable temporal para la direccion del siguiente "hueco"
 	char* cadena;
 	Animal* animal;
 	Cabecera cabecera;
-	if(archivoEntrada.eof()) {
+	if(archivoEntrada.eof())	//Si el archivo esta vacio
 		generarCabecera(archivoSalida);
-	} else {
-		archivoEntrada.read((char*)(&cabecera), sizeof(Cabecera));
-	}
 
-	while (!archivoEntrada.eof()) {
-		//archivo.read(cadena, sizeof(Animal));
+	archivoEntrada.read((char*)(&cabecera), sizeof(Cabecera));
+
+
+	//while (!archivoEntrada.eof()) {
+		if(cabecera.getPrimerHueco()!=-1){	//Si no apunta a "NULL"
+			archivoEntrada.seekp(cabecera.getPrimerHueco()+1);	//Posicionamos para leer la direccion del siguiente eliminado saltandonos el byte de validez
+			archivoEntrada.read((char*)&direccion, sizeof(long));	//Leemos la direccion del siguiente hueco
+			archivoEntrada.seekp(cabecera.getPrimerHueco()+sizeof(long)+1);	//Posicionamos para escribir un animal (saltando validez y direccion)
+		}
+
+		archivoSalida.write((char*)animal,sizeof(Animal));//Escribimos el animal
+		cabecera.setPrimerHueco(direccion);	//Almacenamos en la cabecera el primer hueco
 		// terminar
-	}
+	//}
 }
 
 void EntradaSalida::mostrar() {
