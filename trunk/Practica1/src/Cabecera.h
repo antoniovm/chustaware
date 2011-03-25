@@ -8,6 +8,8 @@
 #ifndef CABECERA_H_
 #define CABECERA_H_
 
+#include "Registro.h"
+
 using namespace std;
 
 class Cabecera {

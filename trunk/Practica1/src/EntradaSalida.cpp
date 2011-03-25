@@ -20,6 +20,15 @@ void EntradaSalida::generarCabecera(fstream & archivo) {
 	archivo.write((char*)(&cabecera), sizeof(Cabecera));
 }
 
+bool EntradaSalida::comprobarArchivoVacio(fstream & archivo) {
+	int tam = 0;
+	streampos posActual = archivo.tellg();
+	archivo.seekg(0, ios::end);	// Ponemos el puntero al final del archivo
+	tam = archivo.tellg();
+	archivo.seekg(posActual); // Volvemos a poner el puntero donde estaba
+	return (tam == 0);
+}
+
 void EntradaSalida::leerTexto() {
 	fstream archivo("zoo-data.txt", fstream::in);
 	string buffer;	//Cadena temporal
@@ -47,21 +56,22 @@ void EntradaSalida::leerBinario() {
 	fstream archivo("zoo-data.dat", fstream::in | fstream::binary);
 	Cabecera cabecera;
 	Registro *registro;
-	Animal* animal;
-	long tamano=sizeof(Animal)+sizeof(long)+sizeof(char);//Registro Animal+validez+direccion
 
+	if(!archivo.is_open()){
+		cout << "No existe el archivo" << endl;
+		return;
+	}
+
+	if(comprobarArchivoVacio(archivo)){	// Comprobamos si el tamaño del archivo es 0
+		cout << "Archivo vacio" << endl;
+		return;
+	}
 	archivo.read((char*)&cabecera,sizeof(Cabecera)); //Leemos cabecera
 
-	if(archivo.bad()){
-		cout<< "No existe el archivo"<<endl;
+	if(cabecera.getNRegistros()==0) {
+		cout << "No hay ningun registro en el archivo" << endl;
 		return;
 	}
-
-	if(archivo.eof()||(cabecera.getNRegistros()==0)){  // No hay ná que leer
-		cout<< "Archivo vacio"<<endl;
-		return;
-	}
-
 
 	while(!archivo.eof()){	//Bucle de lectura
 		registro = new Registro();
@@ -70,30 +80,40 @@ void EntradaSalida::leerBinario() {
 			animals.push_back(registro->getAnimal());	//Añadimos animal
 		}
 		delete registro;
-
-
 	}
 	archivo.close();
-
-
-
 }
 
 void EntradaSalida::escribir() {
 	fstream archivoEntrada("zoo-data.dat", fstream::in | fstream::binary);
 	fstream archivoSalida("zoo-data.dat", fstream::out | fstream::binary | fstream::app);
-	string buffer;
+	/*string buffer;
 	long direccion;	//Variable temporal para la direccion del siguiente "hueco"
 	char* cadena;
-	Animal* animal;
+	Animal* animal;*/
 	Cabecera cabecera;
-	if(archivoEntrada.eof())	//Si el archivo esta vacio
+	Registro registro;
+	list<Animal*>::iterator it;
+	int nRegistros = 0;
+
+	if(comprobarArchivoVacio(archivoEntrada))	//Si el archivo esta vacio
 		generarCabecera(archivoSalida);
 
-	archivoEntrada.read((char*)(&cabecera), sizeof(Cabecera));
+	archivoEntrada.read((char*)(&cabecera), sizeof(Cabecera)); // Leemos la cabecera
 
+	if(cabecera.getNRegistros() == 0) {
+		for (it = animals.begin(); it != animals.end(); it++) {
+			registro.setAnimal(*it);
+			archivoSalida.write((char*) (&registro), sizeof(Registro));
+			nRegistros++;
+		}
 
-	while (!animals.empty()) {
+		cabecera.setNRegistros(nRegistros);
+		archivoSalida.seekp(0, ios::beg);
+		archivoSalida.write((char*)(&cabecera), sizeof(Cabecera));
+	}
+
+	/*while (!animals.empty()) {
 		if(cabecera.getPrimerHueco()!=-1){	//Si no apunta a "NULL"
 			archivoEntrada.seekp(cabecera.getPrimerHueco());	//Posicionamos para leer la direccion del siguiente eliminado saltandonos el byte de validez
 			archivoEntrada.read((char*)&direccion, sizeof(long));	//Leemos la direccion del siguiente hueco
@@ -103,7 +123,11 @@ void EntradaSalida::escribir() {
 		archivoSalida.write((char*)animal,sizeof(Animal));//Escribimos el animal
 		cabecera.setPrimerHueco(direccion);	//Almacenamos en la cabecera el primer hueco
 		// terminar
-	}
+	}*/
+
+	archivoEntrada.close();
+	archivoSalida.close();
+
 }
 
 void EntradaSalida::mostrar() {

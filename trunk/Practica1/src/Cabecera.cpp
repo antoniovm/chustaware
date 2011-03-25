@@ -8,8 +8,18 @@
 #include "Cabecera.h"
 
 Cabecera::Cabecera() {
-	// TODO Auto-generated constructor stub
+	this->nRegistros = 0;
+	this->nEliminados = 0;
+	this->primerHueco = -1;
+	this->tamRegistro = sizeof(Registro);
+}
 
+Cabecera::Cabecera(long  nReg, long  nElim, long  tamReg, long  primHueco)
+{
+	this->nRegistros=nReg;
+	this->nEliminados=nElim;
+	this->tamRegistro=tamReg;
+	this->primerHueco=primHueco;
 }
 
 Cabecera::~Cabecera() {
@@ -49,14 +59,6 @@ void Cabecera::setPrimerHueco(long  primerHueco)
 void Cabecera::setNRegistros(long  nRegistros)
 {
     this->nRegistros = nRegistros;
-}
-
-Cabecera::Cabecera(long  nReg, long  nElim, long  tamReg, long  primHueco)
-{
-	this->nRegistros=nReg;
-	this->nEliminados=nElim;
-	this->tamRegistro=tamReg;
-	this->primerHueco=primHueco;
 }
 
 void Cabecera::setTamRegistro(long  tamRegistro)

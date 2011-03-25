@@ -22,6 +22,7 @@ private:
 	list<Animal*> animals;
 
 	void generarCabecera(fstream&);
+	bool comprobarArchivoVacio(fstream&);
 public:
 	EntradaSalida();
 	virtual ~EntradaSalida();

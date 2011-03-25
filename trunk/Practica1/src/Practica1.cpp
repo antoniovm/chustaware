@@ -14,5 +14,11 @@ int main() {
 	EntradaSalida es;
 	es.leerTexto();
 	es.mostrar();
+
+	cout << endl << "ESCRIBIENDO..." << endl << endl;
+	es.escribir();
+	cout << endl << "LEYENDO..." << endl << endl;
+	es.leerBinario();
+	es.mostrar();
 	return 0;
 }
