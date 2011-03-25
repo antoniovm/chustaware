@@ -1,6 +1,6 @@
 /*
- * Cabecera.h
- *
+ *  Cabecera.h
+ *	Clase que representa la cabecera de un archivo binario
  *  Created on: 23/03/2011
  *  Author: Miguel Vicente Linares, Antonio Vicente Martin y Sergio Revueltas Estrada
  */

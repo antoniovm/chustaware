@@ -1,26 +1,33 @@
 /*
- * Registro.cpp
- *
+ *  Registro.cpp
+ *  Clase que representa un registro RLF (Validez(bool) + direccion(long) + Animal)
  *  Created on: 24/03/2011
  *      Author: Miguel Vicente Linares, Antonio Vicente Martin y Sergio Revueltas Estrada
  */
 
 #include "Registro.h"
-
+/**
+ * Construye un registro valido con direccion 0
+ */
 Registro::Registro() {
 	this->valido = true;
 	this->direccion = 0;
 }
-
+/**
+ * Construye un RLF(validez,direccion,Animal)
+ */
 Registro::Registro(bool valido, long  dir, Animal* animal) {
 	this->valido = valido;
 	this->direccion = dir;
 	memcpy(&(this->animal), animal, sizeof(Animal));
 }
-
-Animal *Registro::getAnimal() const
+Registro::~Registro() {
+}
+/**
+ * Devuelve una copia dinamica del Animal
+ */
+Animal* Registro::getAnimal() const
 {
-	// Devolvemos una copia dinamica del animal.
 	Animal* a = new Animal();
 	memcpy(a, &animal, sizeof(Animal));
     return a;
@@ -51,6 +58,4 @@ void Registro::setValido(bool valido)
     this->valido = valido;
 }
 
-Registro::~Registro() {
-	// TODO Auto-generated destructor stub
-}
+

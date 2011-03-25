@@ -1,6 +1,6 @@
 /*
- * Registro.h
- *
+ *  Registro.h
+ *	Clase que representa un registro RLF (Validez(bool) + direccion(long) + Animal)
  *  Created on: 24/03/2011
  *      Author: Miguel Vicente Linares, Antonio Vicente Martin y Sergio Revueltas Estrada
  */

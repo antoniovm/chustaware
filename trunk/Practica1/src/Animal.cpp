@@ -1,17 +1,21 @@
 /*
- * Animal.cpp
- *
+ *  Animal.cpp
+ *  Implementacion de la clase Animal
  *  Created on: 16/03/2011
  *  Author: Miguel Vicente Linares, Antonio Vicente Martin y Sergio Revueltas Estrada
+ *
  */
 
 #include "Animal.h"
-
+/**
+ * Constructor por defecto
+ */
 Animal::Animal() {
-	// TODO Auto-generated constructor stub
 
 }
-
+/**
+ * Constructor de Animal
+ */
 Animal::Animal(char *name, char hair, char feathers, char eggs, char milk,
 		char airborne, char aquatic, char predator, char toothed,
 		char backbone, char breathes, char venomous, char fins, int legs,
@@ -38,15 +42,19 @@ Animal::Animal(char *name, char hair, char feathers, char eggs, char milk,
 }
 
 Animal::~Animal() {
-	// TODO Auto-generated destructor stub
 }
-
+/**
+ * Devuelve true si el caracter no es '0'
+ */
 bool Animal::isTrue(char caracter) {
 	if (caracter == '0') {
 		return false;
 	}
 	return true;
 }
+/**
+ * Getters and Setters
+ */
 
 bool Animal::getAirborne() const
 {
@@ -230,7 +238,7 @@ void Animal::setVenomous(bool venomous)
 {
     this->venomous = venomous;
 }
-
+//sobrecarga operator<<
 ostream& operator <<(ostream & os, Animal animal) {
 	os << animal.name << "|";
 	if (animal.hair) {
