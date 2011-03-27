@@ -23,7 +23,6 @@ Cabecera::Cabecera(long  nReg, long  nElim, long  tamReg, long  primHueco)
 }
 
 Cabecera::~Cabecera() {
-	// TODO Auto-generated destructor stub
 }
 
 long Cabecera::getNEliminados() const

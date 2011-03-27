@@ -64,81 +64,49 @@ void EntradaSalida::leerTexto() {
 void EntradaSalida::leerBinario() {
 	fstream archivo("zoo-data.dat", fstream::in | fstream::binary);
 	Cabecera cabecera;
-	Registro *registro;
+	Registro registro;
 
 	if(!archivo.is_open()){
 		cout << "No existe el archivo" << endl;
 		return;
 	}
-
 	if(comprobarArchivoVacio(archivo)){	// Comprobamos si el tamaño del archivo es 0
 		cout << "Archivo vacio" << endl;
 		return;
 	}
 	archivo.read((char*)&cabecera,sizeof(Cabecera)); //Leemos cabecera
-
 	if(cabecera.getNRegistros()==0) {
 		cout << "No hay ningun registro en el archivo" << endl;
 		return;
 	}
-
-	while(!archivo.eof()){	//Bucle de lectura
-		registro = new Registro();
-		archivo.read((char*)registro,sizeof(registro));
-		if(registro->getValido()){ //Validar registro
-			animals.push_back(registro->getAnimal());	//Añadimos animal
-		}
-		delete registro;
+	while(1){							//Bucle de lectura
+		archivo.read((char*)&registro,sizeof(registro));
+		if(archivo.eof())
+			break;
+		if(registro.getValido())		//Validar registro
+			animals.push_back(registro.getAnimal());	//Añadimos animal
 	}
 	archivo.close();
 }
 /**
- * Escribe la lista de animales con RLFs en el archivo binario zoo-data.dat
+ * Escribe(vacia) la lista de animales en RLFs en el archivo binario zoo-data.dat
  */
 void EntradaSalida::escribir() {
-	fstream archivoEntrada("zoo-data.dat", fstream::in | fstream::binary);
-	fstream archivoSalida("zoo-data.dat", fstream::out | fstream::binary | fstream::app);
-
-	/*string buffer;
-	long direccion;	//Variable temporal para la direccion del siguiente "hueco"
-	char* cadena;
-	Animal* animal;*/
-
+	fstream archivoSalida("zoo-data.dat", fstream::out | fstream::binary );
 	Cabecera cabecera;
-	Registro registro;
-	list<Animal*>::iterator it;
-	int nRegistros = 0;
+	Registro registro;	//reg auxiliar
+	long nRegistros = 0;
 
-	if(comprobarArchivoVacio(archivoEntrada))	//Si el archivo esta vacio
-		generarCabecera(archivoSalida);
-
-	archivoEntrada.read((char*)(&cabecera), sizeof(Cabecera)); // Leemos la cabecera
-
-	if(cabecera.getNRegistros() == 0) {
-		for (it = animals.begin(); it != animals.end(); it++) {
-			registro.setAnimal(*it);
-			archivoSalida.write((char*) (&registro), sizeof(Registro));
-			nRegistros++;
-		}
-
-		cabecera.setNRegistros(nRegistros);
-		archivoSalida.seekp(0, ios::beg);
-		archivoSalida.write((char*)(&cabecera), sizeof(Cabecera));
+	generarCabecera(archivoSalida);	//escribe en archivo la cabecera por defecto
+	while(!animals.empty()){
+		registro.setAnimal(animals.front());	//asignamos a RLF un animal
+		archivoSalida.write((char*) (&registro), sizeof(Registro));	//se escribe en archivo
+		animals.pop_front();					//se saca animal de la lista
+		nRegistros++;
 	}
-
-	/*while (!animals.empty()) {
-		if(cabecera.getPrimerHueco()!=-1){	//Si no apunta a "NULL"
-			archivoEntrada.seekp(cabecera.getPrimerHueco());	//Posicionamos para leer la direccion del siguiente eliminado saltandonos el byte de validez
-			archivoEntrada.read((char*)&direccion, sizeof(long));	//Leemos la direccion del siguiente hueco
-			archivoEntrada.seekp(cabecera.getPrimerHueco()+sizeof(long)+1);	//Posicionamos para escribir un animal (saltando validez y direccion)
-		}
-
-		archivoSalida.write((char*)animal,sizeof(Animal));//Escribimos el animal
-		cabecera.setPrimerHueco(direccion);	//Almacenamos en la cabecera el primer hueco
-		// terminar
-	}*/
-
-	archivoEntrada.close();
+	cabecera.setNRegistros(nRegistros);	//actualiza nReg en cabecera
+	archivoSalida.seekp(0, ios::beg);	//cursor al inicio
+	archivoSalida.write((char*)(&cabecera), sizeof(Cabecera));	//se reescribe la cabecera
 	archivoSalida.close();
 
 }
@@ -148,9 +116,10 @@ void EntradaSalida::escribir() {
 void EntradaSalida::mostrar() {
 	list<Animal*>::iterator it;
 	int i=1;
-	for(it=animals.begin(); it!=animals.end(); it++, i++) {
+	if(animals.empty())
+		cout << "No hay animales en memoria" << endl;
+	for(it=animals.begin(); it!=animals.end(); it++, i++)
 		cout <<i<<"-"<< **it << endl;
-	}
 }
 
 
