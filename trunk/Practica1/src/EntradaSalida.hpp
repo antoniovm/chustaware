@@ -23,11 +23,13 @@ private:
 
 	void generarCabecera(fstream&);
 	bool comprobarArchivoVacio(fstream&);
+	void vaciar();
 public:
 	EntradaSalida();
 	virtual ~EntradaSalida();
 	void leerTexto();
 	void leerBinario();
+	void leerRegistro(int);
 	void escribir();
 	void mostrar();
 };

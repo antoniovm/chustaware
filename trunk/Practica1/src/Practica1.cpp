@@ -13,12 +13,15 @@ using namespace std;
 int main() {
 	EntradaSalida es;
 	es.leerTexto();
-	es.mostrar();
+	//es.mostrar();
 	cout << endl << "ESCRIBIENDO..." << endl << endl;
 	es.escribir();
-	es.mostrar();	//no debe mostrar nada
+	//es.mostrar();	//no debe mostrar nada
 	cout << endl << "LEYENDO..." << endl << endl;
 	es.leerBinario();
+	//es.mostrar();
+	es.leerRegistro(101);
 	es.mostrar();
+
 	return 0;
 }

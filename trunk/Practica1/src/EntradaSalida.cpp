@@ -33,6 +33,16 @@ bool EntradaSalida::comprobarArchivoVacio(fstream & archivo) {
 	return (tam == 0);
 }
 /**
+ * Elimina todos los animales de memoria.
+ */
+void EntradaSalida::vaciar() {
+	list<Animal*>::iterator it;
+	for(it=animals.begin(); it!=animals.end(); it++){
+		delete (*it);
+	}
+	animals.clear();
+}
+/**
  * Lee el archivo de texto zoo-data.txt y lo almacena en memoria en una lista de Animales
  */
 void EntradaSalida::leerTexto() {
@@ -66,6 +76,8 @@ void EntradaSalida::leerBinario() {
 	Cabecera cabecera;
 	Registro registro;
 
+	vaciar();	//Eliminamos todos los animales que haya en memoria antes de leer.
+
 	if(!archivo.is_open()){
 		cout << "No existe el archivo" << endl;
 		return;
@@ -89,6 +101,48 @@ void EntradaSalida::leerBinario() {
 	archivo.close();
 }
 /**
+ * Lee un unico registro del archivo. El primer registro es el 0.
+ */
+void EntradaSalida::leerRegistro(int nRegistro) {
+	fstream archivo("zoo-data.dat", fstream::in | fstream::binary);
+	Cabecera cabecera;
+	Registro registro;
+	streampos posicion;
+
+	vaciar();	//Eliminamos todos los animales que haya en memoria antes de leer.
+
+	if (!archivo.is_open()) {
+		cout << "No existe el archivo" << endl;
+		return;
+	}
+	if (comprobarArchivoVacio(archivo)) { // Comprobamos si el tamaño del archivo es 0
+		cout << "Archivo vacio" << endl;
+		return;
+	}
+	archivo.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
+	if (cabecera.getNRegistros() == 0) {
+		cout << "No hay ningun registro en el archivo" << endl;
+		return;
+	}
+
+	if (nRegistro >= cabecera.getNRegistros()) {	// Comprobamos que el registro indicado esta en el archivo
+		cout << "El registro indicado no esta en el archivo" << endl;
+		return;
+	}
+
+	posicion = sizeof(Cabecera)+(nRegistro*sizeof(Registro));	//Calculamos la posicion de lectura
+	archivo.seekg(posicion);	//Colocamos el puntero en la posicion donde vamos a leer
+	archivo.read((char*) &registro, sizeof(Registro)); //Leemos el registro
+
+	//Comprobamos si el registro es valido
+	if (registro.getValido()) {
+		animals.push_back(registro.getAnimal());
+	} else {
+		cout << "El registro que se intenta leer no es valido" << endl;
+	}
+}
+
+/**
  * Escribe(vacia) la lista de animales en RLFs en el archivo binario zoo-data.dat
  */
 void EntradaSalida::escribir() {
@@ -111,6 +165,7 @@ void EntradaSalida::escribir() {
 	archivoSalida.close();
 
 }
+
 /**
  * Muestra la lista de animales en memoria
  */
@@ -121,8 +176,6 @@ void EntradaSalida::mostrar() {
 		cout << "No hay animales en memoria" << endl;
 	for(it=animals.begin(); it!=animals.end(); it++, i++)
 		cout <<i<<"-"<< **it << endl;
+	cout << endl;
 }
-
-
-
 
