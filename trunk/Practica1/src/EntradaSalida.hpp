@@ -32,6 +32,7 @@ public:
 	void leerRegistro(int);
 	void escribir();
 	void mostrar();
+	bool eliminar(long);
 };
 
 #endif /* ENTRADASALIDA_HPP_ */
