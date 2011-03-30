@@ -101,7 +101,8 @@ void EntradaSalida::escribir() {
 	while(!animals.empty()){
 		registro.setAnimal(animals.front());	//asignamos a RLF un animal
 		archivoSalida.write((char*) (&registro), sizeof(Registro));	//se escribe en archivo
-		animals.pop_front();					//se saca animal de la lista
+		delete *animals.begin();	//liberamos memoria
+		animals.pop_front();	//se saca el puntero de la lista
 		nRegistros++;
 	}
 	cabecera.setNRegistros(nRegistros);	//actualiza nReg en cabecera
