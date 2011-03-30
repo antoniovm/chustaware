@@ -178,4 +178,39 @@ void EntradaSalida::mostrar() {
 		cout <<i<<"-"<< **it << endl;
 	cout << endl;
 }
+bool EntradaSalida::eliminar(long  pos)
+{
+	fstream entrada("zoo-data.dat",ios::in|ios::binary);
+	fstream salida("zoo-data.dat",ios::out|ios::binary|ios::app);
+	Registro registro;
+	Cabecera cabecera;
+	long posicionReg;
+	entrada.read((char*)&cabecera,sizeof(Cabecera));
+
+								//Comprobamos que la posicion es valida
+	if(((cabecera.getNRegistros()+cabecera.getNEliminados()) < pos)||(pos < 0)){
+		return false;
+	}
+	posicionReg=pos*sizeof(Registro)+sizeof(Cabecera);
+	//Posicionamos tras de la cabecera, con offset nRegistros acceder al registro
+	entrada.seekp(0,(std::_Ios_Seekdir)posicionReg);
+
+	entrada.read((char*)&registro,sizeof(Registro));
+	entrada.close();
+
+	registro.setValido(false);	//Invalidamos el registro
+	registro.setDireccion(cabecera.getPrimerHueco());	//Stack linked list
+	cabecera.setPrimerHueco(posicionReg);	//Actualizacion de la cabecera
+
+	salida.seekp(0,(std::_Ios_Seekdir)posicionReg);
+	salida.write((char*)&registro,sizeof(Registro));
+
+	salida.seekp(0,ios::beg);
+	salida.write((char*)&cabecera,sizeof(Cabecera));
+
+	return true;
+
+
+}
+
 
