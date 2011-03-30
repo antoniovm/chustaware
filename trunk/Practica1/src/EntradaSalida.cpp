@@ -76,7 +76,7 @@ void EntradaSalida::leerBinario() {
 	Cabecera cabecera;
 	Registro registro;
 
-	vaciar();	//Eliminamos todos los animales que haya en memoria antes de leer.
+
 
 	if(!archivo.is_open()){
 		cout << "No existe el archivo" << endl;
@@ -109,7 +109,6 @@ void EntradaSalida::leerRegistro(int nRegistro) {
 	Registro registro;
 	streampos posicion;
 
-	vaciar();	//Eliminamos todos los animales que haya en memoria antes de leer.
 
 	if (!archivo.is_open()) {
 		cout << "No existe el archivo" << endl;
@@ -193,8 +192,8 @@ bool EntradaSalida::eliminar(long  pos)
 	}
 	posicionReg=pos*sizeof(Registro)+sizeof(Cabecera);
 	//Posicionamos tras de la cabecera, con offset nRegistros acceder al registro
-	entrada.seekp(0,(std::_Ios_Seekdir)posicionReg);
-
+	entrada.seekg(0,(std::_Ios_Seekdir)posicionReg);
+	cout<<entrada.tellg();
 	entrada.read((char*)&registro,sizeof(Registro));
 	entrada.close();
 
@@ -207,6 +206,8 @@ bool EntradaSalida::eliminar(long  pos)
 
 	salida.seekp(0,ios::beg);
 	salida.write((char*)&cabecera,sizeof(Cabecera));
+
+	salida.close();
 
 	return true;
 

@@ -23,7 +23,7 @@ private:
 
 	void generarCabecera(fstream&);
 	bool comprobarArchivoVacio(fstream&);
-	void vaciar();
+
 public:
 	EntradaSalida();
 	virtual ~EntradaSalida();
@@ -33,6 +33,7 @@ public:
 	void escribir();
 	void mostrar();
 	bool eliminar(long);
+	void vaciar();
 };
 
 #endif /* ENTRADASALIDA_HPP_ */
