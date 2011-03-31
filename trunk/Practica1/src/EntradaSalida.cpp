@@ -76,19 +76,19 @@ void EntradaSalida::leerBinario() {
 	Cabecera cabecera;
 	Registro registro;
 
-
-
 	if(!archivo.is_open()){
 		cout << "No existe el archivo" << endl;
 		return;
 	}
 	if(comprobarArchivoVacio(archivo)){	// Comprobamos si el tamaño del archivo es 0
 		cout << "Archivo vacio" << endl;
+		archivo.close();
 		return;
 	}
 	archivo.read((char*)&cabecera,sizeof(Cabecera)); //Leemos cabecera
 	if(cabecera.getNRegistros()==0) {
 		cout << "No hay ningun registro en el archivo" << endl;
+		archivo.close();
 		return;
 	}
 	while(1){							//Bucle de lectura
@@ -116,16 +116,19 @@ void EntradaSalida::leerRegistro(int nRegistro) {
 	}
 	if (comprobarArchivoVacio(archivo)) { // Comprobamos si el tamaño del archivo es 0
 		cout << "Archivo vacio" << endl;
+		archivo.close();
 		return;
 	}
 	archivo.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
 	if (cabecera.getNRegistros() == 0) {
 		cout << "No hay ningun registro en el archivo" << endl;
+		archivo.close();
 		return;
 	}
 
 	if (nRegistro >= cabecera.getNRegistros()) {	// Comprobamos que el registro indicado esta en el archivo
 		cout << "El registro indicado no esta en el archivo" << endl;
+		archivo.close();
 		return;
 	}
 
@@ -139,6 +142,7 @@ void EntradaSalida::leerRegistro(int nRegistro) {
 	} else {
 		cout << "El registro que se intenta leer no es valido" << endl;
 	}
+	archivo.close();
 }
 
 /**
@@ -176,6 +180,57 @@ void EntradaSalida::mostrar() {
 	for(it=animals.begin(); it!=animals.end(); it++, i++)
 		cout <<i<<"-"<< **it << endl;
 	cout << endl;
+}
+/**
+ * Inserta un animal en el primer hueco del archivo.
+ */
+void EntradaSalida::insertar(Animal* animal){
+	fstream archivoEntrada("zoo-data.dat", fstream::in | fstream::binary);
+	fstream archivoSalida("zoo-data.dat", fstream::out | fstream::binary | fstream::app);
+	Cabecera cabecera;
+	Registro registro;
+	Registro aux;
+	streampos posicion;
+
+	if (!archivoEntrada.is_open()) {
+		cout << "No existe el archivo" << endl;
+		return;
+	}
+
+	registro.setAnimal(animal);
+
+	if (comprobarArchivoVacio(archivoEntrada)) { // Comprobamos si el tamaño del archivo es 0
+		archivoEntrada.close();
+		generarCabecera(archivoSalida);
+		archivoSalida.write((char*)(&registro), sizeof(Registro));
+		archivoSalida.close();
+		return;
+	}
+	archivoEntrada.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
+	if (cabecera.getNRegistros() == 0) {
+		archivoEntrada.close();
+		archivoSalida.write((char*)(&registro), sizeof(Registro));
+		archivoSalida.close();
+		return;
+	}
+
+	if (cabecera.getPrimerHueco() == -1) {
+		archivoEntrada.close();
+		archivoSalida.seekp(0, ios::end);
+		archivoSalida.write((char*)(&registro), sizeof(Registro));
+		archivoSalida.close();
+		return;
+	}
+
+	posicion = sizeof(Cabecera)+(cabecera.getPrimerHueco()*sizeof(Registro));	//Calculamos la posicion de insercion
+	archivoEntrada.seekg(posicion);
+	archivoEntrada.read((char*)(&aux), sizeof(Registro));
+	cabecera.setPrimerHueco(aux.getDireccion());
+	archivoEntrada.close();
+	archivoSalida.seekp(posicion);
+	archivoSalida.write((char*)(&registro), sizeof(Registro));
+
+	archivoSalida.close();
 }
 bool EntradaSalida::eliminar(long  pos)
 {

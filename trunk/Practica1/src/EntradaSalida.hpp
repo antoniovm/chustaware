@@ -32,6 +32,7 @@ public:
 	void leerRegistro(int);
 	void escribir();
 	void mostrar();
+	void insertar(Animal*);
 	bool eliminar(long);
 	void vaciar();
 };
