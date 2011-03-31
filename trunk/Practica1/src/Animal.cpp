@@ -238,6 +238,27 @@ void Animal::setVenomous(bool venomous)
 {
     this->venomous = venomous;
 }
+bool Animal::operator ==(Animal & a)
+{
+	return (strcmp(this->name,a.name)&&
+	   (this->airborne==a.airborne)&&
+	   (this->aquatic==a.aquatic)&&
+	   (this->backbone==a.backbone)&&
+	   (this->breathes==a.breathes)&&
+	   (this->catsize==a.catsize)&&
+	   (this->domestic==a.domestic)&&
+	   (this->eggs==a.eggs)&&
+	   (this->feathers==a.feathers)&&
+	   (this->fins==a.fins)&&
+	   (this->hair==a.hair)&&
+	   (this->legs==a.legs)&&
+	   (this->milk==a.milk)&&
+	   (this->predator==a.predator)&&
+	   (this->tail==a.tail)&&
+	   (this->toothed==a.toothed)&&
+	   (this->type==a.type));
+}
+
 //sobrecarga operator<<
 ostream& operator <<(ostream & os, Animal animal) {
 	os << animal.name << "|";

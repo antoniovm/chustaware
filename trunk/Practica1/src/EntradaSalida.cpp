@@ -12,7 +12,7 @@ EntradaSalida::EntradaSalida() {
 }
 
 EntradaSalida::~EntradaSalida() {
-
+	vaciar();
 }
 /**
  * Inicializa la cabecera del archivo
@@ -138,7 +138,8 @@ void EntradaSalida::leerRegistro(int nRegistro) {
 
 	//Comprobamos si el registro es valido
 	if (registro.getValido()) {
-		animals.push_back(registro.getAnimal(true));
+		cout<<*registro.getAnimal(false)<<endl;
+		//animals.push_back(registro.getAnimal(true));
 	} else {
 		cout << "El registro que se intenta leer no es valido" << endl;
 	}
@@ -186,10 +187,9 @@ void EntradaSalida::mostrar() {
  */
 void EntradaSalida::insertar(Animal* animal){
 	fstream archivoEntrada("zoo-data.dat", fstream::in | fstream::binary);
-	fstream archivoSalida("zoo-data.dat", fstream::out | fstream::binary | fstream::app);
+	fstream archivoSalida("zoo-data.dat", fstream::out|fstream::in | fstream::binary);
 	Cabecera cabecera;
 	Registro registro;
-	Registro aux;
 	streampos posicion;
 
 	if (!archivoEntrada.is_open()) {
@@ -197,7 +197,6 @@ void EntradaSalida::insertar(Animal* animal){
 		return;
 	}
 
-	registro.setAnimal(animal);
 
 	if (comprobarArchivoVacio(archivoEntrada)) { // Comprobamos si el tamaño del archivo es 0
 		archivoEntrada.close();
@@ -207,35 +206,47 @@ void EntradaSalida::insertar(Animal* animal){
 		return;
 	}
 	archivoEntrada.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
-	if (cabecera.getNRegistros() == 0) {
-		archivoEntrada.close();
-		archivoSalida.write((char*)(&registro), sizeof(Registro));
-		archivoSalida.close();
-		return;
-	}
 
-	if (cabecera.getPrimerHueco() == -1) {
-		archivoEntrada.close();
+
+	if (cabecera.getPrimerHueco() == -1) {	//No hay huecos, insercion al final
+		registro.setAnimal(animal);
 		archivoSalida.seekp(0, ios::end);
 		archivoSalida.write((char*)(&registro), sizeof(Registro));
+		cabecera.setNRegistros(cabecera.getNRegistros()+1);
+		archivoSalida.seekp(0,ios::beg);
+		archivoSalida.write((char*)&cabecera,sizeof(Cabecera));	//Actualizacion de la cabecera
 		archivoSalida.close();
 		return;
 	}
 
-	posicion = sizeof(Cabecera)+(cabecera.getPrimerHueco()*sizeof(Registro));	//Calculamos la posicion de insercion
+	posicion = cabecera.getPrimerHueco();	//Posicion de insercion
+
 	archivoEntrada.seekg(posicion);
-	archivoEntrada.read((char*)(&aux), sizeof(Registro));
-	cabecera.setPrimerHueco(aux.getDireccion());
+	archivoEntrada.read((char*)&registro,sizeof(Registro));
 	archivoEntrada.close();
+
+	registro.setAnimal(animal);
+	registro.setValido(true);
+	delete animal; //Liberar memoria dinamica
+
+
+
 	archivoSalida.seekp(posicion);
-	archivoSalida.write((char*)(&registro), sizeof(Registro));
+	archivoSalida.write((char*)(&registro), sizeof(Registro));	//Insercion del nuevo registro
+
+
+	cabecera.setNEliminados(cabecera.getNEliminados()-1);	//Modificar cabecera
+	cabecera.setNRegistros(cabecera.getNRegistros()+1);
+	cabecera.setPrimerHueco(registro.getDireccion());
+	archivoSalida.seekp(0,ios::beg);
+	archivoSalida.write((char*)&cabecera,sizeof(Cabecera));	//Actualizacion de la cabecera
 
 	archivoSalida.close();
 }
 bool EntradaSalida::eliminar(long  pos)
 {
 	fstream entrada("zoo-data.dat",ios::in|ios::binary);
-	ofstream salida("zoo-data.dat",ios::in|ios::binary);	//miguel , no te asustes, es la unica manera que hemos encontrado ^^
+	fstream salida("zoo-data.dat",ios::in|ios::out|ios::binary);	//miguel , no te asustes, es la unica manera que hemos encontrado ^^
 
 	Registro registro;
 	Cabecera cabecera;
@@ -262,11 +273,12 @@ bool EntradaSalida::eliminar(long  pos)
 
 		salida.seekp(posicionReg);
 		salida.write((char*)&registro,sizeof(Registro));
-		cout << salida.tellp() << endl;
+
 
 		salida.seekp(0,ios::beg);
 		salida.write((char*)&cabecera,sizeof(Cabecera));
-		cout << salida.tellp() << endl;
+
+
 	}
 	entrada.close();
 	salida.close();
@@ -286,8 +298,8 @@ long EntradaSalida::buscar(string  s)
 		if(entrada.eof())
 			return -1;
 		if(registro.getValido())
-			if(strcmp(s.data(),registro.getAnimal(false)->getName()))
-				return (entrada.tellg()-sizeof(Registro));
+			if(strcmp(s.data(),registro.getAnimal(false)->getName())==0)
+				return (entrada.tellg()-sizeof(Registro)-sizeof(Cabecera))/sizeof(Registro);
 	}
 
 }

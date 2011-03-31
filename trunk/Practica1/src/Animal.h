@@ -81,6 +81,7 @@ public:
     void setType(int type);
     void setVenomous(bool venomous);
 
+    bool operator==(Animal&);
     friend ostream& operator<<(ostream&, Animal);
 };
 
