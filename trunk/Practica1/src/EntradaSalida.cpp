@@ -193,7 +193,7 @@ bool EntradaSalida::eliminar(long  pos)
 	posicionReg=pos*sizeof(Registro)+sizeof(Cabecera);
 	//Posicionamos tras de la cabecera, con offset nRegistros acceder al registro
 	entrada.seekg(0,(std::_Ios_Seekdir)posicionReg);
-	cout<<entrada.tellg();
+
 	entrada.read((char*)&registro,sizeof(Registro));
 	entrada.close();
 
@@ -201,10 +201,10 @@ bool EntradaSalida::eliminar(long  pos)
 	registro.setDireccion(cabecera.getPrimerHueco());	//Stack linked list
 	cabecera.setPrimerHueco(posicionReg);	//Actualizacion de la cabecera
 
-	salida.seekp(0,(std::_Ios_Seekdir)posicionReg);
+	salida.seekg(0,(std::_Ios_Seekdir)posicionReg);
 	salida.write((char*)&registro,sizeof(Registro));
 
-	salida.seekp(0,ios::beg);
+	salida.seekg(0,ios::beg);
 	salida.write((char*)&cabecera,sizeof(Cabecera));
 
 	salida.close();
