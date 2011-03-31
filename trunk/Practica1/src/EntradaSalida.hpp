@@ -35,6 +35,7 @@ public:
 	void insertar(Animal*);
 	bool eliminar(long);
 	void vaciar();
+	long buscar(string);
 };
 
 #endif /* ENTRADASALIDA_HPP_ */

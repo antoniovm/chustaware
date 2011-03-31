@@ -96,7 +96,7 @@ void EntradaSalida::leerBinario() {
 		if(archivo.eof())
 			break;
 		if(registro.getValido())		//Validar registro
-			animals.push_back(registro.getAnimal());	//Añadimos animal
+			animals.push_back(registro.getAnimal(true));	//Añadimos animal
 	}
 	archivo.close();
 }
@@ -126,7 +126,7 @@ void EntradaSalida::leerRegistro(int nRegistro) {
 		return;
 	}
 
-	if (nRegistro >= cabecera.getNRegistros()) {	// Comprobamos que el registro indicado esta en el archivo
+	if ((nRegistro<0)||(nRegistro >= (cabecera.getNRegistros()+cabecera.getNEliminados()))) {	// Comprobamos que el registro indicado esta en el archivo
 		cout << "El registro indicado no esta en el archivo" << endl;
 		archivo.close();
 		return;
@@ -138,7 +138,7 @@ void EntradaSalida::leerRegistro(int nRegistro) {
 
 	//Comprobamos si el registro es valido
 	if (registro.getValido()) {
-		animals.push_back(registro.getAnimal());
+		animals.push_back(registro.getAnimal(true));
 	} else {
 		cout << "El registro que se intenta leer no es valido" << endl;
 	}
@@ -235,7 +235,8 @@ void EntradaSalida::insertar(Animal* animal){
 bool EntradaSalida::eliminar(long  pos)
 {
 	fstream entrada("zoo-data.dat",ios::in|ios::binary);
-	fstream salida("zoo-data.dat",ios::out|ios::binary|ios::app);
+	ofstream salida("zoo-data.dat",ios::in|ios::binary);	//miguel , no te asustes, es la unica manera que hemos encontrado ^^
+
 	Registro registro;
 	Cabecera cabecera;
 	long posicionReg;
@@ -247,26 +248,50 @@ bool EntradaSalida::eliminar(long  pos)
 	}
 	posicionReg=pos*sizeof(Registro)+sizeof(Cabecera);
 	//Posicionamos tras de la cabecera, con offset nRegistros acceder al registro
-	entrada.seekg(0,(std::_Ios_Seekdir)posicionReg);
+	entrada.seekg(posicionReg);
 
 	entrada.read((char*)&registro,sizeof(Registro));
+
+
+	if(registro.getValido()){	//Si no esta elimindo
+		registro.setValido(false);	//Invalidamos el registro
+		registro.setDireccion(cabecera.getPrimerHueco());	//Stack linked list
+		cabecera.setPrimerHueco(posicionReg);	//Actualizacion de la cabecera
+		cabecera.setNEliminados(cabecera.getNEliminados()+1);
+		cabecera.setNRegistros(cabecera.getNRegistros()-1);
+
+		salida.seekp(posicionReg);
+		salida.write((char*)&registro,sizeof(Registro));
+		cout << salida.tellp() << endl;
+
+		salida.seekp(0,ios::beg);
+		salida.write((char*)&cabecera,sizeof(Cabecera));
+		cout << salida.tellp() << endl;
+	}
 	entrada.close();
-
-	registro.setValido(false);	//Invalidamos el registro
-	registro.setDireccion(cabecera.getPrimerHueco());	//Stack linked list
-	cabecera.setPrimerHueco(posicionReg);	//Actualizacion de la cabecera
-
-	salida.seekg(0,(std::_Ios_Seekdir)posicionReg);
-	salida.write((char*)&registro,sizeof(Registro));
-
-	salida.seekg(0,ios::beg);
-	salida.write((char*)&cabecera,sizeof(Cabecera));
-
 	salida.close();
 
 	return true;
 
 
 }
+
+long EntradaSalida::buscar(string  s)
+{
+	fstream entrada("zoo-data.dat",ios::in|ios::binary);
+	Registro registro;
+	entrada.seekg(sizeof(Cabecera));
+	while(true){
+		entrada.read((char*)&registro,sizeof(Registro));
+		if(entrada.eof())
+			return -1;
+		if(registro.getValido())
+			if(strcmp(s.data(),registro.getAnimal(false)->getName()))
+				return (entrada.tellg()-sizeof(Registro));
+	}
+
+}
+
+
 
 

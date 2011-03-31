@@ -13,6 +13,7 @@ void menu(EntradaSalida&);
 
 int main() {
 	EntradaSalida es;
+	cout<<es.buscar("antelope")<<endl;
 	menu(es);
 
 	return 0;
@@ -36,9 +37,9 @@ void menu(EntradaSalida &es){
 			case 'm':	es.mostrar();break;
 			case 'v':	es.vaciar();break;
 			case 'l':
-				cout<<"Qué registro desea eliminar?"<<endl;
+				cout<<"Qué registro desea leer?"<<endl;
 				cin>>l;
-				es.leerRegistro(0);break;
+				es.leerRegistro(l);break;
 			default:	break;
 		}
 	}while(c!='s');

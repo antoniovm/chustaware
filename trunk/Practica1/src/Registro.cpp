@@ -26,11 +26,14 @@ Registro::~Registro() {
 /**
  * Devuelve una copia dinamica del Animal
  */
-Animal* Registro::getAnimal() const
+Animal* Registro::getAnimal(bool b)
 {
-	Animal* a = new Animal();
-	memcpy(a, &animal, sizeof(Animal));
-    return a;
+	if(b){
+		Animal* a = new Animal();
+		memcpy(a, &animal, sizeof(Animal));
+		return a;
+	}
+	return &animal;
 }
 
 long Registro::getDireccion() const
