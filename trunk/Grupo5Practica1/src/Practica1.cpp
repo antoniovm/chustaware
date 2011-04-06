@@ -19,7 +19,7 @@ int main() {
 	return 0;
 }
 /**
- * Restaura el fichero
+ * Restaura el fichero binario zoo-data.dat por defecto
  */
 void restaurarArchivo(EntradaSalida &es){
 	es.vaciar();
