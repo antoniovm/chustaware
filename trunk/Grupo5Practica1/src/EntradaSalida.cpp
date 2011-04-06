@@ -246,7 +246,7 @@ void EntradaSalida::insertar(Animal* animal){
 bool EntradaSalida::eliminar(long  pos)
 {
 	fstream entrada("zoo-data.dat",ios::in|ios::binary);
-	fstream salida("zoo-data.dat",ios::in|ios::out|ios::binary);	//miguel , no te asustes, es la unica manera que hemos encontrado ^^
+	fstream salida("zoo-data.dat",ios::in|ios::out|ios::binary);
 
 	Registro registro;
 	Cabecera cabecera;
