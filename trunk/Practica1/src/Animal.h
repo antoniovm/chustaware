@@ -38,7 +38,7 @@ private:
 	bool isTrue(char);
 public:
 	Animal();
-	Animal(char* name, char hair, char feathers, char eggs, char milk,
+	Animal(string name, char hair, char feathers, char eggs, char milk,
 			char airborne, char aquatic, char predator, char toothed,
 			char backbone, char breathes, char venomous, char fins, int legs,
 			char tail, char domestic, char catsize, int type);

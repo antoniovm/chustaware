@@ -16,12 +16,12 @@ Animal::Animal() {
 /**
  * Constructor de Animal
  */
-Animal::Animal(char *name, char hair, char feathers, char eggs, char milk,
+Animal::Animal(string name, char hair, char feathers, char eggs, char milk,
 		char airborne, char aquatic, char predator, char toothed,
 		char backbone, char breathes, char venomous, char fins, int legs,
 		char tail, char domestic, char catsize, int type) {
 
-	strcpy(this->name, name);
+	strcpy(this->name, name.data());
 	this->hair = isTrue(hair);
 	this->feathers = isTrue(feathers);
 	this->eggs = isTrue(eggs);
