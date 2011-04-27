@@ -15,3 +15,60 @@ IndicesPS::IndicesPS() {
 IndicesPS::~IndicesPS() {
 	// TODO Auto-generated destructor stub
 }
+
+void IndicesPS::borrarIP(string allocator)
+{
+}
+
+
+
+void IndicesPS::buscarClaveS(int int1)
+{
+}
+
+
+
+void IndicesPS::crearIS()
+{
+}
+
+
+
+void IndicesPS::borrarIS(int int1)
+{
+}
+
+
+
+void IndicesPS::insertarIS(int int1)
+{
+}
+
+
+
+void IndicesPS::crearIP()
+{
+	ofstream salida;
+	salida.open("IP.dat",ios::binary);
+	salida.close();
+}
+
+
+
+void IndicesPS::insertarIP(string allocator)
+{
+}
+
+
+
+long IndicesPS::buscarClaveP(string allocator)
+{
+}
+
+
+
+RegistroIP IndicesPS::leerIP()
+{
+}
+
+
