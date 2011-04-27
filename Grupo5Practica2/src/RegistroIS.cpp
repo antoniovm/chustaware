@@ -8,8 +8,33 @@
 #include "RegistroIS.h"
 
 RegistroIS::RegistroIS() {
-	// TODO Auto-generated constructor stub
+	this->claveSecundaria = -1;
+	this->posPrimero = -1;
+}
 
+RegistroIS::RegistroIS(int claveSec, int pos) {
+	this->claveSecundaria = claveSec;
+	this->posPrimero = pos;
+}
+
+int RegistroIS::getClaveSecundaria() const
+{
+    return claveSecundaria;
+}
+
+int RegistroIS::getPosPrimero() const
+{
+    return posPrimero;
+}
+
+void RegistroIS::setClaveSecundaria(int claveSecundaria)
+{
+    this->claveSecundaria = claveSecundaria;
+}
+
+void RegistroIS::setPosPrimero(int posPrimero)
+{
+    this->posPrimero = posPrimero;
 }
 
 RegistroIS::~RegistroIS() {
