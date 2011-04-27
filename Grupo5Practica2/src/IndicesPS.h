@@ -7,8 +7,11 @@
 
 #ifndef INDICESPS_H_
 #define INDICESPS_H_
+#include "EntradaSalida.hpp"
 
 class IndicesPS {
+private:
+
 public:
 	IndicesPS();
 	virtual ~IndicesPS();
