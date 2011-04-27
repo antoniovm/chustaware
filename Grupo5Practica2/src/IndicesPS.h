@@ -8,13 +8,27 @@
 #ifndef INDICESPS_H_
 #define INDICESPS_H_
 #include "EntradaSalida.hpp"
+#include "RegistroIP.h"
+#include "RegistroIS.h"
+#include <fstream>
 
 class IndicesPS {
 private:
-
+	EntradaSalida es;
 public:
 	IndicesPS();
 	virtual ~IndicesPS();
+	void crearIP();
+	void crearIS();
+	RegistroIP leerIP();
+	//escribir();
+	void insertarIP(string);
+	void borrarIP(string);
+	void insertarIS(int);
+	void borrarIS(int);
+	long buscarClaveP(string);
+	void buscarClaveS(int);
+
 };
 
 #endif /* INDICESPS_H_ */
