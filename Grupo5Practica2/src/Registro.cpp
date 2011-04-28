@@ -60,5 +60,12 @@ void Registro::setValido(bool valido)
 {
     this->valido = valido;
 }
-
+friend ofstream & Registro::operator <<(ofstream & of, Registro registro)
+{
+	of.write(&registro,sizeof(Registro));
+}
+friend ifstream & Registro::operator >>(ifstream & ifs, Registro registro)
+{
+	ifs.read(&registro,sizeof(Registro));
+}
 

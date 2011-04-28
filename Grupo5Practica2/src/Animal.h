@@ -9,6 +9,7 @@
 #define ANIMAL_H_
 
 #include <iostream>
+#include <fstream>
 #include <cstring>
 #include <cstdlib>
 
@@ -83,6 +84,8 @@ public:
 
     bool operator==(Animal&);
     friend ostream& operator<<(ostream&, Animal);
+
 };
 
 #endif /* ANIMAL_H_ */
+

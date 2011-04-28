@@ -27,6 +27,8 @@ public:
     void setAnimal(Animal *animal);
     void setDireccion(long  direccion);
     void setValido(bool valido);
+    friend ofstream& operator<<(ofstream&, Registro);
+    friend ifstream& operator>>(ifstream&, Registro);
 
 };
 
