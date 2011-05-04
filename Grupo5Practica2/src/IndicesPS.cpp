@@ -57,36 +57,41 @@ void IndicesPS::crearIP()
 }
 
 
-
+/**
+ * Inserta un registro en el indice primario.
+ */
 void IndicesPS::insertarIP(string clave)
 {
 	fstream archivo("IP.dat", ios::in | ios::out | ios::binary | ios::ate);
 	int posicion;
 	RegistroIP* rIP = NULL;
 
+	// Si el registro no esta en el archivo de datos, no insertamos en el indice primario.
 	posicion = es.buscar(clave);
 	if (posicion == -1) {
 		return;
 	}
 
-	rIP = new RegistroIP(clave, posicion);
-
+	rIP = new RegistroIP(clave, posicion);	// Creamos el registro.
+	// Si el archivo esta vacio insertamos directamente.
 	if (archivo.tellg() == ios::beg) {
 		archivo.write((char*)(rIP), sizeof(RegistroIP));
 		delete rIP;
 		archivo.close();
 		return;
 	}
-	while(archivo.tellg() > ios::beg) {
-		archivo.seekg(archivo.tellg()-(streampos)sizeof(RegistroIP));
-		archivo.read((char*)(rIP), sizeof(RegistroIP));
 
-		if (rIP->getClavePrimaria() < clave) {
+	while(archivo.tellg() > ios::beg) {
+		archivo.seekg(archivo.tellg()-(streampos)sizeof(RegistroIP));	// Posicionamos el puntero en la posicion del registro anterior.
+		archivo.read((char*)(rIP), sizeof(RegistroIP));	// Leemos el registro.
+		// Si la clave del registro que vamos a insertar es mayor que la clave del registro que acabamos de leer, insertamos el registro.
+		if (clave > rIP->getClavePrimaria()) {
 			archivo.write((char*) (rIP), sizeof(RegistroIP));
 			delete rIP;
 			archivo.close();
 			return;
 		}
+		// Si no, copiamos el registro en la siguiente posicion y posicionamos el puntero en la posicion anterior.
 		archivo.write((char*) (rIP), sizeof(RegistroIP));
 		archivo.seekg(archivo.tellg() - (streampos) sizeof(RegistroIP));
 	}
