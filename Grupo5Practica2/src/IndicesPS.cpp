@@ -102,6 +102,29 @@ void IndicesPS::insertarIP(string clave)
 
 long IndicesPS::buscarClaveP(string clave)
 {
+	fstream archivo("IP.dat", ios::in | ios::out | ios::binary | ios::ate);
+	int inferior=0;
+	int superior=(archivo.tellg()/(streampos)sizeof(RegistroIP))-1;
+	int centro=0;
+	long posicionReg;
+	RegistroIP* rIP = NULL;
+
+	while(inferior <= superior){
+		centro=((superior-inferior)/2)+inferior;
+		archivo.seekg(ios::beg, centro*sizeof(RegistroIP));
+		archivo.read((char*)(rIP), sizeof(RegistroIP));
+		if(rIP->getClavePrimaria()==clave){
+			posicionReg=rIP->posRegistro();
+			delete rIP;
+			return posicionReg;
+		}
+		if(rIP->getClavePrimaria() > clave)
+			superior = centro - 1;
+		else
+			inferior = centro + 1;
+
+	}
+	return -1;
 }
 
 
