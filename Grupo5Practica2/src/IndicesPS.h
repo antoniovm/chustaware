@@ -7,10 +7,12 @@
 
 #ifndef INDICESPS_H_
 #define INDICESPS_H_
+
 #include "EntradaSalida.hpp"
 #include "RegistroIP.h"
 #include "RegistroIS.h"
 #include <fstream>
+#include<vector>
 
 class IndicesPS {
 private:

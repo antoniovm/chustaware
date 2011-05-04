@@ -16,17 +16,9 @@ IndicesPS::~IndicesPS() {
 	// TODO Auto-generated destructor stub
 }
 
-void IndicesPS::borrarIP(string clave)
-{
-}
-
-
-
 void IndicesPS::buscarClaveS(int int1)
 {
 }
-
-
 
 void IndicesPS::crearIS()
 {
@@ -35,19 +27,13 @@ void IndicesPS::crearIS()
 	salida.close();
 }
 
-
-
 void IndicesPS::borrarIS(int int1)
 {
 }
 
-
-
 void IndicesPS::insertarIS(int int1)
 {
 }
-
-
 
 void IndicesPS::crearIP()
 {
@@ -55,8 +41,6 @@ void IndicesPS::crearIP()
 	salida.open("IP.dat",ios::binary);
 	salida.close();
 }
-
-
 /**
  * Inserta un registro en el indice primario.
  */
@@ -98,7 +82,42 @@ void IndicesPS::insertarIP(string clave)
 	archivo.close();
 }
 
+void IndicesPS::borrarIP(string clave) {
+	fstream archivo("IP.dat", ios::in | ios::out | ios::binary);
+	RegistroIP* rIP = NULL;
+	vector<RegistroIP*> registros;
+	vector<RegistroIP*>::iterator it;
+	int posicion = buscarClaveP(clave);
 
+	if (posicion == -1) {
+		archivo.close();
+		return;
+	}
+
+	// Cargamos en memoria todos los registros excepto el registro que queremos eliminar.
+	while (!archivo.eof()) {
+		if (archivo.tellg() == posicion) {
+			archivo.seekg(posicion + (streampos)sizeof(RegistroIP));
+		}
+		archivo.read((char*) (rIP), sizeof(RegistroIP));
+		registros.push_back(rIP);
+	}
+	archivo.close();
+
+	// Sobreescribimos el archivo con los datos que tenemos en memoria.
+	archivo.open("IP.dat", ios::out | ios::binary);
+	for (it = registros.begin(); it != registros.end(); it++) {
+		archivo.write((char*)(rIP), sizeof(RegistroIP));
+	}
+	archivo.close();
+
+	// Liberamos memoria.
+	delete rIP;
+	for (it = registros.begin(); it != registros.end(); it++) {
+		delete (*it);
+	}
+	registros.clear();
+}
 
 long IndicesPS::buscarClaveP(string clave)
 {
@@ -126,8 +145,6 @@ long IndicesPS::buscarClaveP(string clave)
 	}
 	return -1;
 }
-
-
 
 RegistroIP IndicesPS::leerIP()
 {
