@@ -18,17 +18,15 @@ class RegistroIP {
 private:
 	char clavePrimaria[50];
 	int posRegistro;
-	int siguiente;
 public:
 	RegistroIP();
-	RegistroIP(string, int, int);
+	RegistroIP(string, int);
     virtual ~RegistroIP();
-    char* getClavePrimaria() const;
+    string getClavePrimaria() const;
     int getPosRegistro() const;
-    int getSiguiente() const;
     void setClavePrimaria(char*);
-    void setPosRegistro(int posRegistro);
-    void setSiguiente(int siguiente);
+    void setPosRegistro(int);
+
 };
 
 #endif /* REGISTROIP_H_ */

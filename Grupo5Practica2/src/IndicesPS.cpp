@@ -16,7 +16,7 @@ IndicesPS::~IndicesPS() {
 	// TODO Auto-generated destructor stub
 }
 
-void IndicesPS::borrarIP(string allocator)
+void IndicesPS::borrarIP(string clave)
 {
 }
 
@@ -30,6 +30,9 @@ void IndicesPS::buscarClaveS(int int1)
 
 void IndicesPS::crearIS()
 {
+	ofstream salida;
+	salida.open("IS.dat", ios::binary);
+	salida.close();
 }
 
 
@@ -55,13 +58,44 @@ void IndicesPS::crearIP()
 
 
 
-void IndicesPS::insertarIP(string allocator)
+void IndicesPS::insertarIP(string clave)
 {
+	fstream archivo("IP.dat", ios::in | ios::out | ios::binary | ios::ate);
+	int posicion;
+	RegistroIP* rIP = NULL;
+
+	posicion = es.buscar(clave);
+	if (posicion == -1) {
+		return;
+	}
+
+	rIP = new RegistroIP(clave, posicion);
+
+	if (archivo.tellg() == ios::beg) {
+		archivo.write((char*)(rIP), sizeof(RegistroIP));
+		delete rIP;
+		archivo.close();
+		return;
+	}
+	while(archivo.tellg() > ios::beg) {
+		archivo.seekg(archivo.tellg()-(streampos)sizeof(RegistroIP));
+		archivo.read((char*)(rIP), sizeof(RegistroIP));
+
+		if (rIP->getClavePrimaria() < clave) {
+			archivo.write((char*) (rIP), sizeof(RegistroIP));
+			delete rIP;
+			archivo.close();
+			return;
+		}
+		archivo.write((char*) (rIP), sizeof(RegistroIP));
+		archivo.seekg(archivo.tellg() - (streampos) sizeof(RegistroIP));
+	}
+	archivo.close();
 }
 
 
 
-long IndicesPS::buscarClaveP(string allocator)
+long IndicesPS::buscarClaveP(string clave)
 {
 }
 

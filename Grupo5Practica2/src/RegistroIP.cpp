@@ -9,34 +9,25 @@
 RegistroIP::RegistroIP() {
 	strcpy(this->clavePrimaria, "");
 	this->posRegistro = -1;
-	this->siguiente = -1;
 }
 
-RegistroIP::RegistroIP(string clavePri, int posicion, int siguiente) {
+RegistroIP::RegistroIP(string clavePri, int posicion) {
 	strcpy(this->clavePrimaria, clavePri.data());
 	this->posRegistro = posicion;
-	this->siguiente = siguiente;
 }
 
 RegistroIP::~RegistroIP() {
 }
 
-char* RegistroIP::getClavePrimaria() const
+string RegistroIP::getClavePrimaria() const
 {
-	char* cadena;
-	cadena = new char[50];
-	strcpy(cadena, clavePrimaria);
+	string cadena(clavePrimaria);
 	return cadena;
 }
 
 int RegistroIP::getPosRegistro() const
 {
     return posRegistro;
-}
-
-int RegistroIP::getSiguiente() const
-{
-    return siguiente;
 }
 
 void RegistroIP::setClavePrimaria(char* clave)
@@ -47,9 +38,4 @@ void RegistroIP::setClavePrimaria(char* clave)
 void RegistroIP::setPosRegistro(int posRegistro)
 {
     this->posRegistro = posRegistro;
-}
-
-void RegistroIP::setSiguiente(int siguiente)
-{
-    this->siguiente = siguiente;
 }
