@@ -11,8 +11,10 @@
 #include "EntradaSalida.hpp"
 #include "RegistroIP.h"
 #include "RegistroIS.h"
+#include "Animal.h"
 #include <fstream>
 #include<vector>
+#include<list>
 
 class IndicesPS {
 private:

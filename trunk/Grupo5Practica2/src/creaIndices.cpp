@@ -12,6 +12,7 @@
 using namespace std;
 
 void menu(EntradaSalida&);
+void restaurarArchivo(EntradaSalida&);
 
 int main() {
 	IndicesPS indices;
@@ -82,4 +83,14 @@ void menu(EntradaSalida &es){
 		}
 	}while(c!='s');
 	cout<<"Saliendo..."<<endl;
+}
+/**
+ * Restaura el fichero
+ */
+void restaurarArchivo(EntradaSalida &es){	//Restaura el fichero en caso de error
+	es.vaciar();
+	es.leerTexto();
+	es.escribir();
+	es.vaciar();
+
 }
