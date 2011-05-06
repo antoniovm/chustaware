@@ -37,15 +37,15 @@ void IndicesPS::crearIP()
 	fstream salida("IP.dat",ios::binary|ios::out);
 	es.leerBinario();
 	animales=es.getAnimals();
-	int posicion=0;
+	int nReg=0;
 
 	while(!animales.empty()){
 		regIP->setClavePrimaria((animales.front())->getName());
-		regIP->setPosRegistro(posicion*sizeof(RegistroIP));
+		regIP->setPosRegistro(nReg*sizeof(RegistroIP));
 		salida.write((char*)(&regIP), sizeof(RegistroIP));
 		delete *animales.begin();
 		animales.pop_front();
-		posicion++;
+		nReg++;
 	}
 	salida.close();
 }
