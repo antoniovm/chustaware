@@ -36,6 +36,7 @@ public:
 	bool eliminar(long);
 	void vaciar();
 	long buscar(string);
+	list<Animal*>& getAnimals(){return animals;};
 };
 
 #endif /* ENTRADASALIDA_HPP_ */
