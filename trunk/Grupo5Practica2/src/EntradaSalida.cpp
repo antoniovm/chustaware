@@ -307,3 +307,5 @@ long EntradaSalida::buscar(string  s)
 
 
 
+
+

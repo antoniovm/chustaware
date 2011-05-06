@@ -16,10 +16,6 @@ IndicesPS::~IndicesPS() {
 	// TODO Auto-generated destructor stub
 }
 
-void IndicesPS::buscarClaveS(int int1)
-{
-}
-
 void IndicesPS::crearIS()
 {
 	ofstream salida;
@@ -37,8 +33,18 @@ void IndicesPS::insertarIS(int int1)
 
 void IndicesPS::crearIP()
 {
-	ofstream salida;
-	salida.open("IP.dat",ios::binary);
+	list<Animals*> animales;
+	RegistroIP* regIP=NULL;
+	fstream salida("IP.dat",ios::binary|ios::out);
+	es.leerBinario();
+	animales=es.getAnimals();
+
+	while(!animales.empty()){
+		regIP->setClavePrimaria((animales.front())->getName());
+		salida.write((char*)(&regIP), sizeof(RegistroIP));
+		delete *animales.begin();
+		animales.pop_front();
+	}
 	salida.close();
 }
 /**
@@ -119,9 +125,17 @@ void IndicesPS::borrarIP(string clave) {
 	registros.clear();
 }
 
+void IndicesPS::buscarClaveS(int patas)
+{
+	fstream archivo("IS.dat",ios::binary|ios::in | ios::out);
+}
+/**
+ * Busqueda Binaria en Indice Primario (IP.dat)
+ * Devuelve la posicion del Registro en el fichero de datos o -1 sino esta.
+ */
 long IndicesPS::buscarClaveP(string clave)
 {
-	fstream archivo("IP.dat", ios::in | ios::out | ios::binary | ios::ate);
+	fstream archivo("IP.dat", ios::in | ios::out | ios::binary | ios::ate);//ojo con el ios::ate
 	int inferior=0;
 	int superior=(archivo.tellg()/(streampos)sizeof(RegistroIP))-1;
 	int centro=0;
@@ -130,7 +144,7 @@ long IndicesPS::buscarClaveP(string clave)
 
 	while(inferior <= superior){
 		centro=((superior-inferior)/2)+inferior;
-		archivo.seekg(ios::beg, centro*sizeof(RegistroIP));
+		archivo.seekg(ios::beg, centro*sizeof(RegistroIP));//ios::beg o cero??
 		archivo.read((char*)(rIP), sizeof(RegistroIP));
 		if(rIP->getClavePrimaria()==clave){
 			posicionReg=rIP->posRegistro();
@@ -143,6 +157,7 @@ long IndicesPS::buscarClaveP(string clave)
 			inferior = centro + 1;
 
 	}
+	delete rIP;
 	return -1;
 }
 
