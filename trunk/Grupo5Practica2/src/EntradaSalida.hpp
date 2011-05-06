@@ -29,7 +29,7 @@ public:
 	virtual ~EntradaSalida();
 	void leerTexto();
 	void leerBinario();
-	void leerRegistro(int);
+	streampos leerRegistro(int);
 	void escribir();
 	void mostrar();
 	void insertar(Animal*);
