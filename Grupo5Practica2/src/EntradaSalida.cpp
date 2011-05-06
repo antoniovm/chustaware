@@ -103,7 +103,7 @@ void EntradaSalida::leerBinario() {
 /**
  * Lee un unico registro del archivo. El primer registro es el 0.
  */
-void EntradaSalida::leerRegistro(int nRegistro) {
+streampos EntradaSalida::leerRegistro(int nRegistro) {
 	fstream archivo("zoo-data.dat", fstream::in | fstream::binary);
 	Cabecera cabecera;
 	Registro registro;
@@ -112,24 +112,24 @@ void EntradaSalida::leerRegistro(int nRegistro) {
 
 	if (!archivo.is_open()) {
 		cout << "No existe el archivo" << endl;
-		return;
+		return -1;
 	}
 	if (comprobarArchivoVacio(archivo)) { // Comprobamos si el tamaño del archivo es 0
 		cout << "Archivo vacio" << endl;
 		archivo.close();
-		return;
+		return -1;
 	}
 	archivo.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
 	if (cabecera.getNRegistros() == 0) {
 		cout << "No hay ningun registro en el archivo" << endl;
 		archivo.close();
-		return;
+		return -1;
 	}
-
-	if ((nRegistro<0)||(nRegistro >= (cabecera.getNRegistros()+cabecera.getNEliminados()))) {	// Comprobamos que el registro indicado esta en el archivo
+	// Comprobamos que el registro indicado esta en el archivo
+	if ((nRegistro<0)||(nRegistro >= (cabecera.getNRegistros()+cabecera.getNEliminados()))) {
 		cout << "El registro indicado no esta en el archivo" << endl;
 		archivo.close();
-		return;
+		return -1;
 	}
 
 	posicion = sizeof(Cabecera)+(nRegistro*sizeof(Registro));	//Calculamos la posicion de lectura
@@ -142,8 +142,10 @@ void EntradaSalida::leerRegistro(int nRegistro) {
 		//animals.push_back(registro.getAnimal(true));
 	} else {
 		cout << "El registro que se intenta leer no es valido" << endl;
+		return -1;
 	}
 	archivo.close();
+	return posicion;
 }
 
 /**

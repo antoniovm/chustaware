@@ -22,7 +22,7 @@ int main() {
 /*
  * TAREAS A REALIZAR:
  *crear fichero con indiceP
- CREAR con indiceS
+ CREAR fichero con indiceS
  Visualizacion de archivos de indices
  Listado ordenado por claveP
  Busqueda por claveP

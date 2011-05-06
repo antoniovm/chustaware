@@ -16,13 +16,6 @@ IndicesPS::~IndicesPS() {
 	// TODO Auto-generated destructor stub
 }
 
-void IndicesPS::crearIS()
-{
-	ofstream salida;
-	salida.open("IS.dat", ios::binary);
-	salida.close();
-}
-
 void IndicesPS::borrarIS(int int1)
 {
 }
@@ -30,7 +23,13 @@ void IndicesPS::borrarIS(int int1)
 void IndicesPS::insertarIS(int int1)
 {
 }
-//esto no vale pa na
+void IndicesPS::crearIS()
+{
+	ofstream salida;
+	salida.open("IS.dat", ios::binary);
+	salida.close();
+}
+//esto no vale pa na....inicializacion cutre
 void IndicesPS::crearIP()
 {
 	list<Animals*> animales;
@@ -38,12 +37,15 @@ void IndicesPS::crearIP()
 	fstream salida("IP.dat",ios::binary|ios::out);
 	es.leerBinario();
 	animales=es.getAnimals();
+	int posicion=0;
 
 	while(!animales.empty()){
 		regIP->setClavePrimaria((animales.front())->getName());
+		regIP->setPosRegistro(posicion*sizeof(RegistroIP));
 		salida.write((char*)(&regIP), sizeof(RegistroIP));
 		delete *animales.begin();
 		animales.pop_front();
+		posicion++;
 	}
 	salida.close();
 }
