@@ -30,7 +30,7 @@ public:
 	void borrarIS(int);
 	long buscarClaveP(string);
 	void buscarClaveS(int);
-	EntradaSalida getES(){return es;}
+	EntradaSalida& getES(){return es;}
 };
 
 #endif /* INDICESPS_H_ */

@@ -19,6 +19,18 @@ int main() {
 
 	return 0;
 }
+/*
+ * TAREAS A REALIZAR:
+ *crear fichero con indiceP
+ CREAR con indiceS
+ Visualizacion de archivos de indices
+ Listado ordenado por claveP
+ Busqueda por claveP
+ Busqueda por claveS
+ Eliminar en datos e indices
+ Insertar en datos e indices
+ Crear archivo de bloques, con registros ordenados
+ */
 
 void menu(EntradaSalida &es){
 	char c;
