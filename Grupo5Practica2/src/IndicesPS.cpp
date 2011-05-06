@@ -32,7 +32,7 @@ void IndicesPS::crearIS()
 //esto no vale pa na....inicializacion cutre
 void IndicesPS::crearIP()
 {
-	list<Animals*> animales;
+	list<Animal*> animales;
 	RegistroIP* regIP=NULL;
 	fstream salida("IP.dat",ios::binary|ios::out);
 	es.leerBinario();
@@ -130,6 +130,7 @@ void IndicesPS::borrarIP(string clave) {
 void IndicesPS::buscarClaveS(int patas)
 {
 	fstream archivo("IS.dat",ios::binary|ios::in | ios::out);
+	archivo.close();
 }
 /**
  * Busqueda Binaria en Indice Primario (IP.dat)
@@ -146,11 +147,12 @@ long IndicesPS::buscarClaveP(string clave)
 
 	while(inferior <= superior){
 		centro=((superior-inferior)/2)+inferior;
-		archivo.seekg(ios::beg, centro*sizeof(RegistroIP));//ios::beg o cero??
+		archivo.seekg(centro*sizeof(RegistroIP),ios::beg);//ios::beg o cero??
 		archivo.read((char*)(rIP), sizeof(RegistroIP));
 		if(rIP->getClavePrimaria()==clave){
-			posicionReg=rIP->posRegistro();
+			posicionReg=rIP->getPosRegistro();
 			delete rIP;
+			archivo.close();
 			return posicionReg;
 		}
 		if(rIP->getClavePrimaria() > clave)
@@ -160,11 +162,24 @@ long IndicesPS::buscarClaveP(string clave)
 
 	}
 	delete rIP;
+	archivo.close();
 	return -1;
 }
-
+/*
+ * muestra el fichero indice primario
+ */
 RegistroIP IndicesPS::leerIP()
 {
+	fstream archivo("IP.dat", ios::in | ios::binary);
+	RegistroIP* rIP;
+	while(1){
+		archivo.read((char*)(&rIP),sizeof(RegistroIP));
+		if(archivo.eof())
+			break;
+		cout << rIP->getClavePrimaria() << " - " << rIP->getPosRegistro() << endl;
+	}
+	delete rIP;
+	archivo.close();
 }
 
 
