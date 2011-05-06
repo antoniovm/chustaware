@@ -30,7 +30,7 @@ void IndicesPS::borrarIS(int int1)
 void IndicesPS::insertarIS(int int1)
 {
 }
-
+//esto no vale pa na
 void IndicesPS::crearIP()
 {
 	list<Animals*> animales;
