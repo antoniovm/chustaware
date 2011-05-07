@@ -16,19 +16,27 @@ IndicesPS::~IndicesPS() {
 	// TODO Auto-generated destructor stub
 }
 
-void IndicesPS::borrarIS(int int1)
-{
-}
-
-void IndicesPS::insertarIS(int int1)
-{
-}
 void IndicesPS::crearIS()
 {
 	ofstream salida;
 	salida.open("IS.dat", ios::binary);
 	salida.close();
 }
+
+void IndicesPS::insertarIS(int int1)
+{
+}
+
+void IndicesPS::borrarIS(int int1)
+{
+}
+
+void IndicesPS::buscarClaveS(int patas)
+{
+	fstream archivo("IS.dat",ios::binary|ios::in | ios::out);
+	archivo.close();
+}
+
 //esto no vale pa na....inicializacion cutre
 void IndicesPS::crearIP()
 {
@@ -64,9 +72,9 @@ void IndicesPS::insertarIP(string clave)
 		return;
 	}
 
-	rIP = new RegistroIP(clave, posicion);	// Creamos el registro.
 	// Si el archivo esta vacio insertamos directamente.
 	if (archivo.tellg() == ios::beg) {
+		rIP = new RegistroIP(clave, posicion);	// Creamos el registro.
 		archivo.write((char*)(rIP), sizeof(RegistroIP));
 		delete rIP;
 		archivo.close();
@@ -78,6 +86,7 @@ void IndicesPS::insertarIP(string clave)
 		archivo.read((char*)(rIP), sizeof(RegistroIP));	// Leemos el registro.
 		// Si la clave del registro que vamos a insertar es mayor que la clave del registro que acabamos de leer, insertamos el registro.
 		if (clave > rIP->getClavePrimaria()) {
+			rIP = new RegistroIP(clave, posicion);	// Creamos el registro.
 			archivo.write((char*) (rIP), sizeof(RegistroIP));
 			delete rIP;
 			archivo.close();
@@ -85,11 +94,13 @@ void IndicesPS::insertarIP(string clave)
 		}
 		// Si no, copiamos el registro en la siguiente posicion y posicionamos el puntero en la posicion anterior.
 		archivo.write((char*) (rIP), sizeof(RegistroIP));
-		archivo.seekg(archivo.tellg() - (streampos) sizeof(RegistroIP));
+		archivo.seekg(archivo.tellg() - (streampos)(sizeof(RegistroIP)*2));
 	}
 	archivo.close();
 }
-
+/**
+ * Elimina un registro en el indice primario.
+ */
 void IndicesPS::borrarIP(string clave) {
 	fstream archivo("IP.dat", ios::in | ios::out | ios::binary);
 	RegistroIP* rIP = NULL;
@@ -127,11 +138,6 @@ void IndicesPS::borrarIP(string clave) {
 	registros.clear();
 }
 
-void IndicesPS::buscarClaveS(int patas)
-{
-	fstream archivo("IS.dat",ios::binary|ios::in | ios::out);
-	archivo.close();
-}
 /**
  * Busqueda Binaria en Indice Primario (IP.dat)
  * Devuelve la posicion del Registro en el fichero de datos o -1 sino esta.
@@ -166,7 +172,7 @@ long IndicesPS::buscarClaveP(string clave)
 	return -1;
 }
 /*
- * muestra el fichero indice primario
+ * Muestra el fichero indice primario
  */
 RegistroIP IndicesPS::leerIP()
 {
