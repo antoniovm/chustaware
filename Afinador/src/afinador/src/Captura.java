@@ -11,6 +11,7 @@ public class Captura extends Thread {
 	private Mixer mezclador; // Mezclador
 	private DataLine.Info linea; // Linea de entrada de captura
 	private TargetDataLine tarjetaSonido; // Puente entre la zona de memoria
+	private boolean stopCapture;
 											// donde escribe la tarjeta de
 											// sonido y memoria principal
 											// manejable por nosotros
@@ -19,6 +20,9 @@ public class Captura extends Thread {
 		this.buffer=buffer;
 		/*Peticion al sistema de audio para obtener un listado de mezcladores disponibles*/
 		mixerInfo = AudioSystem.getMixerInfo();
+		formatoAudioPorDefecto();
+		linea= new DataLine.Info(TargetDataLine.class, audioFormat);
+		inicializarCaptura();
 	}
 
 	public void setBuffer(byte[] buffer) {
@@ -29,17 +33,40 @@ public class Captura extends Thread {
 		return buffer;
 	}
 
-	public synchronized void start() {
-		super.start();
+	public void run() {
+		/*Variable para dejar de capturar*/
+		stopCapture = false;
+	    try{
 
+	      while(!stopCapture){
+	        /*Lee los datos capturados por el sismeta de audio*/
+	        int cnt = tarjetaSonido.read(buffer,
+	                              0,
+	                              buffer.length);
+	        if(cnt > 0){
+	          //Save data in output stream object.
+	          /*byteArrayOutputStream.write(tempBuffer,
+	                                      0,
+	                                      cnt);*/
+	        	for (int i = 0; i < buffer.length; i++) {
+	        		System.out.println(buffer[i]);
+				}
+	          
+	        }
+	      }
+	      tarjetaSonido.stop();
+	    }catch (Exception e) {
+	        System.out.println(e);
+	        System.exit(0);
+	     }
 	}
 
-	public void formatoAudioPorDefecto() {
-		float frecuenciaMuestreo = 44100;
+	private void formatoAudioPorDefecto() {
+		float frecuenciaMuestreo = 22050;
 		// 8000,11025,16000,22050,44100
-		int tamanoMuestraBits = 16;
+		int tamanoMuestraBits = 8;
 		// 8,16
-		int canales = 2;
+		int canales = 1;
 		// 1,2
 		boolean signo = true;
 		// true,false
@@ -57,30 +84,32 @@ public class Captura extends Thread {
 	public AudioFormat getAudioFormat() {
 		return audioFormat;
 	}
+	void capturar(){
+		tarjetaSonido.start();
+		this.start();
+	}
 
-	public void inicializarCaptura() {
+	private void inicializarCaptura() {
+		/*Construccion de una linea de datos con el formato de audio deseado*/
+		linea=new DataLine.Info(
+				TargetDataLine.class, audioFormat);
+		
 		try {
+			/*Bucle para buscar un mezclador compatible con la linea de datos*/
+			for (int i = 0; i < mixerInfo.length; i++) {
+				mezclador=AudioSystem.getMixer(mixerInfo[i]);
+				if(mezclador.isLineSupported(linea)){
+					break;
+				}
+					
+			}
 			
 			
-			/*Construccion de una linea de datos con el formato de audio deseado*/
-			DataLine.Info dataLineInfo = new DataLine.Info(
-					TargetDataLine.class, audioFormat);
-			
-			
-			
-			// Select one of the available
-			// mixers.
-			Mixer mixer = AudioSystem.getMixer(mixerInfo[2]);
-			System.out.println(mixer.getLineInfo());
-			// Get a TargetDataLine on the selected
-			// mixer.
-
-			tarjetaSonido = (TargetDataLine) mixer.getLine(dataLineInfo);
+			tarjetaSonido = (TargetDataLine) mezclador.getLine(linea);
 
 			// Prepare the line for use.
 			tarjetaSonido.open(audioFormat);
-			tarjetaSonido.start();
-			mixer.isLineSupported((Info) tarjetaSonido);
+			
 			// Create a thread to capture the microphone
 			// data and start it running. It will run
 			// until the Stop button is clicked.
