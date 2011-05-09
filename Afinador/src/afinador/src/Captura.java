@@ -116,6 +116,25 @@ public class Captura extends Thread {
 			e.printStackTrace();
 		}
 	}
+	
+	public Mixer[] getEntradas() {
+		Mixer[] aux;
+		int nMezcladoresSoportados = 0;
+		/*Bucle para buscar un mezclador compatible con la linea de datos*/
+		for (int i = 0; i < mixerInfo.length; i++) {
+			if(AudioSystem.getMixer(mixerInfo[i]).isLineSupported(linea)){
+				nMezcladoresSoportados++;
+			}
+		}
+		aux = new Mixer[nMezcladoresSoportados];
+		nMezcladoresSoportados = 0;
+		for (int i = 0; i < mixerInfo.length; i++) {
+			if(AudioSystem.getMixer(mixerInfo[i]).isLineSupported(linea)){
+				aux[nMezcladoresSoportados++] = AudioSystem.getMixer(mixerInfo[i]);
+			}
+		}
+		return aux;
+	}
 
 	public Mixer.Info[] getMixerInfo() {
 		return mixerInfo;
