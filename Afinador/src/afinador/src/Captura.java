@@ -118,4 +118,46 @@ public class Captura extends Thread {
 			e.printStackTrace();
 		}
 	}
+
+	public Mixer.Info[] getMixerInfo() {
+		return mixerInfo;
+	}
+
+	public void setMixerInfo(Mixer.Info[] mixerInfo) {
+		this.mixerInfo = mixerInfo;
+	}
+
+	public Mixer getMezclador() {
+		return mezclador;
+	}
+
+	public void setMezclador(Mixer mezclador) {
+		this.mezclador = mezclador;
+	}
+
+	public DataLine.Info getLinea() {
+		return linea;
+	}
+
+	public void setLinea(DataLine.Info linea) {
+		this.linea = linea;
+	}
+
+	public TargetDataLine getTarjetaSonido() {
+		return tarjetaSonido;
+	}
+
+	public void setTarjetaSonido(TargetDataLine tarjetaSonido) {
+		this.tarjetaSonido = tarjetaSonido;
+	}
+
+	public boolean isStopCapture() {
+		return stopCapture;
+	}
+
+	public void setStopCapture(boolean stopCapture) {
+		this.stopCapture = stopCapture;
+	}
+	
+	
 }
