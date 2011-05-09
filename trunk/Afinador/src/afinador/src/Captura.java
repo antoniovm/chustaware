@@ -40,9 +40,7 @@ public class Captura extends Thread {
 
 	      while(!stopCapture){
 	        /*Lee los datos capturados por el sismeta de audio*/
-	        int cnt = tarjetaSonido.read(buffer,
-	                              0,
-	                              buffer.length);
+	        int cnt = tarjetaSonido.read(buffer,0, buffer.length);
 	        if(cnt > 0){
 	          //Save data in output stream object.
 	          /*byteArrayOutputStream.write(tempBuffer,
@@ -84,7 +82,7 @@ public class Captura extends Thread {
 	public AudioFormat getAudioFormat() {
 		return audioFormat;
 	}
-	void capturar(){
+	public void capturar(){
 		tarjetaSonido.start();
 		this.start();
 	}
