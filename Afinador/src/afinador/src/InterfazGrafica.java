@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
 
 public class InterfazGrafica extends JPanel implements ActionListener {
 	private Afinador afinador;	//Para mostrar los valores que se manejan en esta clase
