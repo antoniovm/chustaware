@@ -7,6 +7,16 @@
 
 #ifndef INDICE_H_
 #define INDICE_H_
+#include "IndicesPS.h"
+#include <cstring>
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <list>
+#include "Animal.h"
+
+using namespace std;
+
 /*
  * TAREAS A REALIZAR:
  *crear fichero con indiceP
@@ -21,15 +31,15 @@
  */
 class Indice {
 private:
-	IndicePS indicePS;
+	IndicesPS indicesPS;
 public:
 	Indice();
 	virtual ~Indice();
 	void crearFicherosPS();
 	void insertar(Animal);
 	void eliminar(string clave);
-	void buscarP(string);
-	void buscarS(int);
+	int buscarP(string);
+	int buscarS(int);
 	void mostrarIP();
 	void mostrarIS();
 	void crearFicheroBloques();

@@ -23,7 +23,7 @@ void IndicesPS::crearIS()
 	salida.close();
 }
 
-void IndicesPS::insertarIS(fstream archivoIS, Animal* animal, int posAux)
+void IndicesPS::insertarIS(fstream &archivoIS, Animal* animal, int posAux)
 {
 	RegistroIS* rIS;
 	RegistroAux* rAux;
@@ -45,8 +45,8 @@ long IndicesPS::buscarClaveS(int patas)
 	archivo.close();
 }
 
-void insertarAux(fstream archivoAux, Animal* animal, int posDatos) {
-
+int IndicesPS::insertarAux(fstream &archivoAux, Animal* animal, int posDatos) {
+	return -1;
 }
 
 //esto no vale pa na....inicializacion cutre <<<<--------------------------------
@@ -74,7 +74,7 @@ void IndicesPS::crearIP(fstream of, Animal* a)
 /**
  * Inserta un registro en el indice primario.
  */
-void IndicesPS::insertarIP(fstream archivo, Animal* a)
+int IndicesPS::insertarIP(fstream &archivo, Animal* a)
 {
 	//fstream archivo("IP.dat", ios::in | ios::out | ios::binary | ios::ate);
 	int posicion;
@@ -88,7 +88,7 @@ void IndicesPS::insertarIP(fstream archivo, Animal* a)
 		archivo.write((char*)(rIP), sizeof(RegistroIP));
 		delete rIP;
 		archivo.close();
-		return;
+		return -1;
 	}
 
 	while(archivo.tellg() > ios::beg) {
@@ -100,7 +100,7 @@ void IndicesPS::insertarIP(fstream archivo, Animal* a)
 			archivo.write((char*) (rIP), sizeof(RegistroIP));
 			delete rIP;
 			archivo.close();
-			return;
+			return posicion;
 		}
 		// Si no, copiamos el registro en la siguiente posicion y posicionamos el puntero en la posicion anterior.
 		archivo.write((char*) (rIP), sizeof(RegistroIP));
