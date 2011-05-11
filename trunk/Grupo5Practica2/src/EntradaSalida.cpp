@@ -187,7 +187,7 @@ void EntradaSalida::mostrar() {
 /**
  * Inserta un animal en el primer hueco del archivo.
  */
-void EntradaSalida::insertar(Animal* animal){
+int EntradaSalida::insertar(Animal* animal){
 	fstream archivoEntrada("zoo-data.dat", fstream::in | fstream::binary);
 	fstream archivoSalida("zoo-data.dat", fstream::out|fstream::in | fstream::binary);
 	Cabecera cabecera;
@@ -244,6 +244,8 @@ void EntradaSalida::insertar(Animal* animal){
 	archivoSalida.write((char*)&cabecera,sizeof(Cabecera));	//Actualizacion de la cabecera
 
 	archivoSalida.close();
+
+	return (int)posicion;
 }
 bool EntradaSalida::eliminar(long  pos)
 {

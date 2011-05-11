@@ -32,7 +32,7 @@ public:
 	streampos leerRegistro(int);
 	void escribir();
 	void mostrar();
-	void insertar(Animal*);
+	int insertar(Animal*);
 	bool eliminar(long);
 	void vaciar();
 	long buscar(string);
