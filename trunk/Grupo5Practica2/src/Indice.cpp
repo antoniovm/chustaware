@@ -25,7 +25,9 @@ Indice::crearFicherosPS(){
 
 	while(!animals.empty()){
 		indicePS.insertarIP(archivoIP,animales.front());
-		animales.pop();
+		indicePS.insertarAux();
+		indicePS.insertarIS();
+		delete animales.begin();
 	}
 
 }
