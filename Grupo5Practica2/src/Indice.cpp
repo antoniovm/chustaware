@@ -15,3 +15,17 @@ Indice::Indice() {
 Indice::~Indice() {
 	// TODO Auto-generated destructor stub
 }
+Indice::crearFicherosPS(){
+	list<Animals*> animales;
+	indicePS.getES().leerTexto();
+	animales=indicePS.getES().getAnimals();
+	fstream archivoIP("IP.dat",ios::binary|ios::out);
+	fstream archivoIS("IS.dat",ios::binary|ios::out);
+	fstream archivoAux("IAux.dat",ios::binary|ios::out);
+
+	while(!animals.empty()){
+		indicePS.insertarIP(archivoIP,animales.front());
+		animales.pop();
+	}
+
+}
