@@ -23,15 +23,23 @@ void IndicesPS::crearIS()
 	salida.close();
 }
 
-void IndicesPS::insertarIS(int int1)
+void IndicesPS::insertarIS(Registro registro, int posRegistro)
 {
+	fstream archivoIS("IS.dat", ios::in | ios::out | ios::binary);
+	fstream archivoAux("IAux.dat", ios::in | ios::out | ios::binary);
+	RegistroIS* rIS;
+
+	if (buscarClaveS(registro.getAnimal(false)->getLegs()) == -1) {
+		rIS = new RegistroIS(registro.getAnimal(false)->getLegs(), );
+	}
+
 }
 
 void IndicesPS::borrarIS(int int1)
 {
 }
 
-void IndicesPS::buscarClaveS(int patas)
+long IndicesPS::buscarClaveS(int patas)
 {
 	fstream archivo("IS.dat",ios::binary|ios::in | ios::out);
 	archivo.close();

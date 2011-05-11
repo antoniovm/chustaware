@@ -28,10 +28,10 @@ public:
 	//escribir();
 	void insertarIP(string);
 	void borrarIP(string);
-	void insertarIS(int);
+	void insertarIS(Registro, int);
 	void borrarIS(int);
 	long buscarClaveP(string);
-	void buscarClaveS(int);
+	long buscarClaveS(int);
 	EntradaSalida& getES(){return es;}
 };
 
