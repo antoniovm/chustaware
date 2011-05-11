@@ -26,11 +26,11 @@ public:
 	void crearIP(fstream,Animal*);
 	void crearIS();
 	RegistroIP leerIP();
-	void insertarIP(fstream, Animal*);
+	int insertarIP(fstream&, Animal*);
 	void borrarIP(string);
-	void insertarIS(fstream, Animal*, int);
+	void insertarIS(fstream&, Animal*, int);
 	void borrarIS(int);
-	void insertarAux(fstream, Animal*, int);
+	int insertarAux(fstream&, Animal*, int);
 	void borrarAux(int);
 	long buscarClaveP(string);
 	long buscarClaveS(int);
