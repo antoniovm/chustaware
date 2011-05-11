@@ -196,7 +196,7 @@ int EntradaSalida::insertar(Animal* animal){
 
 	if (!archivoEntrada.is_open()) {
 		cout << "No existe el archivo" << endl;
-		return;
+		return -1;
 	}
 
 
@@ -205,7 +205,7 @@ int EntradaSalida::insertar(Animal* animal){
 		generarCabecera(archivoSalida);
 		archivoSalida.write((char*)(&registro), sizeof(Registro));
 		archivoSalida.close();
-		return;
+		return 0;
 	}
 	archivoEntrada.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
 
@@ -213,12 +213,13 @@ int EntradaSalida::insertar(Animal* animal){
 	if (cabecera.getPrimerHueco() == -1) {	//No hay huecos, insercion al final
 		registro.setAnimal(animal);
 		archivoSalida.seekp(0, ios::end);
+		posicion = archivoSalida.tellg();
 		archivoSalida.write((char*)(&registro), sizeof(Registro));
 		cabecera.setNRegistros(cabecera.getNRegistros()+1);
 		archivoSalida.seekp(0,ios::beg);
 		archivoSalida.write((char*)&cabecera,sizeof(Cabecera));	//Actualizacion de la cabecera
 		archivoSalida.close();
-		return;
+		return (int)posicion;
 	}
 
 	posicion = cabecera.getPrimerHueco();	//Posicion de insercion
