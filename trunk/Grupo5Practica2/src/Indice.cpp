@@ -17,23 +17,26 @@ Indice::~Indice() {
 }
 Indice::crearFicherosPS(){
 	list<Animals*> animales;
-	indicePS.getES().leerTexto();
+	indicePS.getES().leerTexto();	//lee el fichero zoo-data.txt para almacenar los animales en MP
 	animales=indicePS.getES().getAnimals();
 	fstream archivoIP("IP.dat",ios::binary|ios::out);
 	fstream archivoIS("IS.dat",ios::binary|ios::out);
 	fstream archivoAux("IAux.dat",ios::binary|ios::out);
+	int posicionDatos;
+	int posicionAux;
 
 	while(!animals.empty()){
-		indicePS.insertarIP(archivoIP,animales.front());
-		indicePS.insertarAux();
-		indicePS.insertarIS();
+		//inserta en fichero de datos e Indice Primario y devuelve la posicion en el fichero de datos
+		posicionDatos=indicePS.insertarIP(archivoIP,animales.front());
+		posicionAux=indicePS.insertarAux(archivoAux,animales.front(),posicionDatos);
+		indicePS.insertarIS(archivoIS,animales.front(),posicionAux);
 		delete animales.begin();
 	}
 
 }
 
-Indice::eliminar(Animal){
-
+Indice::eliminar(string clave){
+	IndicePS.buscarClaveP(clave);
 }
 Indice::buscarP(){
 

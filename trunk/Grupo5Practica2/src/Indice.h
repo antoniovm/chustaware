@@ -27,7 +27,7 @@ public:
 	virtual ~Indice();
 	void crearFicherosPS();
 	void insertar(Animal);
-	void eliminar(Animal);
+	void eliminar(string clave);
 	void buscarP(string);
 	void buscarS(int);
 	void mostrarIP();
