@@ -30,7 +30,7 @@ void IndicesPS::insertarIS(Registro registro, int posRegistro)
 	RegistroIS* rIS;
 
 	if (buscarClaveS(registro.getAnimal(false)->getLegs()) == -1) {
-		rIS = new RegistroIS(registro.getAnimal(false)->getLegs(), );
+		rIS = new RegistroIS(registro.getAnimal(false)->getLegs(), 0);
 	}
 
 }
