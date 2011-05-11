@@ -16,7 +16,7 @@ void restaurarArchivo(EntradaSalida&);
 
 int main() {
 	IndicesPS indices;
-	menu(indices.getES());
+	//menu(indices.getES());
 
 	return 0;
 }
