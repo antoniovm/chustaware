@@ -45,41 +45,38 @@ long IndicesPS::buscarClaveS(int patas)
 	archivo.close();
 }
 
-//esto no vale pa na....inicializacion cutre
-void IndicesPS::crearIP()
+//esto no vale pa na....inicializacion cutre <<<<--------------------------------
+void IndicesPS::crearIP(fstream of, Animal* a)
 {
-	list<Animal*> animales;
-	RegistroIP regIP();
-	fstream salida("IP.dat",ios::binary|ios::out);
-	fstream salidaBinario("zoo-data.dat",ios::binary|ios::out);
-	es.leerTexto();
-	animales=es.getAnimals();
-	int posicion=0;
 
-	while(!animales.empty()){
-		regIP.setClavePrimaria((animales.front())->getName());
-		posicion=es.insertar(animales.front());
-		regIP.setPosRegistro(posicion);
-		salida.write((char*)(&regIP), sizeof(RegistroIP));
+	RegistroIP regIP();
+	int posicion=0;
+	//fstream salida("IP.dat",ios::binary|ios::out);
+	//fstream salidaBinario("zoo-data.dat",ios::binary|ios::out);
+	//es.leerTexto();
+	//animales=es.getAnimals();
+
+	regIP.setClavePrimaria(a->getName());
+	posicion = es.insertar(a);
+	regIP.setPosRegistro(posicion);
+	salida.write((char*) (&regIP), sizeof(RegistroIP));
+	/*while(!animales.empty()){
+
 		delete animales.begin();
 		animales.pop_front();
 	}
-	salida.close();
+	salida.close();*/
 }
 /**
  * Inserta un registro en el indice primario.
  */
-void IndicesPS::insertarIP(string clave)
+void IndicesPS::insertarIP(fstream archivo,Animal* a)
 {
-	fstream archivo("IP.dat", ios::in | ios::out | ios::binary | ios::ate);
+	//fstream archivo("IP.dat", ios::in | ios::out | ios::binary | ios::ate);
 	int posicion;
 	RegistroIP* rIP = NULL;
 
-	// Si el registro no esta en el archivo de datos, no insertamos en el indice primario.
-	posicion = es.buscar(clave);
-	if (posicion == -1) {
-		return;
-	}
+	pos=es.insertar(a);
 
 	// Si el archivo esta vacio insertamos directamente.
 	if (archivo.tellg() == ios::beg) {
@@ -105,7 +102,7 @@ void IndicesPS::insertarIP(string clave)
 		archivo.write((char*) (rIP), sizeof(RegistroIP));
 		archivo.seekg(archivo.tellg() - (streampos)(sizeof(RegistroIP)*2));
 	}
-	archivo.close();
+	//archivo.close();
 }
 /**
  * Elimina un registro en el indice primario.
