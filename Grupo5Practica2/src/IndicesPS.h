@@ -23,11 +23,11 @@ private:
 public:
 	IndicesPS();
 	virtual ~IndicesPS();
-	void crearIP();
+	void crearIP(fstream,Animal*);
 	void crearIS();
 	RegistroIP leerIP();
 	//escribir();
-	void insertarIP(string);
+	void insertarIP(fstream,Animal*);
 	void borrarIP(string);
 	void insertarIS(Registro, int);
 	void borrarIS(int);
