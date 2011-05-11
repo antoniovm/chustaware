@@ -29,3 +29,25 @@ Indice::crearFicherosPS(){
 	}
 
 }
+
+Indice::eliminar(Animal){
+
+}
+Indice::buscarP(){
+
+}
+
+Indice::buscarS(int patas){
+
+}
+
+Indice::mostrarIP(){
+
+}
+Indice::mostrarIS(){
+
+}
+
+Indice::crearFicheroBloques(){
+
+}
