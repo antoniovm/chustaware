@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -14,14 +15,25 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	private JComboBox mezcladores;
 	private JLabel lNota;
 	private boolean inicio;
+	private JFrame ventana;
 	
-	public InterfazGrafica(Captura captura, Afinador afinador) {
-		this.captura = captura;
+	public InterfazGrafica(Afinador afinador) {
 		this.afinador = afinador;
+		this.captura = afinador.getCaptura();
 		inicio = true;
 		inicializarPInicio();
 		inicializarPPrincipal();
 		this.add(mezcladores);
+		inicializarFrame();
+	}
+
+	private void inicializarFrame() {
+		ventana = new JFrame();
+		ventana.setContentPane(this);
+		ventana.pack();
+		ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		ventana.setVisible(true);
+		
 	}
 
 	private void inicializarPInicio(){

@@ -5,7 +5,8 @@ import javax.sound.sampled.Line.Info;
 
 public class Captura extends Thread {
 
-	private byte[] buffer; // Buffer de datos de audio
+	private byte[] tiempo; // Buffer de datos de audio en el dominio del tiempo
+	private double[] frecuencia; // Buffer de datos de audio en el dominio del tiempo
 	private AudioFormat audioFormat; // Formato de audio de entrada
 	private Mixer.Info[] mixerInfo;  //Lista de mezcladores disponibles
 	private Mixer mezclador; // Mezclador
@@ -17,7 +18,7 @@ public class Captura extends Thread {
 											// manejable por nosotros
 
 	public Captura(byte[] buffer) {
-		this.buffer=buffer;
+		this.tiempo=buffer;
 		/*Peticion al sistema de audio para obtener un listado de mezcladores disponibles*/
 		mixerInfo = AudioSystem.getMixerInfo();
 		formatoAudioPorDefecto();
@@ -25,12 +26,30 @@ public class Captura extends Thread {
 		inicializarCaptura();
 	}
 
+	public Captura() {
+		formatoAudioPorDefecto();
+		tiempo=new byte[(int) (audioFormat.getChannels()*audioFormat.getFrameRate()*(audioFormat.getSampleSizeInBits()/8))];
+		frecuencia=new double[(int) (audioFormat.getFrameRate()/2)];
+		/*Peticion al sistema de audio para obtener un listado de mezcladores disponibles*/
+		mixerInfo = AudioSystem.getMixerInfo();
+		linea= new DataLine.Info(TargetDataLine.class, audioFormat);
+		inicializarCaptura();
+	}
+
+	public double[] getFrecuencia() {
+		return frecuencia;
+	}
+
+	public void setFrecuencia(double[] frecuencia) {
+		this.frecuencia = frecuencia;
+	}
+
 	public void setBuffer(byte[] buffer) {
-		this.buffer = buffer;
+		this.tiempo = buffer;
 	}
 
 	public byte[] getBuffer() {
-		return buffer;
+		return tiempo;
 	}
 
 	public void run() {
@@ -40,21 +59,22 @@ public class Captura extends Thread {
 
 	      while(!stopCapture){
 	        /*Lee los datos capturados por el sismeta de audio*/
-	        int cnt = tarjetaSonido.read(buffer,0, buffer.length);
+	        int cnt = tarjetaSonido.read(tiempo,0, tiempo.length);
 	        if(cnt > 0){
 	          //Save data in output stream object.
 	          /*byteArrayOutputStream.write(tempBuffer,
 	                                      0,
 	                                      cnt);*/
-	        	for (int i = 0; i < buffer.length; i++) {
-	        		System.out.println(buffer[i]);
+	        	for (int i = 0; i < tiempo.length; i++) {
+	        		System.out.println(tiempo[i]);
 				}
 	          
 	        }
+	        ConversorTF.convertir(tiempo, frecuencia);
 	      }
 	      tarjetaSonido.stop();
 	    }catch (Exception e) {
-	        System.out.println(e);
+	        e.printStackTrace();
 	        System.exit(0);
 	     }
 	}

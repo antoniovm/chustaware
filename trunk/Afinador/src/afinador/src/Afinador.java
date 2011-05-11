@@ -3,6 +3,10 @@ package afinador.src;
  * 	Clase que se encarga de comparar valores del array de frecuencias con las frecuencias fundamentales(notas)
  */
 public class Afinador {
+	
+
+	//Captura de audio
+	private Captura captura;
 	//señal de entrada
 	private double [] frecuencia;
 	//Primera Octava (Hz):    Do     Do#    Re     Re#    Mi    Fa     Fa#    Sol   Sol#   La     La#    Si 
@@ -11,8 +15,9 @@ public class Afinador {
 	private double desafinio;
 	private boolean afinando;
 	
-	public Afinador(double [] frecuencia) {
-		this.frecuencia=frecuencia;
+	public Afinador() {
+		captura = new Captura();
+		frecuencia=captura.getFrecuencia();
 	}
 	public double[] getFrecuencia() {
 		return frecuencia;
@@ -56,7 +61,8 @@ public class Afinador {
 	public void setAfinando(boolean afinando) {
 		this.afinando = afinando;
 	}
-	public void afinar(){
+	public void afinarPitch(){
+		captura.capturar();
 		afinando=true;
 		int max=0;
 		while(afinando){
@@ -66,6 +72,41 @@ public class Afinador {
 			}
 			pitch=max;
 			calcularNota();
+			
+		}
+	}
+	public void afinarEnergia(){
+		captura.capturar();
+		afinando=true;
+		double maxDif=0;
+		int max=0;
+		while(afinando){
+			for (int i = 1; i < 4500; i++) {
+				if((frecuencia[i]-frecuencia[i-1])>Math.abs(maxDif)){
+					maxDif=frecuencia[i]-frecuencia[i-1];	//Buscamos el mayor cambio brusco de energia consecutivo
+					max=i;
+					if((frecuencia[i+1]-frecuencia[i])<Math.abs(maxDif)){	//Si en 3 posiciones siguientes no hay un cambio mayor, se establece la componente de energia
+						if((frecuencia[i+2]-frecuencia[i+1])<Math.abs(maxDif)){
+							if((frecuencia[i+3]-frecuencia[i+2])<Math.abs(maxDif)){
+								pitch=max;
+								calcularNota();
+								System.out.println(pitch);
+							}else{
+								maxDif=0;
+								continue;
+							}
+						}else{
+							maxDif=0;
+							continue;
+						}
+					}else{
+						maxDif=0;
+						continue;
+					}
+				}
+			}
+			
+			
 			
 		}
 	}
@@ -97,5 +138,11 @@ public class Afinador {
 		
 		
 
+	}
+	public Captura getCaptura() {
+		return captura;
+	}
+	public void setCaptura(Captura captura) {
+		this.captura = captura;
 	}
 }

@@ -10,13 +10,11 @@ public class Principal {
 	 */
 	public static void main(String[] args) {
 		byte [] buffer=new byte[TAMANO_BUFFER];
-		Captura captura = new Captura(buffer);
+		
+		Afinador afinador=new Afinador();
 		//captura.capturar();
-		JFrame f = new JFrame();
-		f.setContentPane(new InterfazGrafica(captura, null));
-		f.pack();
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setVisible(true);
+		InterfazGrafica ig=new InterfazGrafica(afinador);
+		afinador.afinarPitch();
 	}
 
 }
