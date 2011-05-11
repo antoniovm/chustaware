@@ -50,7 +50,7 @@ long IndicesPS::buscarClaveS(int patas)
 //esto no vale pa na....inicializacion cutre <<<<--------------------------------
 void IndicesPS::crearIP(fstream of, Animal* a)
 {
-
+/*
 	RegistroIP regIP();
 	int posicion=0;
 	//fstream salida("IP.dat",ios::binary|ios::out);
@@ -62,7 +62,7 @@ void IndicesPS::crearIP(fstream of, Animal* a)
 	posicion = es.insertar(a);
 	regIP.setPosRegistro(posicion);
 	salida.write((char*) (&regIP), sizeof(RegistroIP));
-	/*while(!animales.empty()){
+	while(!animales.empty()){
 
 		delete animales.begin();
 		animales.pop_front();
@@ -78,7 +78,7 @@ void IndicesPS::insertarIP(fstream archivo,Animal* a)
 	int posicion;
 	RegistroIP* rIP = NULL;
 
-	pos=es.insertar(a);
+	posicion=es.insertar(a);
 
 	// Si el archivo esta vacio insertamos directamente.
 	if (archivo.tellg() == ios::beg) {
