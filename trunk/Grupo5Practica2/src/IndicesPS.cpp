@@ -23,16 +23,14 @@ void IndicesPS::crearIS()
 	salida.close();
 }
 
-void IndicesPS::insertarIS(Registro registro, int posRegistro)
+void IndicesPS::insertarIS(fstream archivoIS, Animal* animal, int posAux)
 {
-	fstream archivoIS("IS.dat", ios::in | ios::out | ios::binary);
-	fstream archivoAux("IAux.dat", ios::in | ios::out | ios::binary);
 	RegistroIS* rIS;
 	RegistroAux* rAux;
 
-	if (buscarClaveS(registro.getAnimal(false)->getLegs()) == -1) {
-		rAux = new RegistroAux(true, registro.getAnimal(false)->getName(), -1, es.buscar(registro.getAnimal(false)->getName()));
-		rIS = new RegistroIS(registro.getAnimal(false)->getLegs(), 0);
+	if (buscarClaveS(animal->getLegs()) == -1) {
+		rAux = new RegistroAux(true, animal->getName(), -1, es.buscar(animal->getName()));
+		rIS = new RegistroIS(animal->getLegs(), 0);
 	}
 
 }
@@ -45,6 +43,10 @@ long IndicesPS::buscarClaveS(int patas)
 {
 	fstream archivo("IS.dat",ios::binary|ios::in | ios::out);
 	archivo.close();
+}
+
+void insertarAux(fstream archivoAux, Animal* animal, int posDatos) {
+
 }
 
 //esto no vale pa na....inicializacion cutre <<<<--------------------------------
@@ -72,7 +74,7 @@ void IndicesPS::crearIP(fstream of, Animal* a)
 /**
  * Inserta un registro en el indice primario.
  */
-void IndicesPS::insertarIP(fstream archivo,Animal* a)
+void IndicesPS::insertarIP(fstream archivo, Animal* a)
 {
 	//fstream archivo("IP.dat", ios::in | ios::out | ios::binary | ios::ate);
 	int posicion;
@@ -82,7 +84,7 @@ void IndicesPS::insertarIP(fstream archivo,Animal* a)
 
 	// Si el archivo esta vacio insertamos directamente.
 	if (archivo.tellg() == ios::beg) {
-		rIP = new RegistroIP(clave, posicion);	// Creamos el registro.
+		rIP = new RegistroIP(a->getName(), posicion);	// Creamos el registro.
 		archivo.write((char*)(rIP), sizeof(RegistroIP));
 		delete rIP;
 		archivo.close();
@@ -93,8 +95,8 @@ void IndicesPS::insertarIP(fstream archivo,Animal* a)
 		archivo.seekg(archivo.tellg()-(streampos)sizeof(RegistroIP));	// Posicionamos el puntero en la posicion del registro anterior.
 		archivo.read((char*)(rIP), sizeof(RegistroIP));	// Leemos el registro.
 		// Si la clave del registro que vamos a insertar es mayor que la clave del registro que acabamos de leer, insertamos el registro.
-		if (clave > rIP->getClavePrimaria()) {
-			rIP = new RegistroIP(clave, posicion);	// Creamos el registro.
+		if (a->getName() > rIP->getClavePrimaria()) {
+			rIP = new RegistroIP(a->getName(), posicion);	// Creamos el registro.
 			archivo.write((char*) (rIP), sizeof(RegistroIP));
 			delete rIP;
 			archivo.close();

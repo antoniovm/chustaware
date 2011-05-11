@@ -8,7 +8,10 @@
 #include "RegistroAux.h"
 
 RegistroAux::RegistroAux() {
-
+	this->valido = 0;
+	strcpy(this->clavePrimaria, "");
+	this->siguiente = -1;
+	this->posDatos = -1;
 }
 
 RegistroAux::RegistroAux(bool valido, string clave, int posPila, int posDat) {
