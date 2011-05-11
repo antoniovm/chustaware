@@ -8,8 +8,14 @@
 #include "RegistroAux.h"
 
 RegistroAux::RegistroAux() {
-	// TODO Auto-generated constructor stub
 
+}
+
+RegistroAux::RegistroAux(bool valido, string clave, int posPila, int posDat) {
+	this->valido = valido;
+	strcpy(this->clavePrimaria, clave.data());
+	this->siguiente = posPila;
+	this->posDatos = posDat;
 }
 
 string RegistroAux::getClavePrimaria() const
@@ -33,9 +39,9 @@ bool RegistroAux::getValido() const
     return valido;
 }
 
-void RegistroAux::setClavePrimaria(char clavePrimaria[50])
+void RegistroAux::setClavePrimaria(char* clave)
 {
-    this->clavePrimaria = clavePrimaria;
+	strcpy(this->clavePrimaria, clave);
 }
 
 void RegistroAux::setPosDatos(int posDatos)
