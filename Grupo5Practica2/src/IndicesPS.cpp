@@ -41,19 +41,20 @@ void IndicesPS::buscarClaveS(int patas)
 void IndicesPS::crearIP()
 {
 	list<Animal*> animales;
-	RegistroIP* regIP=NULL;
+	RegistroIP regIP();
 	fstream salida("IP.dat",ios::binary|ios::out);
-	es.leerBinario();
+	fstream salidaBinario("zoo-data.dat",ios::binary|ios::out);
+	es.leerTexto();
 	animales=es.getAnimals();
-	int nReg=0;
+	int posicion=0;
 
 	while(!animales.empty()){
-		regIP->setClavePrimaria((animales.front())->getName());
-		regIP->setPosRegistro(nReg*sizeof(RegistroIP));
+		regIP.setClavePrimaria((animales.front())->getName());
+		posicion=es.insertar(animales.front());
+		regIP.setPosRegistro(posicion);
 		salida.write((char*)(&regIP), sizeof(RegistroIP));
-		delete *animales.begin();
+		delete animales.begin();
 		animales.pop_front();
-		nReg++;
 	}
 	salida.close();
 }
