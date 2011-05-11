@@ -11,6 +11,7 @@
 #include "EntradaSalida.hpp"
 #include "RegistroIP.h"
 #include "RegistroIS.h"
+#include "RegistroAux.h"
 #include "Animal.h"
 #include <fstream>
 #include<vector>

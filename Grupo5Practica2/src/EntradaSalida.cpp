@@ -297,16 +297,22 @@ long EntradaSalida::buscar(string  s)
 {
 	fstream entrada("zoo-data.dat",ios::in|ios::binary);
 	Registro registro;
+	int posicion = -1;
 	entrada.seekg(sizeof(Cabecera));
 	while(true){
 		entrada.read((char*)&registro,sizeof(Registro));
-		if(entrada.eof())
+		if(entrada.eof()) {
+			entrada.close();
 			return -1;
+		}
 		if(registro.getValido())
-			if(strcmp(s.data(),registro.getAnimal(false)->getName())==0)
-				return ((long)entrada.tellg()-sizeof(Registro)-sizeof(Cabecera))/sizeof(Registro);
+			if(strcmp(s.data(),registro.getAnimal(false)->getName())==0) {
+				posicion = ((long)entrada.tellg()-sizeof(Registro)-sizeof(Cabecera))/sizeof(Registro);
+				entrada.close();
+				return posicion;
+			}
 	}
-
+	entrada.close();
 }
 
 

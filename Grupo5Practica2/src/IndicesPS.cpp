@@ -28,8 +28,10 @@ void IndicesPS::insertarIS(Registro registro, int posRegistro)
 	fstream archivoIS("IS.dat", ios::in | ios::out | ios::binary);
 	fstream archivoAux("IAux.dat", ios::in | ios::out | ios::binary);
 	RegistroIS* rIS;
+	RegistroAux* rAux;
 
 	if (buscarClaveS(registro.getAnimal(false)->getLegs()) == -1) {
+		rAux = new RegistroAux(true, registro.getAnimal(false)->getName(), -1, es.buscar(registro.getAnimal(false)->getName()));
 		rIS = new RegistroIS(registro.getAnimal(false)->getLegs(), 0);
 	}
 
