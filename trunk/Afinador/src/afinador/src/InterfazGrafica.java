@@ -111,14 +111,23 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		
 	}
 	
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Color color1 = new Color(12,74,88);
+		Color color2 = new Color(51,141,209);
+		GradientPaint gr = new GradientPaint(0, 0, color1, 0, getHeight(), color2);
+		((Graphics2D)g).setPaint(gr);
+		((Graphics2D)g).fillRect(0, 0, getWidth(), getHeight());
+	}
+	
 	public void paint(Graphics g) {
 		super.paint(g);
 		// Si no estamos en la pantalla inicial, pintamos las luces, etc
 		if(!inicio) {
 			
 		}
-		GradientPaint gr = new GradientPaint(0, 0, Color.black, 0, getHeight(), Color.white);
+		/*GradientPaint gr = new GradientPaint(0, 0, Color.black, 0, getHeight(), Color.white);
 		((Graphics2D)g).setPaint(gr);
-		((Graphics2D)g).fillRect(0, 0, getWidth(), getHeight());
+		((Graphics2D)g).fillRect(0, 0, getWidth(), getHeight());*/
 	}
 }
