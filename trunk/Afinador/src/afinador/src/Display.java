@@ -18,13 +18,42 @@ public class Display extends JComponent {
 	private ImageIcon fondo;
 	
 	public Display() {
-		nNota = 8;
+		nNota = 0;
 		octava = -1;
 		fondo = new ImageIcon("."+File.separator+"bin"+File.separator+"afinador"+File.separator+"img"+File.separator+"display.png");
 		setPreferredSize(new Dimension(fondo.getIconWidth(), fondo.getIconHeight()));
 		setUI(null);
 	}
 	
+	public int getnNota() {
+		return nNota;
+	}
+
+	public void setnNota(int nNota) {
+		this.nNota = nNota;
+		repaint();
+	}
+
+	public int getOctava() {
+		return octava;
+	}
+
+	public void setOctava(int octava) {
+		this.octava = octava;
+	}
+
+	public ImageIcon getFondo() {
+		return fondo;
+	}
+
+	public void setFondo(ImageIcon fondo) {
+		this.fondo = fondo;
+	}
+
+	public static String[] getNotas() {
+		return notas;
+	}
+
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);

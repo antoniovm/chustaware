@@ -5,6 +5,7 @@ import javax.sound.sampled.Line.Info;
 
 public class Captura extends Thread {
 
+	public static final int NUMERO_DE_MUESTRAS=32768;
 	private byte[] tiempo; // Buffer de datos de audio en el dominio del tiempo
 	private double[] frecuencia; // Buffer de datos de audio en el dominio del tiempo
 	private AudioFormat audioFormat; // Formato de audio de entrada
@@ -28,8 +29,8 @@ public class Captura extends Thread {
 
 	public Captura() {
 		formatoAudioPorDefecto();
-		tiempo=new byte[(int) (audioFormat.getChannels()*audioFormat.getFrameRate()*(audioFormat.getSampleSizeInBits()/8))];
-		frecuencia=new double[(int) (audioFormat.getFrameRate()/2)];
+		tiempo=new byte[NUMERO_DE_MUESTRAS*audioFormat.getChannels()*(audioFormat.getSampleSizeInBits()/8)];
+		frecuencia=new double[NUMERO_DE_MUESTRAS];
 		/*Peticion al sistema de audio para obtener un listado de mezcladores disponibles*/
 		mixerInfo = AudioSystem.getMixerInfo();
 		linea= new DataLine.Info(TargetDataLine.class, audioFormat);
@@ -65,12 +66,12 @@ public class Captura extends Thread {
 	          /*byteArrayOutputStream.write(tempBuffer,
 	                                      0,
 	                                      cnt);*/
-	        	for (int i = 0; i < tiempo.length; i++) {
+	        	/*for (int i = 0; i < tiempo.length; i++) {
 	        		System.out.println(tiempo[i]);
-				}
+				}*/
 	          
 	        }
-	        ConversorTF.convertir(tiempo, frecuencia);
+	        ConversorTF.convertir(tiempo, frecuencia, NUMERO_DE_MUESTRAS);
 	      }
 	      tarjetaSonido.stop();
 	    }catch (Exception e) {

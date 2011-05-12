@@ -2,7 +2,7 @@ package afinador.src;
 /**
  * 	Clase que se encarga de comparar valores del array de frecuencias con las frecuencias fundamentales(notas)
  */
-public class Afinador {
+public class Afinador extends Thread{
 	
 
 	//Captura de audio
@@ -72,6 +72,7 @@ public class Afinador {
 			}
 			pitch=max;
 			calcularNota();
+			System.out.println(escalarFrecuencia()+","+desafinio+","+octava);
 			
 		}
 	}
@@ -85,25 +86,41 @@ public class Afinador {
 				if((frecuencia[i]-frecuencia[i-1])>Math.abs(maxDif)){
 					maxDif=frecuencia[i]-frecuencia[i-1];	//Buscamos el mayor cambio brusco de energia consecutivo
 					max=i;
-					if((frecuencia[i+1]-frecuencia[i])<Math.abs(maxDif)){	//Si en 3 posiciones siguientes no hay un cambio mayor, se establece la componente de energia
-						if((frecuencia[i+2]-frecuencia[i+1])<Math.abs(maxDif)){
-							if((frecuencia[i+3]-frecuencia[i+2])<Math.abs(maxDif)){
-								pitch=max;
-								calcularNota();
-								System.out.println(pitch);
-							}else{
-								maxDif=0;
-								continue;
-							}
-						}else{
+					for (int j = 0; j < 5; j++) {
+						if((frecuencia[i+(j+1)]-frecuencia[i+j])>Math.abs(maxDif)){	//Si en 3 posiciones siguientes no hay un cambio mayor, se establece la componente de energia
 							maxDif=0;
-							continue;
+							break;
 						}
+					}
+					pitch=max;
+					calcularNota();
+					System.out.println(escalarFrecuencia()+","+desafinio+","+octava);
+					maxDif=0;
+					}
+					
+					/*if((frecuencia[i+2]-frecuencia[i+1])<Math.abs(maxDif)){
+					if((frecuencia[i+3]-frecuencia[i+2])<Math.abs(maxDif)){
+					if((frecuencia[i+4]-frecuencia[i+3])<Math.abs(maxDif)){
+					if((frecuencia[i+5]-frecuencia[i+4])<Math.abs(maxDif)){
+						
+					
 					}else{
 						maxDif=0;
 						continue;
 					}
-				}
+					}else{
+						maxDif=0;
+						continue;
+					}
+					}else{
+						maxDif=0;
+						continue;
+					}
+					}else{
+						maxDif=0;
+						continue;
+					}
+				}*/
 			}
 			
 			
@@ -114,14 +131,14 @@ public class Afinador {
 	private void calcularNota() {
 		int exceso=Integer.MAX_VALUE, defecto=Integer.MIN_VALUE, octavaExceso=0,octavaDefecto=0, notaExceso=-1, notaDefecto=-1;
 		for (int i = 0; i < notas.length; i++) {
-			if((pitch%notas[i])<exceso){	//Vemos si esta cerca por encima de la nota
-				exceso=(int)(pitch%notas[i]);
-				octavaExceso=(int)(pitch/notas[i]);
+			if((escalarFrecuencia()%notas[i])<exceso){	//Vemos si esta cerca por encima de la nota
+				exceso=(int)(escalarFrecuencia()%notas[i]);
+				octavaExceso=(int)(escalarFrecuencia()/notas[i]);
 				notaExceso=i;
 			}
-			if((pitch%notas[i]-notas[i])>defecto){//Vemos si esta cerca por debajo de la nota
-				defecto=(int)(pitch%notas[i]-notas[i]);
-				octavaDefecto=(int)(pitch/notas[i]);
+			if((escalarFrecuencia()%notas[i]-notas[i])>defecto){//Vemos si esta cerca por debajo de la nota
+				defecto=(int)(escalarFrecuencia()%notas[i]-notas[i]);
+				octavaDefecto=(int)(escalarFrecuencia()/notas[i]);
 				notaDefecto=i;
 			}
 				
@@ -139,10 +156,20 @@ public class Afinador {
 		
 
 	}
+	@Override
+	public void run() {
+		super.run();
+		afinarEnergia();
+		//afinarPitch();
+	}
 	public Captura getCaptura() {
 		return captura;
 	}
 	public void setCaptura(Captura captura) {
 		this.captura = captura;
+	}
+	
+	private double escalarFrecuencia(){
+		return captura.NUMERO_DE_MUESTRAS*pitch/22050;
 	}
 }
