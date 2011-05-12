@@ -69,6 +69,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		constraints.gridx = 0;
 		constraints.gridy = 3;
 		constraints.gridwidth = 1;
+		constraints.weightx = 1.0;
 		
 		for (int i = 0; i < 6; i++) {
 			bombillas[i] = new Bombilla(i);
