@@ -13,8 +13,8 @@ public class Bombilla extends JComponent {
 	
 	public Bombilla() {
 		on = false;
-		imagenOn = new ImageIcon("."+File.separator+"bin"+File.separator+"afinador"+File.separator+"img"+File.separator+"on.gif");
-		imagenOff = new ImageIcon("."+File.separator+"bin"+File.separator+"afinador"+File.separator+"img"+File.separator+"off.gif");
+		imagenOn = new ImageIcon(System.getProperty("user.dir")+"/src/img/on.png");
+		imagenOff = new ImageIcon(System.getProperty("user.dir")+"/src/img/off.png");
 	}
 	
 	public void paintComponents(Graphics g) {
