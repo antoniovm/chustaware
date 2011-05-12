@@ -65,9 +65,9 @@ public class Captura extends Thread {
 	          /*byteArrayOutputStream.write(tempBuffer,
 	                                      0,
 	                                      cnt);*/
-	        	//for (int i = 0; i < tiempo.length; i++) {
-	        		//System.out.println(tiempo[i]);
-				//}
+	        	for (int i = 0; i < tiempo.length; i++) {
+	        		System.out.println(tiempo[i]);
+				}
 	          
 	        }
 	        ConversorTF.convertir(tiempo, frecuencia);

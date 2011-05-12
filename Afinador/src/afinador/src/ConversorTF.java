@@ -22,7 +22,7 @@ public class ConversorTF{
 		FFT.direct(buffer);
 		
 		/*Modulo espectral*/
-		for(int i=0; i<44100; i++) {
+		for(int i=0; i<22050; i++) {
 			freq[i]= Math.sqrt(buffer[i][0]*buffer[i][0]+buffer[i][1]*buffer[i][1]);
 		}
 		

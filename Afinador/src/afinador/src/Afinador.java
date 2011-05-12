@@ -61,7 +61,7 @@ public class Afinador {
 	public void setAfinando(boolean afinando) {
 		this.afinando = afinando;
 	}
-	public void afinarPitch(){
+	public void afinarEnergia(){
 		captura.capturar();
 		afinando=true;
 		int max=0;
@@ -75,7 +75,7 @@ public class Afinador {
 			
 		}
 	}
-	public void afinarEnergia(){
+	public void afinarPitch(){
 		captura.capturar();
 		afinando=true;
 		double maxDif=0;
