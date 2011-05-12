@@ -37,7 +37,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	private void inicializarDialog() {
 		Dimension dPantalla, dVentana;
 		JPanel p = new JPanel();
-		ventanaInicio = new JDialog(ventana, true);
+		ventanaInicio = new JDialog(ventana, "Seleccione un mezclador", true);
 		mezcladores = new JComboBox();
 		bAceptar = new JButton("Aceptar");
 		
@@ -66,9 +66,14 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	}
 
 	private void inicializarFrame() {
+		Dimension dPantalla, dVentana;
 		ventana = new JFrame();
 		ventana.setContentPane(this);
 		ventana.pack();
+		dPantalla = Toolkit.getDefaultToolkit().getScreenSize(); // Dimensiones en pixels de la pantalla.
+        dVentana = ventana.getSize(); // Dimensiones en pixels de la ventana.
+        // Situamos la ventana en el centro de la pantalla.
+        ventana.setLocation((dPantalla.width - dVentana.width) / 2, (dPantalla.height - dVentana.height) / 2);
 		ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		ventana.setVisible(true);
 		
