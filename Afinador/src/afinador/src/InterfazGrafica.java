@@ -1,7 +1,10 @@
 package afinador.src;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,17 +24,41 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	private boolean inicio;
 	private JFrame ventana;
 	private JDialog ventanaInicio;
+	private Bombilla[]bombillas;
+	private Slider slider;
+	private Display display;
 	
 	public InterfazGrafica(Afinador afinador) {
+		repaint();
 		this.afinador = afinador;
 		this.captura = afinador.getCaptura();
 		inicio = true;
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {e.printStackTrace();}
+		inicializarBombillas();
+		inicializarSlider();
+		inicializarDisplay();
 		inicializarFrame();
 		inicializarDialog();
-		
+	}
+	
+	private void inicializarBombillas() {
+		bombillas = new Bombilla[6];
+		for (int i = 0; i < 6; i++) {
+			bombillas[i] = new Bombilla(i);
+			this.add(bombillas[i]);
+		}
+	}
+	
+	private void inicializarSlider() {
+		slider = new Slider();
+		this.add(slider);
+	}
+	
+	private void inicializarDisplay() {
+		display = new Display();
+		this.add(display);
 	}
 	
 	private void inicializarDialog() {
@@ -68,7 +95,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	private void inicializarFrame() {
 		Dimension dPantalla, dVentana;
 		ventana = new JFrame();
-		ventana.setContentPane(this);
+		ventana.add(this);
 		ventana.pack();
 		dPantalla = Toolkit.getDefaultToolkit().getScreenSize(); // Dimensiones en pixels de la pantalla.
         dVentana = ventana.getSize(); // Dimensiones en pixels de la ventana.
@@ -90,5 +117,8 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		if(!inicio) {
 			
 		}
+		GradientPaint gr = new GradientPaint(0, 0, Color.black, 0, getHeight(), Color.white);
+		((Graphics2D)g).setPaint(gr);
+		((Graphics2D)g).fillRect(0, 0, getWidth(), getHeight());
 	}
 }
