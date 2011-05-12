@@ -10,10 +10,10 @@ public class ConversorTF{
 	public static void convertir(byte [] tiempo, double [] freq) {
 		double[][] buffer = new double[tiempo.length][2];
 
-		for (int i = 0; i < 5000; i++) {
+		for (int i = 0; i < 11025; i++) {
 			// System.err.print(".");
 			/* Parte real, muestra izquierda. */
-			buffer[i][0] = (double) (tiempo[4 * i + 1] * 256 + tiempo[4 * i]);
+			buffer[i][0] = (double) (tiempo[2 * i + 1] * 256 + tiempo[2 * i]);
 			/* Parte imaginaria, muestra izquierda. */
 			buffer[i][1] = 0.0;
 		}

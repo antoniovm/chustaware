@@ -65,9 +65,9 @@ public class Captura extends Thread {
 	          /*byteArrayOutputStream.write(tempBuffer,
 	                                      0,
 	                                      cnt);*/
-	        	for (int i = 0; i < tiempo.length; i++) {
-	        		System.out.println(tiempo[i]);
-				}
+	        	//for (int i = 0; i < tiempo.length; i++) {
+	        		//System.out.println(tiempo[i]);
+				//}
 	          
 	        }
 	        ConversorTF.convertir(tiempo, frecuencia);
@@ -196,8 +196,22 @@ public class Captura extends Thread {
 		this.stopCapture = stopCapture;
 	}
 
-	public void buscarMezclador(String mezclador) {
-		// TODO Auto-generated method stub
+	public void buscarMezclador(String nombre)  {
+		try {
+		for (int i = 0; i < mixerInfo.length; i++) {
+			if(mixerInfo[i].getName().equals(nombre)){
+				this.mezclador=AudioSystem.getMixer(mixerInfo[i]);
+				
+					tarjetaSonido = (TargetDataLine) mezclador.getLine(linea);
+				
+				tarjetaSonido.open(audioFormat);
+			}
+			
+		}
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
