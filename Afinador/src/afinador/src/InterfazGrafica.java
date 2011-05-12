@@ -6,21 +6,17 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.sound.sampled.Mixer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 public class InterfazGrafica extends JPanel implements ActionListener {
 	private Afinador afinador;	//Para mostrar los valores que se manejan en esta clase
 	private Captura captura;	//Para configurar los parametros de entrada de audio
 	private JComboBox mezcladores;
-	private JLabel lNota;
 	private JButton bAceptar;
 	private boolean inicio;
 	private JFrame ventana;
@@ -33,7 +29,6 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {e.printStackTrace();}
-		inicializarPPrincipal();
 		inicializarFrame();
 		inicializarDialog();
 		
@@ -56,7 +51,6 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 				ventanaInicio.dispose();
 			}
 		});
-		
 		p.add(mezcladores);
 		p.add(bAceptar);
 		ventanaInicio.add(p);
@@ -80,10 +74,6 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		
 	}
 	
-	private void inicializarPPrincipal() {
-		lNota = new JLabel(); // Nombre de la nota que esta sonando
-	}
-
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		
