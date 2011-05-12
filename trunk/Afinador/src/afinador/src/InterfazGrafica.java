@@ -99,6 +99,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		p.add(bAceptar);
 		ventanaInicio.add(p);
 		
+		ventanaInicio.setResizable(false);
 		ventanaInicio.pack();
         dPantalla = Toolkit.getDefaultToolkit().getScreenSize(); // Dimensiones en pixels de la pantalla.
         dVentana = ventanaInicio.getSize(); // Dimensiones en pixels de la ventana.
