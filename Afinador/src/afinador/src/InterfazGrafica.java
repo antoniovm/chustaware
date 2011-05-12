@@ -148,4 +148,18 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		((Graphics2D)g).setPaint(gr);
 		((Graphics2D)g).fillRect(0, 0, getWidth(), getHeight());*/
 	}
+
+	public void pintar() {
+		while(true){
+			slider.setOffset((int)afinador.getDesafinio());
+			display.setnNota(afinador.getNotaReal());
+			/*try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
+		}
+		
+	}
 }

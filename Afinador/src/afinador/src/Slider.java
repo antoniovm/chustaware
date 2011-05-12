@@ -25,10 +25,10 @@ public class Slider extends JComponent {
 	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if(offset == 0){
-			g.drawImage(barra.getImage(), 0, getHeight()/2, barra.getIconWidth(), barra.getIconHeight(), this);
-			g.drawImage(pua.getImage(), this.getWidth()/2-pua.getIconWidth()/2, 0, pua.getIconWidth(), pua.getIconHeight(), this);
-		}
+
+		g.drawImage(barra.getImage(), 0, getHeight()/2, barra.getIconWidth(), barra.getIconHeight(), this);
+		g.drawImage(pua.getImage(), this.getWidth()/2-pua.getIconWidth()/2+offset, 0, pua.getIconWidth(), pua.getIconHeight(), this);
+		
 	}
 	
 	public int getOffset() {
