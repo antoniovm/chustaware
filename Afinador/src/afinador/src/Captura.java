@@ -195,6 +195,11 @@ public class Captura extends Thread {
 	public void setStopCapture(boolean stopCapture) {
 		this.stopCapture = stopCapture;
 	}
+
+	public void buscarMezclador(String mezclador) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }
