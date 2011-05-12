@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,38 +29,52 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	private Bombilla[]bombillas;
 	private Slider slider;
 	private Display display;
+	private GridBagConstraints constraints;
 	
 	public InterfazGrafica(Afinador afinador) {
-		repaint();
+		setLayout(new GridBagLayout());
+		constraints = new GridBagConstraints();
 		this.afinador = afinador;
 		this.captura = afinador.getCaptura();
 		inicio = true;
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {e.printStackTrace();}
-		inicializarBombillas();
 		inicializarSlider();
 		inicializarDisplay();
+		inicializarBombillas();
 		inicializarFrame();
 		inicializarDialog();
 	}
 	
-	private void inicializarBombillas() {
-		bombillas = new Bombilla[6];
-		for (int i = 0; i < 6; i++) {
-			bombillas[i] = new Bombilla(i);
-			this.add(bombillas[i]);
-		}
-	}
-	
 	private void inicializarSlider() {
 		slider = new Slider();
-		this.add(slider);
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.gridwidth = 6;
+		constraints.anchor = GridBagConstraints.CENTER;
+		this.add(slider, constraints);
 	}
 	
 	private void inicializarDisplay() {
 		display = new Display();
-		this.add(display);
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		constraints.gridwidth = 6;
+		this.add(display, constraints);
+	}
+	
+	private void inicializarBombillas() {
+		bombillas = new Bombilla[6];
+		constraints.gridx = 0;
+		constraints.gridy = 3;
+		constraints.gridwidth = 1;
+		
+		for (int i = 0; i < 6; i++) {
+			bombillas[i] = new Bombilla(i);
+			constraints.gridx = i;
+			this.add(bombillas[i], constraints);
+		}
 	}
 	
 	private void inicializarDialog() {
