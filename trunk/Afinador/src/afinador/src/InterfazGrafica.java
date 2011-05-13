@@ -11,11 +11,16 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
@@ -31,6 +36,9 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	private Slider slider;
 	private Display display;
 	private GridBagConstraints constraints;
+	private JMenuBar barra;
+	private JMenu mArchivo, mHerramientas, mAyuda;
+	private JMenuItem iSalir, iOpciones, iAbout;
 	
 	public InterfazGrafica(Afinador afinador) {
 		setLayout(new GridBagLayout());
@@ -42,11 +50,16 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {e.printStackTrace();}
+		inicializarMenuBar();
 		inicializarSlider();
 		inicializarDisplay();
 		inicializarBombillas();
 		inicializarFrame();
 		inicializarDialog();
+	}
+	
+	private void inicializarMenuBar() {
+		
 	}
 	
 	private void inicializarSlider() {
@@ -113,9 +126,12 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	}
 
 	private void inicializarFrame() {
+		ImageIcon pua = new ImageIcon("."+File.separator+"bin"+File.separator+"afinador"+File.separator+"img"+File.separator+"puaCW.png");
 		Dimension dPantalla, dVentana;
-		ventana = new JFrame();
+		ventana = new JFrame("ChustaTuner v1.0");
+		ventana.setIconImage(pua.getImage());
 		ventana.add(this);
+		ventana.setResizable(false);
 		ventana.pack();
 		dPantalla = Toolkit.getDefaultToolkit().getScreenSize(); // Dimensiones en pixels de la pantalla.
         dVentana = ventana.getSize(); // Dimensiones en pixels de la ventana.
