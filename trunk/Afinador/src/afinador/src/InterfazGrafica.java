@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Event;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,7 +14,10 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 import javax.swing.Action;
@@ -162,36 +166,70 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	
 	private void inicializarDialogAbout() {
 		JTextArea areaInfo, areaAutores;
-		JPanel pImagen;
+		JPanel pImagen, pBajo;
+		JButton bOk = new JButton("OK");
 		Color color = new Color(240,240,240);
 		GridBagConstraints c = new GridBagConstraints();
+		GridBagConstraints cBajo = new GridBagConstraints();
+		Font fuente = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
 		vAbout = new JDialog(ventana,"Acerca de "+titulo,true);
 		vAbout.setLayout(new GridBagLayout());
-		
-		c.insets = new Insets(15, 15, 15, 15);
-		
 		areaInfo = new JTextArea();
 		areaAutores = new JTextArea();
+		pBajo = new JPanel();
 		pImagen = new JPanel() {
 			
 			public void paint(Graphics g) {
 				g.drawImage(pua.getImage(), 0, 0, this);
 			}
 		};
+		pBajo.setLayout(new GridBagLayout());
+		pBajo.setBackground(Color.WHITE);
 		pImagen.setPreferredSize(new Dimension(pua.getIconWidth(), pua.getIconHeight()));
 		pImagen.setBackground(color);
-		vAbout.add(pImagen, c);
-		
-		c.gridx = 1;
 		areaInfo.setText(titulo+"\nversion 1.0\nBuild ID: 20110513\n\nhttp://code.google.com/p/chustaware/");
+		areaInfo.setFont(fuente);
 		areaInfo.setBackground(color);
 		areaInfo.setEditable(false);
 		areaInfo.setBorder(null);
-		vAbout.add(areaInfo, c);
+		areaAutores.setText("Autores:\n"+autores);
+		areaAutores.setFont(fuente);
+		areaAutores.setEditable(false);
+		areaAutores.setBorder(null);
 		
+		c.insets = new Insets(15, 15, 15, 15);
+		vAbout.add(pImagen, c);
+		c.gridx = 1;
+		vAbout.add(areaInfo, c);
+		c.gridx = 0;
 		c.gridy = 1;
 		c.gridwidth = 2;
-		areaInfo.setText(autores);
+		c.fill = GridBagConstraints.BOTH;
+		c.insets = new Insets(0, 0, 0, 0);
+		
+		cBajo.anchor = GridBagConstraints.WEST;
+		cBajo.weightx = 1.0;
+		cBajo.insets = new Insets(15, 15, 15, 15);
+		pBajo.add(areaAutores, cBajo);
+		cBajo.gridx = 1;
+		cBajo.anchor = GridBagConstraints.SOUTHEAST;
+		pBajo.add(bOk, cBajo);
+		vAbout.add(pBajo, c);
+		
+		bOk.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				vAbout.dispose();
+			}
+		});
+		// no funciona, arreglar o suprimir
+		bOk.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					vAbout.dispose();
+				}
+			}
+		});
 		
 		ajustesDialog(vAbout);
 	}
