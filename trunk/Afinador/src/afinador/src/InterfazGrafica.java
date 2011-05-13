@@ -2,6 +2,7 @@ package afinador.src;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.Font;
@@ -16,15 +17,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -33,6 +39,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 public class InterfazGrafica extends JPanel implements ActionListener {
 	private final static String titulo = "CWTuner";
@@ -165,7 +173,90 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	}
 	
 	private void inicializarDialogAbout() {
-		JTextArea areaInfo, areaAutores;
+		JEditorPane editorInfo; //zona de informacion
+		JPanel pImagen, pBajo; //panel pua, panel zona desarrolladores
+		JTextArea areaAutores; //texto zona de desarrolladores
+		
+		GridBagConstraints constraints = new GridBagConstraints();
+		
+		editorInfo = new JEditorPane();
+		editorInfo.setContentType("text/html");
+		editorInfo.setText(titulo+"<br>version 1.0<br>Build ID: 20110513<br><br>Agradecimientos:<br><a href=\"http://www.nauticom.net/www/jdtaft/JavaFFT.htm\">FFT</a>, <a href=\"http://www.nauticom.net/www/jdtaft/JavaWindows.htm\">Window</a>");
+		editorInfo.setEditable(false);
+		editorInfo.addHyperlinkListener(new HyperlinkListener() {
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+					try {
+						Desktop.getDesktop().browse(
+								new URI((e.getURL()).toString()));
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		vAbout = new JDialog(ventana,"Acerca de "+titulo,true);
+		editorInfo.setBackground(vAbout.getBackground());
+		vAbout.setLayout(new GridBagLayout());
+		
+		constraints.gridx = 1;
+		constraints.gridy = 0;
+		constraints.gridwidth = 1;
+		constraints.gridheight = 1;
+		constraints.weightx = 1.0;
+		constraints.weighty = 1.0;
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.insets = new Insets(0, 0, 15, 0);
+		vAbout.add(editorInfo, constraints);
+		
+		pImagen = new JPanel() {
+
+			public void paint(Graphics g) {
+				g.drawImage(pua.getImage(), 0, 0, this);
+			}
+		};
+		
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.gridwidth = 1;
+		constraints.gridheight = 1;
+		constraints.insets = new Insets(15, 15, 15, 15);
+		
+		vAbout.add(pImagen,constraints);
+		
+		pBajo = new JPanel();
+		pBajo.setLayout(new GridBagLayout());
+		pBajo.setBackground(Color.WHITE);
+		areaAutores=new JTextArea("Autores:\n"+autores);
+		areaAutores.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+		pBajo.add(areaAutores, constraints);
+		
+		constraints.gridx=1;
+		constraints.gridy=0;
+		constraints.anchor = GridBagConstraints.SOUTHEAST;
+		constraints.fill = GridBagConstraints.NONE;
+		JButton bOK = new JButton("OK");
+		bOK.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				vAbout.dispose();
+			}
+		});
+		pBajo.add(bOK, constraints);
+		
+		constraints.gridx=0;
+		constraints.gridy=1;
+		constraints.gridwidth = 2;
+		constraints.weightx = 0.0;
+		constraints.weighty = 0.0;
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.insets = new Insets(0, 0, 0, 0);
+		vAbout.add(pBajo, constraints);
+		ajustesDialog(vAbout);
+		
+		
+		/*JTextArea areaInfo, areaAutores;
 		JPanel pImagen, pBajo;
 		JButton bOk = new JButton("OK");
 		Color color = new Color(240,240,240);
@@ -231,7 +322,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 			}
 		});
 		
-		ajustesDialog(vAbout);
+		ajustesDialog(vAbout);*/
 	}
 	
 	private void ajustesDialog(JDialog dialog) {
