@@ -63,7 +63,7 @@ public class Display extends JComponent {
 		g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 50));
 		fm = g.getFontMetrics();
 		g.drawImage(fondo.getImage(), 0, 0, this);
-		x = getWidth() / 2 - fm.stringWidth(notas[nNota]) / 2;
+		x = getWidth() / 2 - fm.stringWidth(notas[nNota+1]) / 2;
 		y = getHeight() / 2 + fm.getHeight() / 4;
 		g.drawString(notas[nNota+1], x, y);
 	}

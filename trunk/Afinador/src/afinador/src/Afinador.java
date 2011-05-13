@@ -84,13 +84,13 @@ public class Afinador extends Thread{
 		}
 	}
 	public void afinarDeUnaPutaVez(){
-		double umbral=100000;
+		double umbral=1000;
 		captura.capturar();
 		afinando=true;
 		double amplitudMax=0;
 		int frecMax=0;
 		while(afinando){
-			for (int i = 20; i < 1000; i++) {
+			for (int i = 30; i < 1000; i++) {
 				if (frecuencia[i] < umbral)
 					continue;
 				if(frecuencia[i]>amplitudMax){
