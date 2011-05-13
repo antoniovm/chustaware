@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,6 +35,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	public InterfazGrafica(Afinador afinador) {
 		setLayout(new GridBagLayout());
 		constraints = new GridBagConstraints();
+		constraints.insets = new Insets(15, 15, 15, 15);
 		this.afinador = afinador;
 		this.captura = afinador.getCaptura();
 		inicio = true;
@@ -50,7 +52,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	private void inicializarSlider() {
 		slider = new Slider();
 		constraints.gridx = 0;
-		constraints.gridy = 0;
+		constraints.gridy = 1;
 		constraints.gridwidth = 6;
 		constraints.anchor = GridBagConstraints.CENTER;
 		this.add(slider, constraints);
@@ -59,7 +61,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	private void inicializarDisplay() {
 		display = new Display();
 		constraints.gridx = 0;
-		constraints.gridy = 1;
+		constraints.gridy = 0;
 		constraints.gridwidth = 6;
 		this.add(display, constraints);
 	}
