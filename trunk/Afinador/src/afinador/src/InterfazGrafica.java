@@ -435,7 +435,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 
 	public void pintar() {
 		while(true){
-			slider.setOffset((int)afinador.getDesafinio());
+			slider.setOffset((int)afinador.getDesafinio()*16);	//escala de slider
 			display.setnNota(afinador.getNotaReal());
 			/*try {
 				Thread.sleep(100);
