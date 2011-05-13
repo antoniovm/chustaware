@@ -26,10 +26,14 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
 public class InterfazGrafica extends JPanel implements ActionListener {
+	private final static String titulo = "CWTuner";
+	private final static String autores = "Jorge Garcia Hinestrosa\nSergio Revueltas Estrada\nMiguel Vicente Linares\nAntonio Vicente Martin";
+	private final static ImageIcon pua = new ImageIcon("."+File.separator+"bin"+File.separator+"afinador"+File.separator+"img"+File.separator+"puaCW.png");
 	private Afinador afinador;	//Para mostrar los valores que se manejan en esta clase
 	private Captura captura;	//Para configurar los parametros de entrada de audio
 	private JComboBox mezcladores;
@@ -56,13 +60,13 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {e.printStackTrace();}
 		
-		inicializarDialogOpciones();
-		inicializarDialogInstrucciones();
-		inicializarDialogAbout();
 		inicializarSlider();
 		inicializarDisplay();
 		inicializarBombillas();
 		inicializarFrame();
+		inicializarDialogOpciones();
+		inicializarDialogInstrucciones();
+		inicializarDialogAbout();
 	}
 	
 	private void inicializarMenuBar() {
@@ -74,7 +78,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		iSalir = new JMenuItem("Salir");
 		iOpciones = new JMenuItem("Opciones");
 		iInstrucciones = new JMenuItem("Instrucciones");
-		iAbout = new JMenuItem("Acerca de ChustaTuner");
+		iAbout = new JMenuItem("Acerca de "+titulo);
 		
 		iSalir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.ALT_MASK));
 		iOpciones.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
@@ -148,15 +152,47 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		ventanaInicio.add(p);
 		
 		ajustesDialog(ventanaInicio);
+		ventanaInicio.setVisible(true);
 	}
 	
 	private void inicializarDialogInstrucciones() {
-		vInstrucciones = new JDialog(ventana, "AYUDA", true);
+		vInstrucciones = new JDialog(ventana, "Instrucciones de uso", true);
 		ajustesDialog(vInstrucciones);
 	}
 	
 	private void inicializarDialogAbout() {
-		vAbout = new JDialog(ventana,"AYUDA",true);
+		JTextArea areaInfo, areaAutores;
+		JPanel pImagen;
+		Color color = new Color(240,240,240);
+		GridBagConstraints c = new GridBagConstraints();
+		vAbout = new JDialog(ventana,"Acerca de "+titulo,true);
+		vAbout.setLayout(new GridBagLayout());
+		
+		c.insets = new Insets(15, 15, 15, 15);
+		
+		areaInfo = new JTextArea();
+		areaAutores = new JTextArea();
+		pImagen = new JPanel() {
+			
+			public void paint(Graphics g) {
+				g.drawImage(pua.getImage(), 0, 0, this);
+			}
+		};
+		pImagen.setPreferredSize(new Dimension(pua.getIconWidth(), pua.getIconHeight()));
+		pImagen.setBackground(color);
+		vAbout.add(pImagen, c);
+		
+		c.gridx = 1;
+		areaInfo.setText(titulo+"\nversion 1.0\nBuild ID: 20110513\n\nhttp://code.google.com/p/chustaware/");
+		areaInfo.setBackground(color);
+		areaInfo.setEditable(false);
+		areaInfo.setBorder(null);
+		vAbout.add(areaInfo, c);
+		
+		c.gridy = 1;
+		c.gridwidth = 2;
+		areaInfo.setText(autores);
+		
 		ajustesDialog(vAbout);
 	}
 	
@@ -169,9 +205,8 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	}
 
 	private void inicializarFrame() {
-		ImageIcon pua = new ImageIcon("."+File.separator+"bin"+File.separator+"afinador"+File.separator+"img"+File.separator+"puaCW.png");
 		Dimension dPantalla, dVentana;
-		ventana = new JFrame("ChustaTuner v1.0");
+		ventana = new JFrame(titulo+" v1.0");
 		ventana.setIconImage(pua.getImage());
 		inicializarMenuBar();
 		ventana.add(this, BorderLayout.CENTER);
