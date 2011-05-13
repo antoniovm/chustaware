@@ -1,5 +1,6 @@
 package afinador.src;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
@@ -38,7 +39,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	private GridBagConstraints constraints;
 	private JMenuBar barra;
 	private JMenu mArchivo, mHerramientas, mAyuda;
-	private JMenuItem iSalir, iOpciones, iAbout;
+	private JMenuItem iSalir, iOpciones, iAbout, iInstrucciones;
 	
 	public InterfazGrafica(Afinador afinador) {
 		setLayout(new GridBagLayout());
@@ -50,7 +51,6 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {e.printStackTrace();}
-		inicializarMenuBar();
 		inicializarSlider();
 		inicializarDisplay();
 		inicializarBombillas();
@@ -59,6 +59,17 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	}
 	
 	private void inicializarMenuBar() {
+		barra = new JMenuBar();
+		mArchivo = new JMenu("Archivo");
+		mHerramientas = new JMenu("Herramientas");
+		mAyuda = new JMenu("Ayuda");
+		iSalir = new JMenuItem("Salir");
+		iOpciones = new JMenuItem("Opciones");
+		iInstrucciones = new JMenuItem("Instrucciones");
+		iAbout = new JMenuItem("Acerca de ChustaTuner");
+		ventana.setJMenuBar(barra);
+		mArchivo.add(iSalir);
+		barra.add(mArchivo);
 		
 	}
 	
@@ -130,7 +141,8 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		Dimension dPantalla, dVentana;
 		ventana = new JFrame("ChustaTuner v1.0");
 		ventana.setIconImage(pua.getImage());
-		ventana.add(this);
+		inicializarMenuBar();
+		ventana.add(this, BorderLayout.CENTER);
 		ventana.setResizable(false);
 		ventana.pack();
 		dPantalla = Toolkit.getDefaultToolkit().getScreenSize(); // Dimensiones en pixels de la pantalla.
