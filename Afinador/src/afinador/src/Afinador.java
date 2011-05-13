@@ -190,7 +190,7 @@ public class Afinador extends Thread{
 			}
 		}
 	}
-		/*
+		/*Intento fallido de busqueda binaria...
 		while(inf<=sup){
 			centro=((sup - inf) / 2) + inf;
 			
