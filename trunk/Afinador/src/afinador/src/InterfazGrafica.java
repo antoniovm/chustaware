@@ -3,6 +3,7 @@ package afinador.src;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Event;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,8 +13,10 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,6 +26,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
 public class InterfazGrafica extends JPanel implements ActionListener {
@@ -32,7 +36,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	private JButton bAceptar;
 	private boolean inicio;
 	private JFrame ventana;
-	private JDialog ventanaInicio;
+	private JDialog ventanaInicio, vInstrucciones, vAbout;
 	private Bombilla[]bombillas;
 	private Slider slider;
 	private Display display;
@@ -43,19 +47,23 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	
 	public InterfazGrafica(Afinador afinador) {
 		setLayout(new GridBagLayout());
-		constraints = new GridBagConstraints();
-		constraints.insets = new Insets(15, 15, 15, 15);
+		this.constraints = new GridBagConstraints();
+		this.constraints.insets = new Insets(15, 15, 15, 15);
 		this.afinador = afinador;
 		this.captura = afinador.getCaptura();
-		inicio = true;
+		this.inicio = true;
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {e.printStackTrace();}
+		vInstrucciones = new JDialog(ventana, "AYUDA", true);
+		vAbout = new JDialog(ventana,"AYUDA",true);
+		ajustesDialog(vInstrucciones);
+		ajustesDialog(vAbout);
+		inicializarDialogOpciones();
 		inicializarSlider();
 		inicializarDisplay();
 		inicializarBombillas();
 		inicializarFrame();
-		inicializarDialog();
 	}
 	
 	private void inicializarMenuBar() {
@@ -63,14 +71,30 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		mArchivo = new JMenu("Archivo");
 		mHerramientas = new JMenu("Herramientas");
 		mAyuda = new JMenu("Ayuda");
+		
 		iSalir = new JMenuItem("Salir");
 		iOpciones = new JMenuItem("Opciones");
 		iInstrucciones = new JMenuItem("Instrucciones");
 		iAbout = new JMenuItem("Acerca de ChustaTuner");
-		ventana.setJMenuBar(barra);
-		mArchivo.add(iSalir);
-		barra.add(mArchivo);
 		
+		iSalir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.ALT_MASK));
+		iOpciones.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+		iInstrucciones.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+		mArchivo.add(iSalir);
+		mHerramientas.add(iOpciones);
+		mAyuda.add(iInstrucciones);
+		mAyuda.add(iAbout);
+		
+		barra.add(mArchivo);
+		barra.add(mHerramientas);
+		barra.add(mAyuda);
+		
+		ventana.setJMenuBar(barra);
+		
+		iSalir.addActionListener(this);
+		iOpciones.addActionListener(this);
+		iInstrucciones.addActionListener(this);
+		iAbout.addActionListener(this);
 	}
 	
 	private void inicializarSlider() {
@@ -104,8 +128,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		}
 	}
 	
-	private void inicializarDialog() {
-		Dimension dPantalla, dVentana;
+	private void inicializarDialogOpciones() {
 		JPanel p = new JPanel();
 		ventanaInicio = new JDialog(ventana, "Seleccione un mezclador", true);
 		mezcladores = new JComboBox();
@@ -125,15 +148,15 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		p.add(bAceptar);
 		ventanaInicio.add(p);
 		
-		ventanaInicio.setResizable(false);
-		ventanaInicio.pack();
-        dPantalla = Toolkit.getDefaultToolkit().getScreenSize(); // Dimensiones en pixels de la pantalla.
-        dVentana = ventanaInicio.getSize(); // Dimensiones en pixels de la ventana.
-        // Situamos la ventana en el centro de la pantalla.
-        ventanaInicio.setLocation((dPantalla.width - dVentana.width) / 2, (dPantalla.height - dVentana.height) / 2);
-		ventanaInicio.setVisible(true);
-		ventanaInicio.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
+		ajustesDialog(ventanaInicio);
+	}
+	
+	private void ajustesDialog(JDialog dialog) {
+		dialog.setResizable(false);
+		dialog.pack();
+		centrarDialog(dialog);
+		dialog.dispose();
+		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
 	private void inicializarFrame() {
@@ -154,9 +177,28 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		
 	}
 	
+	private void centrarDialog(JDialog dialog) {
+		Dimension dPantalla, dVentana;
+		dPantalla = Toolkit.getDefaultToolkit().getScreenSize(); // Dimensiones en pixels de la pantalla.
+        dVentana = dialog.getSize(); // Dimensiones en pixels de la ventana.
+        // Situamos la ventana en el centro de la pantalla.
+        dialog.setLocation((dPantalla.width - dVentana.width) / 2, (dPantalla.height - dVentana.height) / 2);
+	}
+	
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		if (e.getSource() == iSalir) {
+			System.exit(0);
+		}
+		if (e.getSource() == iOpciones) {
+			ventanaInicio.setVisible(true);
+		}
+		if (e.getSource() == iInstrucciones) {
+			vInstrucciones.setVisible(true);
+		}
+		if (e.getSource() == iAbout) {
+			vAbout.setVisible(true);
+		}
+
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -174,9 +216,6 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		if(!inicio) {
 			
 		}
-		/*GradientPaint gr = new GradientPaint(0, 0, Color.black, 0, getHeight(), Color.white);
-		((Graphics2D)g).setPaint(gr);
-		((Graphics2D)g).fillRect(0, 0, getWidth(), getHeight());*/
 	}
 
 	public void pintar() {
