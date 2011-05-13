@@ -55,11 +55,10 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {e.printStackTrace();}
-		vInstrucciones = new JDialog(ventana, "AYUDA", true);
-		vAbout = new JDialog(ventana,"AYUDA",true);
-		ajustesDialog(vInstrucciones);
-		ajustesDialog(vAbout);
+		
 		inicializarDialogOpciones();
+		inicializarDialogInstrucciones();
+		inicializarDialogAbout();
 		inicializarSlider();
 		inicializarDisplay();
 		inicializarBombillas();
@@ -149,6 +148,16 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		ventanaInicio.add(p);
 		
 		ajustesDialog(ventanaInicio);
+	}
+	
+	private void inicializarDialogInstrucciones() {
+		vInstrucciones = new JDialog(ventana, "AYUDA", true);
+		ajustesDialog(vInstrucciones);
+	}
+	
+	private void inicializarDialogAbout() {
+		vAbout = new JDialog(ventana,"AYUDA",true);
+		ajustesDialog(vAbout);
 	}
 	
 	private void ajustesDialog(JDialog dialog) {
