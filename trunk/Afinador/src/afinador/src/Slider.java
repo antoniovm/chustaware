@@ -29,7 +29,7 @@ public class Slider extends JComponent {
 
 		g.drawImage(barra.getImage(), 0, getHeight()/2, barra.getIconWidth(), barra.getIconHeight(), this);
 		//g.drawImage(pua.getImage(), this.getWidth()/2-pua.getIconWidth()/2+offset, 0, pua.getIconWidth(), pua.getIconHeight(), this);
-		g.drawImage(pua.getImage(), this.getWidth()/2-pua.getIconWidth()/2+offset, 0, pua.getIconWidth(), pua.getIconHeight(), this);
+		g.drawImage(pua.getImage(), this.getWidth()/2-pua.getIconWidth()/2+offset, -4, pua.getIconWidth(), pua.getIconHeight(), this);
 	}
 	
 	public int getOffset() {
