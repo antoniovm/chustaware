@@ -82,19 +82,24 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	}
 	
 	private void inicializarMenuBar() {
+		//barra de menu
 		barra = new JMenuBar();
 		mArchivo = new JMenu("Archivo");
 		mHerramientas = new JMenu("Herramientas");
 		mAyuda = new JMenu("Ayuda");
 		
+		//desplegables
 		iSalir = new JMenuItem("Salir");
 		iOpciones = new JMenuItem("Opciones");
 		iInstrucciones = new JMenuItem("Instrucciones");
 		iAbout = new JMenuItem("Acerca de "+titulo);
 		
+		//atajos de teclado
 		iSalir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.ALT_MASK));
 		iOpciones.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		iInstrucciones.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+		
+		//añadir
 		mArchivo.add(iSalir);
 		mHerramientas.add(iOpciones);
 		mAyuda.add(iInstrucciones);
@@ -106,6 +111,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		
 		ventana.setJMenuBar(barra);
 		
+		//escuchar
 		iSalir.addActionListener(this);
 		iOpciones.addActionListener(this);
 		iInstrucciones.addActionListener(this);
@@ -152,17 +158,19 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		for (int i = 0; i < captura.getEntradas().length; i++) {
 			mezcladores.addItem(captura.getEntradas()[i].getMixerInfo().getName());
 		}
-		bAceptar.addActionListener(new ActionListener() {
-			
+		
+		bAceptar.addActionListener(new ActionListener() {	
 			public void actionPerformed(ActionEvent e) {
 				captura.buscarMezclador((String) mezcladores.getSelectedItem());
 				ventanaInicio.dispose();
 			}
 		});
+		
 		p.add(mezcladores);
 		p.add(bAceptar);
 		ventanaInicio.add(p);
 		
+		//aceptar dando a enter, focus para textfield
 		mezcladores.setFocusable(true);
 		mezcladores.requestFocusInWindow();
 		mezcladores.addKeyListener(
@@ -187,13 +195,13 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	
 	private void inicializarDialogAbout() {
 		vAbout = new JDialog(ventana,"Acerca de "+titulo,true);
-		vAbout.setModal(true);
-		JEditorPane editorInfo; //zona de informacion
+		JEditorPane editorInfo; //zona de informacion, acepta HTML
 		JPanel pImagen, pBajo; //panel pua, panel zona desarrolladores
 		JTextArea areaAutores; //texto zona de desarrolladores
 		
 		GridBagConstraints constraints = new GridBagConstraints();
 		
+		//zona informacion, usando HTML
 		editorInfo = new JEditorPane();
 		editorInfo.setContentType("text/html");
 		editorInfo.setText(titulo+"<br>version 1.0<br>Build ID: 20110513<br>© 2011<br><br>Agradecimientos:<br><a href=\"http://www.nauticom.net/www/jdtaft/JavaFFT.htm\">FFT</a>, <a href=\"http://www.nauticom.net/www/jdtaft/JavaWindows.htm\">Window</a>");
@@ -203,7 +211,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 				if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 					try {
 						Desktop.getDesktop().browse(
-								new URI((e.getURL()).toString()));
+								new URI((e.getURL()).toString())); //abre el navegador por defecto
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					} catch (URISyntaxException e1) {
@@ -213,7 +221,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 			}
 		});
 		
-		editorInfo.setBackground(vAbout.getBackground());
+		editorInfo.setBackground(vAbout.getBackground()); //todo el panel superior del mismo color
 		vAbout.setLayout(new GridBagLayout());
 		
 		constraints.gridx = 1;
@@ -226,8 +234,8 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		constraints.insets = new Insets(0, 0, 15, 0);
 		vAbout.add(editorInfo, constraints);
 		
+		//panel de la pua
 		pImagen = new JPanel() {
-
 			public void paint(Graphics g) {
 				g.drawImage(pua.getImage(), 0, 0, this);
 			}
@@ -238,17 +246,20 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		constraints.gridwidth = 1;
 		constraints.gridheight = 1;
 		constraints.insets = new Insets(15, 15, 15, 15);
-		
 		vAbout.add(pImagen,constraints);
 		
+		//panel inferior, desarrolladores
 		pBajo = new JPanel();
 		pBajo.setLayout(new GridBagLayout());
 		pBajo.setBackground(Color.WHITE);
+		
+		//texto desarrolladores, reutilizamos valores anteriores de constraints
 		areaAutores=new JTextArea("Desarrolladores:\n"+autores);
 		areaAutores.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 		areaAutores.setEditable(false);
 		pBajo.add(areaAutores, constraints);
 		
+		//boton OK
 		constraints.gridx=1;
 		constraints.gridy=0;
 		constraints.anchor = GridBagConstraints.SOUTHEAST;
@@ -261,6 +272,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		});
 		pBajo.add(bOK, constraints);
 		
+		//añadir panel con textarea y boton OK
 		constraints.gridx=0;
 		constraints.gridy=1;
 		constraints.gridwidth = 2;
@@ -270,7 +282,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		constraints.insets = new Insets(0, 0, 0, 0);
 		vAbout.add(pBajo, constraints);
 		
-		//esta es la clave
+		//esta es la clave, ponemos a la escucha el dialog, no el boton
 		vAbout.setFocusable(true);
 		vAbout.requestFocusInWindow();
 		vAbout.addKeyListener(
@@ -405,6 +417,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		//gradiente
 		Color color1 = new Color(12,74,88);
 		Color color2 = new Color(51,141,209);
 		GradientPaint gr = new GradientPaint(0, 0, color1, 0, getHeight(), color2);
