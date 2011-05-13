@@ -127,18 +127,33 @@ public class Afinador extends Thread{
 			
 		}
 	}
+	public int calcularOctava(int i){
+		int aux=(int)escalarFrecuencia();
+		int j;
+		for (j = -1; aux < notas[i]; j++) {
+			aux/=2;
+		}
+		return j;
+	}
+	public double calcularPuntoMedio(int nota,int octava){
+		if(nota==notas.length-1)
+			return (notas[nota+1]*Math.pow(2, octava+1)-notas[nota]*Math.pow(2, octava))/2;
+		return (notas[nota+1]*Math.pow(2, octava)-notas[nota]*Math.pow(2, octava))/2;
+	}
 	
 	private void calcularNota() {
-		int exceso=Integer.MAX_VALUE, defecto=Integer.MIN_VALUE, octavaExceso=0,octavaDefecto=0, notaExceso=-1, notaDefecto=-1;
+		int octavaExceso=0,octavaDefecto=0, notaExceso=-1, notaDefecto=-1;
+		double exceso=Double.MAX_VALUE,defecto=Double.MIN_VALUE;
 		for (int i = 0; i < notas.length; i++) {
 			if((escalarFrecuencia()%notas[i])<exceso){	//Vemos si esta cerca por encima de la nota
-				exceso=(int)(escalarFrecuencia()%notas[i]);
-				octavaExceso=(int)(escalarFrecuencia()/notas[i]);
+				exceso=escalarFrecuencia()%notas[i];
+				octavaExceso=calcularOctava(i);
+				//if(exceso<calcularPuntoMedio(nota, octavaDefecto))
 				notaExceso=i;
 			}
 			if((escalarFrecuencia()%notas[i]-notas[i])>defecto){//Vemos si esta cerca por debajo de la nota
-				defecto=(int)(escalarFrecuencia()%notas[i]-notas[i]);
-				octavaDefecto=(int)(escalarFrecuencia()/notas[i]);
+				defecto=escalarFrecuencia()%notas[i]-notas[i];
+				octavaDefecto=calcularOctava(i);
 				notaDefecto=i;
 			}
 				
@@ -168,8 +183,11 @@ public class Afinador extends Thread{
 	public void setCaptura(Captura captura) {
 		this.captura = captura;
 	}
-	
+	/**
+	 * Escala frecuencia de 32K a 22K
+	 * @return
+	 */
 	private double escalarFrecuencia(){
-		return captura.NUMERO_DE_MUESTRAS*pitch/22050;
+		return (captura.getAudioFormat().getSampleRate()/2)*pitch/captura.NUMERO_DE_MUESTRAS;
 	}
 }

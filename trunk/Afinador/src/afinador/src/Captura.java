@@ -6,7 +6,7 @@ import javax.sound.sampled.Line.Info;
 public class Captura extends Thread {
 
 	public static final int NUMERO_DE_MUESTRAS=32768;
-	private byte[] tiempo; // Buffer de datos de audio en el dominio del tiempo
+	private byte[] tiempo; // Buffer de datos de audio en el dominio del tiempo 
 	private double[] frecuencia; // Buffer de datos de audio en el dominio del tiempo
 	private AudioFormat audioFormat; // Formato de audio de entrada
 	private Mixer.Info[] mixerInfo;  //Lista de mezcladores disponibles
@@ -81,11 +81,11 @@ public class Captura extends Thread {
 	}
 
 	private void formatoAudioPorDefecto() {
-		float frecuenciaMuestreo = 22050;
+		float frecuenciaMuestreo = 16000;
 		// 8000,11025,16000,22050,44100
 		int tamanoMuestraBits = 8;
 		// 8,16
-		int canales = 1;
+		int canales = 2;
 		// 1,2
 		boolean signo = true;
 		// true,false

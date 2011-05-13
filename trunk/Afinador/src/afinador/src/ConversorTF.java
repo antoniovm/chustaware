@@ -13,7 +13,7 @@ public class ConversorTF{
 		for (int i = 0; i < nMuestras/2-1; i++) {
 			// System.err.print(".");
 			/* Parte real, muestra izquierda. */
-			buffer[i][0] = (double) (tiempo[2 * i + 1] * 256 + tiempo[2 * i]);
+			buffer[i][0] = (double) (tiempo[4 * i + 3] * 256 + tiempo[4 * i + 2]);
 			/* Parte imaginaria, muestra izquierda. */
 			buffer[i][1] = 0.0;
 		}
