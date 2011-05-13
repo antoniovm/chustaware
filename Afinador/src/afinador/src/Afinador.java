@@ -14,7 +14,14 @@ public class Afinador extends Thread{
 	private int pitch, notaReal, octava;
 	private double desafinio;
 	private boolean afinando;
-	
+	//Primera Octava (Hz):       Do     Do#    	Re 	    Re#	    Mi	    Fa   	Fa#	    Sol	   	Sol#	La 	    La#    	Si 
+	private double [] notasTot={32.7, 	34.65, 	36.71,	38.89,	41.2,	43.65, 	46.25, 	49.00, 	51.91, 	55.00, 	58.27, 	61.74,
+								65.41, 	69.3,	73.42, 	77.78, 	82.41, 	87.31,	92.5, 	98,		103.83, 110, 	116.54, 123.47,
+								130.81,	138.59,	146.83,	155.56,	164.81,	174.61,	185,	196, 	207.65, 220,	233.08, 246.94,
+								261.63, 277.18, 293.66, 311.13, 329.63, 349.23, 369.99, 392, 	415.3,	440, 	466.16, 493.88,
+								523.25, 554.37, 587.33, 622.25, 659.26, 698.46, 739.99, 783.99, 830.61, 880, 	932.33, 987.77};
+
+
 	public Afinador() {
 		captura = new Captura();
 		frecuencia=captura.getFrecuencia();
@@ -76,6 +83,28 @@ public class Afinador extends Thread{
 			
 		}
 	}
+	public void afinarDeUnaPutaVez(){
+		double umbral=100000;
+		captura.capturar();
+		afinando=true;
+		double amplitudMax=0;
+		int frecMax=0;
+		while(afinando){
+			for (int i = 20; i < 1000; i++) {
+				if (frecuencia[i] < umbral)
+					continue;
+				if(frecuencia[i]>amplitudMax){
+					amplitudMax=frecuencia[i];
+					frecMax=i;
+				}
+			}
+			pitch=frecMax;
+			calcularNotaDeUnaPutaVez();
+			System.out.println("FRECUENCIA: "+escalarFrecuencia() + "\t DESAFINIO: " + desafinio+ "\t OCTAVA: " + octava);
+			frecMax=0;
+			amplitudMax=0;
+		}
+	}
 	public void afinarPitch(){
 		boolean esPitch=true;
 		double umbral=1000000;
@@ -107,13 +136,13 @@ public class Afinador extends Thread{
 							esPitch=false;
 							break;
 						}
-				
+			
 					}
 					if (!esPitch)
 						continue;
 					pitch = max;
 					calcularNota();
-					//System.out.println(escalarFrecuencia() + "," + desafinio+ "," + octava);
+					System.out.println("FRECUENCIA: "+escalarFrecuencia() + "\t DESAFINIO: " + desafinio+ "\t OCTAVA: " + octava);
 					maxDif = 0;
 					//max=0;
 				}
@@ -137,6 +166,52 @@ public class Afinador extends Thread{
 			return (notas[nota+1]*Math.pow(2, octava+1)-notas[nota]*Math.pow(2, octava))/2;
 		return (notas[nota+1]*Math.pow(2, octava)-notas[nota]*Math.pow(2, octava))/2;
 	}
+	private void calcularNotaDeUnaPutaVez(){
+		double frecuencia=escalarFrecuencia();
+		for (int i = 0; i < notasTot.length; i++) {
+			if(frecuencia == notasTot[i]){	//si encuentra frec igual
+				desafinio=0;
+				notaReal=i%12;
+				octava=calcularOctava(i%12);
+				return;
+			}				
+			if(frecuencia < notasTot[i] && i!=0){	//si encuentra una menor que no es la primera
+				if((notasTot[i] - frecuencia) < (frecuencia - notasTot[i-1])){	//compara restos
+					desafinio=notasTot[i] - frecuencia;
+					notaReal=i%12;
+					octava=calcularOctava(i%12);
+					return;
+				}else{
+					desafinio=frecuencia - notasTot[i-1];
+					notaReal=(i-1)%12;
+					octava=calcularOctava((i-1)%12);
+					return;
+				}
+			}
+		}
+	}
+		/*
+		while(inf<=sup){
+			centro=((sup - inf) / 2) + inf;
+			
+			if(frecuencia == notasTot[centro]){
+				desafinio=0;
+				notaReal=centro%12;
+				octava=calcularOctava(centro%12);
+				return;
+			}
+				break;
+			
+			if(frecuencia < notasTot[centro])
+				sup = centro - 1;
+			else
+				inf = centro + 1;	
+		}
+		if(notasTot[inf] < frecuencia){
+			if(notasTot[inf-1] < frecuencia)
+				
+		}
+		*/
 	
 	private void calcularNota() {
 		int octavaExceso=0,octavaDefecto=0, notaExceso=-1, notaDefecto=-1;
@@ -176,7 +251,8 @@ public class Afinador extends Thread{
 	public void run() {
 		super.run();
 		//afinarEnergia();
-		afinarPitch();
+		//afinarPitch();
+		afinarDeUnaPutaVez();
 	}
 	public Captura getCaptura() {
 		return captura;
