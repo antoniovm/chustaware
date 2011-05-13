@@ -66,61 +66,58 @@ public class Afinador extends Thread{
 		afinando=true;
 		int max=0;
 		while(afinando){
-			for (int i = 1; i < 4500; i++) {
+			for (int i = 1; i < 1000; i++) {
 				if(frecuencia[i]>frecuencia[max])
 					max=i;
 			}
 			pitch=max;
 			calcularNota();
-			System.out.println(escalarFrecuencia()+","+desafinio+","+octava);
+			//System.out.println(escalarFrecuencia()+","+desafinio+","+octava);
 			
 		}
 	}
 	public void afinarPitch(){
+		boolean esPitch=true;
+		double umbral=1000000;
 		captura.capturar();
 		afinando=true;
 		double maxDif=0;
 		int max=0;
-		while(afinando){
-			for (int i = 1; i < 4500; i++) {
-				if((frecuencia[i]-frecuencia[i-1])>Math.abs(maxDif)){
-					maxDif=frecuencia[i]-frecuencia[i-1];	//Buscamos el mayor cambio brusco de energia consecutivo
-					max=i;
-					for (int j = 0; j < 5; j++) {
-						if((frecuencia[i+(j+1)]-frecuencia[i+j])>Math.abs(maxDif)){	//Si en 3 posiciones siguientes no hay un cambio mayor, se establece la componente de energia
-							maxDif=0;
+		while (afinando) {
+			for (int i = 20; i < 1000; i++) {
+				if ((frecuencia[i] < umbral) && (frecuencia[i - 1] < umbral))
+					continue;
+
+				if ((frecuencia[i] - frecuencia[i - 1]) > Math.abs(maxDif)) {
+					maxDif = frecuencia[i] - frecuencia[i - 1]; // Buscamos el
+																// mayor cambio
+																// brusco de
+																// energia
+																// consecutivo
+					max = i;
+					for (int j = 0; j < 3; j++) {
+						if ((frecuencia[i + (j + 1)] < umbral)
+								&& (frecuencia[i + j] < umbral))
+							continue;
+						if ((frecuencia[i + (j + 1)] - frecuencia[i + j]) > Math.abs(maxDif)) { // Si en 3 posiciones siguientes
+												// no hay un cambio mayor, se
+												// establece la componente de
+												// energia
+							maxDif = 0;
+							esPitch=false;
 							break;
 						}
+				
 					}
-					pitch=max;
+					if (!esPitch)
+						continue;
+					pitch = max;
 					calcularNota();
-					System.out.println(escalarFrecuencia()+","+desafinio+","+octava);
-					maxDif=0;
-					}
-					
-					/*if((frecuencia[i+2]-frecuencia[i+1])<Math.abs(maxDif)){
-					if((frecuencia[i+3]-frecuencia[i+2])<Math.abs(maxDif)){
-					if((frecuencia[i+4]-frecuencia[i+3])<Math.abs(maxDif)){
-					if((frecuencia[i+5]-frecuencia[i+4])<Math.abs(maxDif)){
-						
-					
-					}else{
-						maxDif=0;
-						continue;
-					}
-					}else{
-						maxDif=0;
-						continue;
-					}
-					}else{
-						maxDif=0;
-						continue;
-					}
-					}else{
-						maxDif=0;
-						continue;
-					}
-				}*/
+					//System.out.println(escalarFrecuencia() + "," + desafinio+ "," + octava);
+					maxDif = 0;
+					//max=0;
+				}
+
 			}
 			
 			
@@ -130,7 +127,7 @@ public class Afinador extends Thread{
 	public int calcularOctava(int i){
 		int aux=(int)escalarFrecuencia();
 		int j;
-		for (j = -1; aux < notas[i]; j++) {
+		for (j = -1; aux > notas[i]; j++) {
 			aux/=2;
 		}
 		return j;
@@ -143,7 +140,8 @@ public class Afinador extends Thread{
 	
 	private void calcularNota() {
 		int octavaExceso=0,octavaDefecto=0, notaExceso=-1, notaDefecto=-1;
-		double exceso=Double.MAX_VALUE,defecto=Double.MIN_VALUE;
+		double exceso=Double.POSITIVE_INFINITY,defecto=Double.NEGATIVE_INFINITY;
+		
 		for (int i = 0; i < notas.length; i++) {
 			if((escalarFrecuencia()%notas[i])<exceso){	//Vemos si esta cerca por encima de la nota
 				exceso=escalarFrecuencia()%notas[i];
@@ -157,6 +155,9 @@ public class Afinador extends Thread{
 				notaDefecto=i;
 			}
 				
+		}
+		if((notaExceso==notas.length)||(notaDefecto==notas.length)){
+			return; 
 		}
 		if(exceso<Math.abs(defecto)){	//El valor mas pequeño de los 2 es el mas cercano
 			desafinio=exceso;
@@ -174,8 +175,8 @@ public class Afinador extends Thread{
 	@Override
 	public void run() {
 		super.run();
-		afinarEnergia();
-		//afinarPitch();
+		//afinarEnergia();
+		afinarPitch();
 	}
 	public Captura getCaptura() {
 		return captura;
