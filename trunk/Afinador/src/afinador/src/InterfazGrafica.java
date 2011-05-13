@@ -163,6 +163,19 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		p.add(bAceptar);
 		ventanaInicio.add(p);
 		
+		mezcladores.setFocusable(true);
+		mezcladores.requestFocusInWindow();
+		mezcladores.addKeyListener(
+				  new KeyAdapter() {
+				     public void keyPressed(KeyEvent e) {
+				       if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				    	   bAceptar.doClick();
+				    	   /*captura.buscarMezclador((String) mezcladores.getSelectedItem());
+							ventanaInicio.dispose();*/
+				       }
+				     }
+				  });
+		
 		ajustesDialog(ventanaInicio);
 		ventanaInicio.setVisible(true);
 	}
@@ -173,6 +186,8 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	}
 	
 	private void inicializarDialogAbout() {
+		vAbout = new JDialog(ventana,"Acerca de "+titulo,true);
+		vAbout.setModal(true);
 		JEditorPane editorInfo; //zona de informacion
 		JPanel pImagen, pBajo; //panel pua, panel zona desarrolladores
 		JTextArea areaAutores; //texto zona de desarrolladores
@@ -181,7 +196,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		
 		editorInfo = new JEditorPane();
 		editorInfo.setContentType("text/html");
-		editorInfo.setText(titulo+"<br>version 1.0<br>Build ID: 20110513<br><br>Agradecimientos:<br><a href=\"http://www.nauticom.net/www/jdtaft/JavaFFT.htm\">FFT</a>, <a href=\"http://www.nauticom.net/www/jdtaft/JavaWindows.htm\">Window</a>");
+		editorInfo.setText(titulo+"<br>version 1.0<br>Build ID: 20110513<br>© 2011<br><br>Agradecimientos:<br><a href=\"http://www.nauticom.net/www/jdtaft/JavaFFT.htm\">FFT</a>, <a href=\"http://www.nauticom.net/www/jdtaft/JavaWindows.htm\">Window</a>");
 		editorInfo.setEditable(false);
 		editorInfo.addHyperlinkListener(new HyperlinkListener() {
 			public void hyperlinkUpdate(HyperlinkEvent e) {
@@ -197,7 +212,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 				}
 			}
 		});
-		vAbout = new JDialog(ventana,"Acerca de "+titulo,true);
+		
 		editorInfo.setBackground(vAbout.getBackground());
 		vAbout.setLayout(new GridBagLayout());
 		
@@ -229,8 +244,9 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		pBajo = new JPanel();
 		pBajo.setLayout(new GridBagLayout());
 		pBajo.setBackground(Color.WHITE);
-		areaAutores=new JTextArea("Autores:\n"+autores);
+		areaAutores=new JTextArea("Desarrolladores:\n"+autores);
 		areaAutores.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+		areaAutores.setEditable(false);
 		pBajo.add(areaAutores, constraints);
 		
 		constraints.gridx=1;
@@ -253,6 +269,19 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.insets = new Insets(0, 0, 0, 0);
 		vAbout.add(pBajo, constraints);
+		
+		//esta es la clave
+		vAbout.setFocusable(true);
+		vAbout.requestFocusInWindow();
+		vAbout.addKeyListener(
+				  new KeyAdapter() {
+				     public void keyPressed(KeyEvent e) {
+				       if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				          vAbout.dispose();
+				       }
+				     }
+				  });
+		
 		ajustesDialog(vAbout);
 		
 		

@@ -202,7 +202,7 @@ public class Captura extends Thread {
 		for (int i = 0; i < mixerInfo.length; i++) {
 			if(mixerInfo[i].getName().equals(nombre)){
 				this.mezclador=AudioSystem.getMixer(mixerInfo[i]);
-				
+					
 					tarjetaSonido = (TargetDataLine) mezclador.getLine(linea);
 				
 				tarjetaSonido.open(audioFormat);
