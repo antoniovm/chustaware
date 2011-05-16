@@ -77,7 +77,7 @@ public class Captura extends Thread {
 				}*/
 	          
 	        }
-	        System.arraycopy(src, srcPos, dest, destPos, length)
+	        //System.arraycopy(src, srcPos, dest, destPos, length)
 	        ConversorTF.convertir(tiempo, frecuencia, NUMERO_DE_MUESTRAS);
 	      }
 	      tarjetaSonido.stop();
