@@ -1,11 +1,13 @@
 package afinador.src;
 
+import java.lang.reflect.Array;
+
 import javax.sound.sampled.*;
 import javax.sound.sampled.Line.Info;
 
 public class Captura extends Thread {
 
-	public static final int NUMERO_DE_MUESTRAS=32768;
+	public static final int NUMERO_DE_MUESTRAS=32*1024;
 	private byte[] tiempo; // Buffer de datos de audio en el dominio del tiempo 
 	private double[] frecuencia; // Buffer de datos de audio en el dominio del tiempo
 	private AudioFormat audioFormat; // Formato de audio de entrada
@@ -35,8 +37,9 @@ public class Captura extends Thread {
 		mixerInfo = AudioSystem.getMixerInfo();
 		linea= new DataLine.Info(TargetDataLine.class, audioFormat);
 		inicializarCaptura();
-	}
 
+	}
+	
 	public double[] getFrecuencia() {
 		return frecuencia;
 	}
@@ -55,12 +58,15 @@ public class Captura extends Thread {
 
 	public void run() {
 		/*Variable para dejar de capturar*/
+		long time=0;
 		stopCapture = false;
 	    try{
 
 	      while(!stopCapture){
 	        /*Lee los datos capturados por el sismeta de audio*/
+	    	time=System.currentTimeMillis(); 
 	        int cnt = tarjetaSonido.read(tiempo,0, tiempo.length);
+	        System.out.println(System.currentTimeMillis()-time+"    "+cnt);
 	        if(cnt > 0){
 	          //Save data in output stream object.
 	          /*byteArrayOutputStream.write(tempBuffer,
@@ -71,6 +77,7 @@ public class Captura extends Thread {
 				}*/
 	          
 	        }
+	        System.arraycopy(src, srcPos, dest, destPos, length)
 	        ConversorTF.convertir(tiempo, frecuencia, NUMERO_DE_MUESTRAS);
 	      }
 	      tarjetaSonido.stop();
@@ -81,9 +88,9 @@ public class Captura extends Thread {
 	}
 
 	private void formatoAudioPorDefecto() {
-		float frecuenciaMuestreo = 16000;
+		float frecuenciaMuestreo = 44100;
 		// 8000,11025,16000,22050,44100
-		int tamanoMuestraBits = 8;
+		int tamanoMuestraBits = 16;
 		// 8,16
 		int canales = 2;
 		// 1,2
