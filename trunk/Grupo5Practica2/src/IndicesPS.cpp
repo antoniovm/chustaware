@@ -50,12 +50,14 @@ void IndicesPS::insertarIS(fstream &archivoIS, Animal* animal, int posAux) {
 		}
 	}
 	//si la clave secundaria ya existia, enlazamos la lista encadenada del fichero Aux
-	fstream archivoAux("IAux.dat", ios::binary | ios::out);
+	fstream archivoAux("IAux.dat", ios::binary | ios::out | ios::in);
 	archivoAux.seekg(primero);
 	while (1) {
 		archivoAux.read((char*) (rAux), sizeof(RegistroAux));
-		if (rAux->getSiguiente() == -1) { //si es el final de la lista
+		if (rAux->getSiguiente() == -1) { //si es el final de la lista encadenada, hacemos que apunte al nuevo regAux
 			rAux->setSiguiente(posAux);
+			archivoAux.seekg(archivoAux.tellg() - (streampos)sizeof(RegistroAux));
+			archivoAux.write((char*)(rAux),sizeof(RegistroAux));
 			archivoIS.close();
 			archivoAux.close();
 			delete rAux;
