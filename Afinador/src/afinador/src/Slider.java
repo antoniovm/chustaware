@@ -37,7 +37,7 @@ public class Slider extends JComponent {
 	}
 
 	public void setOffset(int offset) {
-		this.offset = offset;
+		this.offset = offset;	//escala del slider
 		repaint();
 	}
 
