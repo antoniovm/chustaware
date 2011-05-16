@@ -64,7 +64,7 @@ void EntradaSalida::leerTexto() {
 
 		animals.push_back(animal);	//se añade a la lista de animales
 
-		delete [] cadena;		//Borrado de buffer
+		//delete [] cadena;		//Borrado de buffer
 	}
 	archivo.close();
 }

@@ -22,31 +22,119 @@ void IndicesPS::crearIS()
 	salida.open("IS.dat", ios::binary);
 	salida.close();
 }
-
-void IndicesPS::insertarIS(fstream &archivoIS, Animal* animal, int posAux)
-{
+/*
+ * Inserta en el indice secundario y actualiza la lista encadenada del fichero aux
+ */
+void IndicesPS::insertarIS(fstream &archivoIS, Animal* animal, int posAux) {
 	RegistroIS* rIS;
 	RegistroAux* rAux;
-
-	if (buscarClaveS(animal->getLegs()) == -1) {
-		rAux = new RegistroAux(true, animal->getName(), -1, es.buscar(animal->getName()));
+	int primero = 0;
+	primero=buscarClaveS(animal->getLegs());
+	if (primero == -1) {//si no hay entrada en archivoIS
 		rIS = new RegistroIS(animal->getLegs(), 0);
+		archivoIS.seekg(ios::ate);
+		while (archivoIS.tellg() > ios::beg) {
+			archivoIS.seekg(archivoIS.tellg() - (streampos) sizeof(RegistroIS)); // Posicionamos el puntero en la posicion del registro anterior.
+			archivoIS.read((char*) (rIS), sizeof(RegistroIS)); // Leemos el registro.
+			// Si la clave del registro que vamos a insertar es mayor que la clave del registro que acabamos de leer, insertamos el registro.
+			if (animal->getLegs() > rIS->getClaveSecundaria()) {
+				rIS = new RegistroIS(animal->getLegs(), posAux); // Creamos el registro.
+				archivoIS.write((char*) (rIS), sizeof(RegistroIS));
+				delete rIS;
+				archivoIS.close();
+				return;
+			}
+			// Si no, copiamos el registro en la siguiente posicion y posicionamos el puntero en la posicion anterior.
+			archivoIS.write((char*) (rIS), sizeof(RegistroIS));
+			archivoIS.seekg(archivoIS.tellg() - (streampos) (sizeof(RegistroIS)*2));
+		}
 	}
-
+	//si la clave secundaria ya existia, enlazamos la lista encadenada del fichero Aux
+	fstream archivoAux("IAux.dat", ios::binary | ios::out);
+	archivoAux.seekg(primero);
+	while (1) {
+		archivoAux.read((char*) (rAux), sizeof(RegistroAux));
+		if (rAux->getSiguiente() == -1) { //si es el final de la lista
+			rAux->setSiguiente(posAux);
+			archivoIS.close();
+			archivoAux.close();
+			delete rAux;
+			return;
+		}
+		archivoAux.seekg(rAux->getSiguiente());
+	}
 }
-
 void IndicesPS::borrarIS(int int1)
 {
 }
-
-long IndicesPS::buscarClaveS(int patas)
+/**
+ * Devuelve la posicion del primer elemento de la lista encadenada con esa clave secundaria.-1 si no esta en el archivoIS.
+ */
+int IndicesPS::buscarClaveS(int patas)
 {
-	fstream archivo("IS.dat",ios::binary|ios::in | ios::out);
-	archivo.close();
-}
+	fstream archivo("IS.dat", ios::in | ios::out | ios::binary | ios::ate);//ojo con el ios::ate
+		int inferior=0;
+		int superior=(archivo.tellg()/(streampos)sizeof(RegistroIS))-1;
+		int centro=0;
+		int posicionPrimero;
+		RegistroIS* rIS = NULL;
 
+		while(inferior <= superior){
+			centro=((superior-inferior)/2)+inferior;
+			archivo.seekg(centro*sizeof(RegistroIS),ios::beg);//ios::beg o cero??
+			archivo.read((char*)(rIS), sizeof(RegistroIS));
+			if(rIS->getClaveSecundaria()==patas){
+				posicionPrimero=rIS->getPosPrimero();
+				delete rIS;
+				archivo.close();
+				return posicionPrimero;
+			}
+			if(rIS->getClaveSecundaria() > patas)
+				superior = centro - 1;
+			else
+				inferior = centro + 1;
+
+		}
+		delete rIS;
+		archivo.close();
+		return -1;
+}
+/**
+ * inserta reg en el archivo aux y devuelve la posicion en la que se inserto
+ */
 int IndicesPS::insertarAux(fstream &archivoAux, Animal* animal, int posDatos) {
-	return -1;
+	int posicion=0;
+		RegistroAux* rAux = NULL;
+		// Si el archivo esta vacio insertamos directamente.
+		archivoAux.seekp(ios::ate);
+		if (archivoAux.tellg() == ios::beg) {
+			rAux = new RegistroAux(true,animal->getName(), -1,posDatos);	// Creamos el registro.
+			archivoAux.write((char*)(rAux), sizeof(RegistroAux));
+			delete rAux;
+			archivoAux.close();
+			return posicion;
+		}
+		//comprueba si hay hueco libre para insercion apilada
+		archivoAux.seekp(ios::beg);
+		while(!archivoAux.eof()){
+			archivoAux.read((char*)(rAux), sizeof(RegistroAux));
+			if(!rAux->getValido()){
+				archivoAux.seekg(archivoAux.tellg()-(streampos)sizeof(RegistroAux));
+				posicion=(int)archivoAux.tellg();
+				rAux = new RegistroAux(true,animal->getName(), -1,posDatos);
+				archivoAux.write((char*)(rAux),sizeof(RegistroAux));
+				delete rAux;
+				archivoAux.close();
+				return posicion;
+			}
+		}
+		//si no ha encontrado hueco, inserta al final
+		posicion=(int)archivoAux.tellg();
+		rAux = new RegistroAux(true,animal->getName(), -1,posDatos);
+		archivoAux.write((char*)(rAux),sizeof(RegistroAux));
+		delete rAux;
+		archivoAux.close();
+		return posicion;
 }
 
 //esto no vale pa na....inicializacion cutre <<<<--------------------------------
@@ -88,7 +176,7 @@ int IndicesPS::insertarIP(fstream &archivo, Animal* a)
 		archivo.write((char*)(rIP), sizeof(RegistroIP));
 		delete rIP;
 		archivo.close();
-		return -1;
+		return posicion;
 	}
 
 	while(archivo.tellg() > ios::beg) {

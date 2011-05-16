@@ -8,6 +8,7 @@
 #include <iostream>
 #include "IndicesPS.h"
 #include "EntradaSalida.hpp"
+#include "Indice.h"
 
 using namespace std;
 
@@ -15,7 +16,10 @@ void menu(EntradaSalida&);
 void restaurarArchivo(EntradaSalida&);
 
 int main() {
-	IndicesPS indices;
+	//IndicesPS indices;
+	Indice indice;
+	indice.crearFicherosPS();
+
 	//menu(indices.getES());
 
 	return 0;

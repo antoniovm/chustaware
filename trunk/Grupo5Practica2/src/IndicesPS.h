@@ -33,7 +33,7 @@ public:
 	int insertarAux(fstream&, Animal*, int);
 	void borrarAux(int);
 	long buscarClaveP(string);
-	long buscarClaveS(int);
+	int buscarClaveS(int);
 	EntradaSalida& getES(){return es;}
 };
 

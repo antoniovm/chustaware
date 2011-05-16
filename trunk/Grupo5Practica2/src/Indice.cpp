@@ -32,11 +32,21 @@ void Indice::crearFicherosPS(){
 		indicesPS.insertarIS(archivoIS,animales.front(),posicionAux);
 		delete *animales.begin();
 	}
-
+	archivoIP.close();
+	archivoIS.close();
+	archivoAux.close();
 }
 
 void Indice::eliminar(string clave){
-	indicesPS.buscarClaveP(clave);
+	long posicion=0;
+	posicion=indicesPS.buscarClaveP(clave);
+	if(-1==posicion){
+		cout << "El animal no esta en el archivo de datos" << endl;
+		return;
+	}
+
+	indicesPS.getES().eliminar(posicion);
+	indicesPS.borrarIP(clave);
 }
 int Indice::buscarP(string s){
 
