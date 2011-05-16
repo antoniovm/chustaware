@@ -12,6 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.TextArea;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,7 +46,6 @@ import javax.swing.event.HyperlinkListener;
 public class InterfazGrafica extends JPanel implements ActionListener {
 	private final static String titulo = "CWTuner";
 	private final static String autores = "Jorge Garcia Hinestrosa\nSergio Revueltas Estrada\nMiguel Vicente Linares\nAntonio Vicente Martin";
-	private final static ImageIcon pua = new ImageIcon("."+File.separator+"bin"+File.separator+"afinador"+File.separator+"img"+File.separator+"puaCW.png");
 	private Afinador afinador;	//Para mostrar los valores que se manejan en esta clase
 	private Captura captura;	//Para configurar los parametros de entrada de audio
 	private JComboBox mezcladores;
@@ -173,23 +173,141 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		//aceptar dando a enter, focus para textfield
 		mezcladores.setFocusable(true);
 		mezcladores.requestFocusInWindow();
-		mezcladores.addKeyListener(
-				  new KeyAdapter() {
-				     public void keyPressed(KeyEvent e) {
-				       if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-				    	   bAceptar.doClick();
-				    	   /*captura.buscarMezclador((String) mezcladores.getSelectedItem());
-							ventanaInicio.dispose();*/
-				       }
-				     }
-				  });
+		mezcladores.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					bAceptar.doClick();
+				}
+			}
+		});
 		
 		ajustesDialog(ventanaInicio);
 		ventanaInicio.setVisible(true);
 	}
 	
 	private void inicializarDialogInstrucciones() {
+		Font fuente = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
+		GridBagConstraints constraints = new GridBagConstraints();
+		JTextArea areaInfo = new JTextArea();
+		JTextArea areaDisplay = new JTextArea();
+		JTextArea areaSlider = new JTextArea();
+		JTextArea areaBombillaOn = new JTextArea();
+		JTextArea areaBombillaOff = new JTextArea();
+		JPanel pImgDisplay, pImgPua, pImgOn, pImgOff;
+		JButton bOk = new JButton("OK");
 		vInstrucciones = new JDialog(ventana, "Instrucciones de uso", true);
+		vInstrucciones.setLayout(new GridBagLayout());
+		vInstrucciones.getContentPane().setBackground(Color.WHITE);
+		
+		pImgDisplay = new JPanel() {
+			public void paint(Graphics g) {
+				g.drawImage(display.getFondo().getImage(), 0, 0, this);
+			}
+		};
+		pImgPua = new JPanel() {
+			public void paint(Graphics g) {
+				g.drawImage(slider.getPua().getImage(), 0, 0, this);
+			}
+		};
+		pImgOn = new JPanel() {
+			public void paint(Graphics g) {
+				g.drawImage(bombillas[0].getImagenOn().getImage(), 0, 0, this);
+			}
+		};
+		pImgOff = new JPanel() {
+			public void paint(Graphics g) {
+				g.drawImage(bombillas[0].getImagenOff().getImage(), 0, 0, this);
+			}
+		};
+		areaInfo.setFont(fuente);
+		areaInfo.setEditable(false);
+		areaInfo.setText(titulo+" es un programa creado con la intención de facilitar el trabajo a la hora de afinar una guitarra eléctrica.\n" +
+				"Para ello, tan solo hay que conectar la guitarra eléctrica al ordenador a través de la tarjeta de sonido o a través de la interfaz del micrófono.\n" +
+				"Una vez conectada, al tocar una nota, dicha nota se mostrará en la pantalla, y en caso de coincidir con alguna de las notas que aparecen en la parte\n" +
+				"inferior de la pantalla, se encenderá la luz correspondiente en verde, indicándonos que dicha cuerda está afinada.\n" +
+				"Si la cuerda está afinada, estará marcada la posición 0 en la barra central, en caso contrario, se muestra el grado de desafinio aproximado.\n");
+		
+		areaDisplay.setFont(fuente);
+		areaDisplay.setEditable(false);
+		areaDisplay.setText("En este display se muestra la nota que está sonando.");
+		
+		areaSlider.setFont(fuente);
+		areaSlider.setEditable(false);
+		areaSlider.setText("Si la nota está afinada, la púa estará situada en la posición 0.\nCuanto más lejos se encuentre del 0, más desafinado está el instrumento.");
+		
+		areaBombillaOn.setFont(fuente);
+		areaBombillaOn.setEditable(false);
+		areaBombillaOn.setText("Luz verde:\nLa nota se corresponde con la nota indicada en dicha bombilla. La cuerda está afinada.");
+		
+		areaBombillaOff.setFont(fuente);
+		areaBombillaOff.setEditable(false);
+		areaBombillaOff.setText("Luz roja:\nLa nota no se corresponde con la nota indicada en dicha bombilla. La cuerda no está afinada.");
+		
+		pImgDisplay.setPreferredSize(new Dimension(display.getFondo().getIconWidth(), display.getFondo().getIconHeight()));
+		pImgPua.setPreferredSize(new Dimension(slider.getPua().getIconWidth(), slider.getPua().getIconHeight()));
+		pImgOn.setPreferredSize(new Dimension(bombillas[0].getImagenOn().getIconWidth(), bombillas[0].getImagenOn().getIconHeight()));
+		pImgOff.setPreferredSize(new Dimension(bombillas[0].getImagenOff().getIconWidth(), bombillas[0].getImagenOff().getIconHeight()));
+		
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.gridwidth = 2;
+		constraints.gridheight = 1;
+		constraints.insets = new Insets(5, 5, 5, 5);
+		constraints.weightx = 1.0;
+		constraints.weighty = 1.0;
+		constraints.fill = GridBagConstraints.BOTH;
+		vInstrucciones.add(areaInfo, constraints);
+		constraints.gridwidth = 1;
+		constraints.gridy = 1;
+		constraints.fill = GridBagConstraints.NONE;
+		vInstrucciones.add(pImgDisplay, constraints);
+		constraints.gridx = 1;
+		constraints.fill = GridBagConstraints.BOTH;
+		vInstrucciones.add(areaDisplay, constraints);
+		constraints.gridx = 0;
+		constraints.gridy = 2;
+		constraints.fill = GridBagConstraints.NONE;
+		vInstrucciones.add(pImgPua, constraints);
+		constraints.gridx = 1;
+		constraints.fill = GridBagConstraints.BOTH;
+		vInstrucciones.add(areaSlider, constraints);
+		constraints.gridx = 0;
+		constraints.gridy = 3;
+		constraints.fill = GridBagConstraints.NONE;
+		vInstrucciones.add(pImgOn, constraints);
+		constraints.gridx = 1;
+		constraints.fill = GridBagConstraints.BOTH;
+		vInstrucciones.add(areaBombillaOn, constraints);
+		constraints.gridx = 0;
+		constraints.gridy = 4;
+		constraints.fill = GridBagConstraints.NONE;
+		vInstrucciones.add(pImgOff, constraints);
+		constraints.gridx = 1;
+		constraints.fill = GridBagConstraints.BOTH;
+		vInstrucciones.add(areaBombillaOff, constraints);
+		constraints.gridwidth = 2;
+		constraints.gridx = 0;
+		constraints.gridy = 5;
+		constraints.fill = GridBagConstraints.NONE;
+		constraints.insets = new Insets(20, 0, 20, 0);
+		vInstrucciones.add(bOk, constraints);
+		
+		bOk.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				vInstrucciones.dispose();			
+			}
+		});
+		
+		vInstrucciones.setFocusable(true);
+		vInstrucciones.requestFocusInWindow();
+		vInstrucciones.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					vInstrucciones.dispose();
+				}
+			}
+		});
+		
 		ajustesDialog(vInstrucciones);
 	}
 	
@@ -198,6 +316,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		JEditorPane editorInfo; //zona de informacion, acepta HTML
 		JPanel pImagen, pBajo; //panel pua, panel zona desarrolladores
 		JTextArea areaAutores; //texto zona de desarrolladores
+		JButton bOK = new JButton("OK");
 		
 		GridBagConstraints constraints = new GridBagConstraints();
 		
@@ -237,7 +356,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		//panel de la pua
 		pImagen = new JPanel() {
 			public void paint(Graphics g) {
-				g.drawImage(pua.getImage(), 0, 0, this);
+				g.drawImage(slider.getPua().getImage(), 0, 0, this);
 			}
 		};
 		
@@ -264,7 +383,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		constraints.gridy=0;
 		constraints.anchor = GridBagConstraints.SOUTHEAST;
 		constraints.fill = GridBagConstraints.NONE;
-		JButton bOK = new JButton("OK");
+		
 		bOK.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				vAbout.dispose();
@@ -285,85 +404,15 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		//esta es la clave, ponemos a la escucha el dialog, no el boton
 		vAbout.setFocusable(true);
 		vAbout.requestFocusInWindow();
-		vAbout.addKeyListener(
-				  new KeyAdapter() {
-				     public void keyPressed(KeyEvent e) {
-				       if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-				          vAbout.dispose();
-				       }
-				     }
-				  });
-		
-		ajustesDialog(vAbout);
-		
-		
-		/*JTextArea areaInfo, areaAutores;
-		JPanel pImagen, pBajo;
-		JButton bOk = new JButton("OK");
-		Color color = new Color(240,240,240);
-		GridBagConstraints c = new GridBagConstraints();
-		GridBagConstraints cBajo = new GridBagConstraints();
-		Font fuente = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
-		vAbout = new JDialog(ventana,"Acerca de "+titulo,true);
-		vAbout.setLayout(new GridBagLayout());
-		areaInfo = new JTextArea();
-		areaAutores = new JTextArea();
-		pBajo = new JPanel();
-		pImagen = new JPanel() {
-			
-			public void paint(Graphics g) {
-				g.drawImage(pua.getImage(), 0, 0, this);
-			}
-		};
-		pBajo.setLayout(new GridBagLayout());
-		pBajo.setBackground(Color.WHITE);
-		pImagen.setPreferredSize(new Dimension(pua.getIconWidth(), pua.getIconHeight()));
-		pImagen.setBackground(color);
-		areaInfo.setText(titulo+"\nversion 1.0\nBuild ID: 20110513\n\nhttp://code.google.com/p/chustaware/");
-		areaInfo.setFont(fuente);
-		areaInfo.setBackground(color);
-		areaInfo.setEditable(false);
-		areaInfo.setBorder(null);
-		areaAutores.setText("Autores:\n"+autores);
-		areaAutores.setFont(fuente);
-		areaAutores.setEditable(false);
-		areaAutores.setBorder(null);
-		
-		c.insets = new Insets(15, 15, 15, 15);
-		vAbout.add(pImagen, c);
-		c.gridx = 1;
-		vAbout.add(areaInfo, c);
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridwidth = 2;
-		c.fill = GridBagConstraints.BOTH;
-		c.insets = new Insets(0, 0, 0, 0);
-		
-		cBajo.anchor = GridBagConstraints.WEST;
-		cBajo.weightx = 1.0;
-		cBajo.insets = new Insets(15, 15, 15, 15);
-		pBajo.add(areaAutores, cBajo);
-		cBajo.gridx = 1;
-		cBajo.anchor = GridBagConstraints.SOUTHEAST;
-		pBajo.add(bOk, cBajo);
-		vAbout.add(pBajo, c);
-		
-		bOk.addActionListener(new ActionListener() {
-			
-			public void actionPerformed(ActionEvent e) {
-				vAbout.dispose();
-			}
-		});
-		// no funciona, arreglar o suprimir
-		bOk.addKeyListener(new KeyAdapter() {
-			public void keyReleased(KeyEvent e) {
+		vAbout.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					vAbout.dispose();
 				}
 			}
 		});
 		
-		ajustesDialog(vAbout);*/
+		ajustesDialog(vAbout);
 	}
 	
 	private void ajustesDialog(JDialog dialog) {
@@ -377,7 +426,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	private void inicializarFrame() {
 		Dimension dPantalla, dVentana;
 		ventana = new JFrame(titulo+" v1.0");
-		ventana.setIconImage(pua.getImage());
+		ventana.setIconImage(slider.getPua().getImage());
 		inicializarMenuBar();
 		ventana.add(this, BorderLayout.CENTER);
 		ventana.setResizable(false);
