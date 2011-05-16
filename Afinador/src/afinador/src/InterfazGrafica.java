@@ -486,6 +486,8 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		while(true){
 			slider.setOffset((int)afinador.getDesafinio());	//escala de slider
 			display.setnNota(afinador.getNotaReal());
+			display.setOctava(afinador.getOctava());
+			display.setSignal(afinador.haySenal());
 			/*try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {

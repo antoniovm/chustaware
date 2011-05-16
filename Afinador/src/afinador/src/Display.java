@@ -16,10 +16,19 @@ public class Display extends JComponent {
 	private final static String[]notas = {"Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si"};
 	private int nNota, octava;
 	private ImageIcon fondo;
+	private boolean signal;
 	
+	public boolean isSignal() {
+		return signal;
+	}
+
+	public void setSignal(boolean signal) {
+		this.signal = signal;
+	}
+
 	public Display() {
 		nNota = 0;
-		octava = -1;
+		octava = 0;
 		fondo = new ImageIcon("."+File.separator+"bin"+File.separator+"afinador"+File.separator+"img"+File.separator+"display.png");
 		setPreferredSize(new Dimension(fondo.getIconWidth(), fondo.getIconHeight()));
 		setUI(null);
@@ -63,8 +72,10 @@ public class Display extends JComponent {
 		g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 50));
 		fm = g.getFontMetrics();
 		g.drawImage(fondo.getImage(), 0, 0, this);
-		x = getWidth() / 2 - fm.stringWidth(notas[nNota]) / 2;
-		y = getHeight() / 2 + fm.getHeight() / 4;
-		g.drawString(notas[nNota], x, y);
+		if(signal){
+			x = getWidth() / 2 - fm.stringWidth(notas[nNota]+octava) / 2;
+			y = getHeight() / 2 + fm.getHeight() / 4;
+			g.drawString(notas[nNota]+octava, x, y);
+		}
 	}
 }
