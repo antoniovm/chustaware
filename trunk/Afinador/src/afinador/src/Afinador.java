@@ -4,15 +4,17 @@ package afinador.src;
  */
 public class Afinador extends Thread{
 	
+	private final int UMBRAL=100000;
 
 	//Captura de audio
 	private Captura captura;
 	//señal de entrada
-	private double [] frecuencia;
+	private double [][] frecuencia;
 	//Primera Octava (Hz):    Do     Do#    Re     Re#    Mi    Fa     Fa#    Sol   Sol#   La     La#    Si 
 	private double [] notas={32.7, 34.65, 36.71, 38.89, 41.2, 43.65, 46.25, 49.00, 51.91, 55.00, 58.27, 61.74};
 	private int pitch, notaReal, octava;
 	private double desafinio;
+	private int canal; //0 = Izquierdo -- 1 = Derecho
 	private boolean afinando;
 	//Primera Octava (Hz):       Do     Do#    	Re 	    Re#	    Mi	    Fa   	Fa#	    Sol	   	Sol#	La 	    La#    	Si 
 	private double [] notasTot={32.7, 	34.65, 	36.71,	38.89,	41.2,	43.65, 	46.25, 	49.00, 	51.91, 	55.00, 	58.27, 	61.74,
@@ -25,11 +27,12 @@ public class Afinador extends Thread{
 	public Afinador() {
 		captura = new Captura();
 		frecuencia=captura.getFrecuencia();
+		canal=1;
 	}
-	public double[] getFrecuencia() {
+	public double[][] getFrecuencia() {
 		return frecuencia;
 	}
-	public void setFrecuencia(double[] frecuencia) {
+	public void setFrecuencia(double[][] frecuencia) {
 		this.frecuencia = frecuencia;
 	}
 	public double[] getNotas() {
@@ -74,7 +77,7 @@ public class Afinador extends Thread{
 		int max=0;
 		while(afinando){
 			for (int i = 1; i < 1000; i++) {
-				if(frecuencia[i]>frecuencia[max])
+				if(frecuencia[canal][i]>frecuencia[canal][max])
 					max=i;
 			}
 			pitch=max;
@@ -91,10 +94,10 @@ public class Afinador extends Thread{
 		int frecMax=0;
 		while(afinando){
 			for (int i = 30; i < 1000; i++) {
-				if (frecuencia[i] < umbral)
+				if (frecuencia[canal][i] < umbral)
 					continue;
-				if(frecuencia[i]>amplitudMax){
-					amplitudMax=frecuencia[i];
+				if(frecuencia[canal][i]>amplitudMax){
+					amplitudMax=frecuencia[canal][i];
 					frecMax=i;
 				}
 			}
@@ -105,58 +108,47 @@ public class Afinador extends Thread{
 			amplitudMax=0;
 		}
 	}
+	public boolean haySenal() {
+		for (int i = 20; i < frecuencia[canal].length/4; i++) 
+			if(frecuencia[canal][i]>UMBRAL) return true;
+		return false;
+	}
 	public void afinarPitch(){
-		boolean esPitch=true;
-		double umbral=1000000;
+		int pico=20; 
+		int candidatoPitch=20;
 		captura.capturar();
 		afinando=true;
-		double maxDif=0;
-		int max=0;
 		while (afinando) {
-			for (int i = 20; i < 1000; i++) {
-				if ((frecuencia[i] < umbral) && (frecuencia[i - 1] < umbral))
-					continue;
-
-				if ((frecuencia[i] - frecuencia[i - 1]) > Math.abs(maxDif)) {
-					maxDif = frecuencia[i] - frecuencia[i - 1]; // Buscamos el
-																// mayor cambio
-																// brusco de
-																// energia
-																// consecutivo
-					max = i;
-					for (int j = 0; j < 3; j++) {
-						if ((frecuencia[i + (j + 1)] < umbral)
-								&& (frecuencia[i + j] < umbral))
-							continue;
-						if ((frecuencia[i + (j + 1)] - frecuencia[i + j]) > Math.abs(maxDif)) { // Si en 3 posiciones siguientes
-												// no hay un cambio mayor, se
-												// establece la componente de
-												// energia
-							maxDif = 0;
-							esPitch=false;
+			for (int i = 20; i < frecuencia[canal].length/4; i++) {
+				//System.out.println(frecuencia[canal][i]);
+				if(frecuencia[canal][i]<UMBRAL) continue;	//Si no supera el umbral, no se busca
+				
+				if(frecuencia[canal][i]<frecuencia[canal][i+1]) continue;	//Subiendo
+					
+				
+				pico=i;	//Al haber una bajada, hemos encontrado un pico
+				
+				if((pico/candidatoPitch==2)||((pico/candidatoPitch+candidatoPitch)==2))		//Si un pico es multiplo del otro, el primero es el pitch
+					if((Math.abs(pico%candidatoPitch)<2)||(Math.abs(pico%candidatoPitch+candidatoPitch)<2)){
+							pitch=candidatoPitch;
+							calcularNotaDeUnaVez();
 							break;
-						}
-			
 					}
-					if (!esPitch)
-						continue;
-					pitch = max;
-					calcularNota();
-					//System.out.println("FRECUENCIA: "+escalarFrecuencia() + "\t DESAFINIO: " + desafinio+ "\t OCTAVA: " + octava);
-					maxDif = 0;
-					//max=0;
-				}
+				if(frecuencia[canal][pico]>frecuencia[canal][candidatoPitch])	//Si el candidato es menor que el pico, este pasa a ser candidato
+					candidatoPitch=pico;
+				
 
 			}
+			System.out.println("FRECUENCIA: "+escalarFrecuencia() + "\t DESAFINIO: " + desafinio+ "\t OCTAVA: " + octava);
 			
 			
 			
 		}
 	}
 	public int calcularOctava(int i){
-		int aux=(int)escalarFrecuencia();
+		double aux=escalarFrecuencia();
 		int j;
-		for (j = -1; aux > notas[i]; j++) {
+		for (j = 1; aux > notas[i]; j++) {
 			aux/=2;
 		}
 		return j;
@@ -251,8 +243,8 @@ public class Afinador extends Thread{
 	public void run() {
 		super.run();
 		//afinarEnergia();
-		//afinarPitch();
-		afinarDeUnaVez();
+		afinarPitch();
+		//afinarDeUnaVez();
 	}
 	public Captura getCaptura() {
 		return captura;
