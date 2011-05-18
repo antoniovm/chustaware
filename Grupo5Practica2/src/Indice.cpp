@@ -31,6 +31,7 @@ void Indice::crearFicherosPS(){
 		posicionAux = indicesPS.insertarAux(archivoAux,animales.front(),posicionDatos);
 		indicesPS.insertarIS(archivoIS,animales.front(),posicionAux);
 		delete *animales.begin();
+		animales.pop_front();
 	}
 	archivoIP.close();
 	archivoIS.close();

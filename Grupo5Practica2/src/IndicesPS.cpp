@@ -31,7 +31,7 @@ void IndicesPS::insertarIS(fstream &archivoIS, Animal* animal, int posAux) {
 	int posIS = 0;
 	posIS=buscarClaveS(animal->getLegs());
 	if (posIS == -1) {//si no hay entrada en archivoIS
-		archivoIS.seekg(ios::end);
+		archivoIS.seekg(0,ios::end);
 		while (archivoIS.tellg() > ios::beg) {
 			archivoIS.seekg(archivoIS.tellg() - (streampos) sizeof(RegistroIS)); // Posicionamos el puntero en la posicion del registro anterior.
 			delete rIS;
@@ -50,12 +50,14 @@ void IndicesPS::insertarIS(fstream &archivoIS, Animal* animal, int posAux) {
 			archivoIS.seekg(archivoIS.tellg() - (streampos) (sizeof(RegistroIS)*2));
 
 		}
+		archivoIS.write((char*)rIS,sizeof(RegistroIS));
+		return;
 	}
 	//si la clave secundaria ya existia, enlazamos  al principio de la lista encadenada del fichero Aux
 	fstream archivoAux("IAux.dat", ios::binary | ios::out | ios::in);
 	//leemos los registros
 	archivoAux.seekg(posAux);
-	archivoAux.read((char*)rAux, sizeof(RegistroAux));	//Lectura del nuevo registro aux
+	archivoAux.read((char*)rAux, sizeof(RegistroAux));	//Lectura del nuevo registro aux ya escrito por el metodo insertar Aux
 	archivoIS.seekg(posIS);
 	archivoIS.read((char*)rIS, sizeof(RegistroIS));
 	//enlazamos los registros
@@ -66,6 +68,7 @@ void IndicesPS::insertarIS(fstream &archivoIS, Animal* animal, int posAux) {
 	archivoAux.seekg(archivoAux.tellp()-sizeof(RegistroAux));
 	archivoAux.write((char*)rAux, sizeof(RegistroAux));
 
+	archivoAux.close();
 
 	//archivoAux.seekg(primero);
 
@@ -134,10 +137,9 @@ int IndicesPS::insertarAux(fstream &archivoAux, Animal* animal, int posDatos) {
 		RegistroAux* rAux = NULL;
 		rAux = new RegistroAux(true,animal->getName(), -1,posDatos);// Creamos el registro.
 		// Si el archivo esta vacio insertamos directamente.
-		cout<<archivoAux.tellg();
-		archivoAux.seekp(ios::end);
-		cout<<archivoAux.tellg();
-		cout.flush();
+
+		archivoAux.seekg(0,ios::end);
+
 		if (archivoAux.tellg() == ios::beg) {
 			archivoAux.write((char*)(rAux), sizeof(RegistroAux));
 			delete rAux;
