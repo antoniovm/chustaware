@@ -48,12 +48,13 @@ void EntradaSalida::vaciar() {
 void EntradaSalida::leerTexto() {
 	fstream archivo("zoo-data.txt", fstream::in);
 	string buffer;	//Cadena temporal
-	char* cadena;	//Puntero buffer
+	//char* cadena;	//Puntero buffer
 	Animal* animal;	//Objeto temporal
 	while(!archivo.eof()){
 		getline(archivo, buffer);
 		if(archivo.eof())break;
-		cadena = new char[buffer.size()];	//Reserva de memoria para un registro
+		char cadena[buffer.size()];
+		//cadena = new char[buffer.size()];	//Reserva de memoria para un registro
 		strcpy(cadena, buffer.data());		//string to char*
 											//Construccion de un animal
 		animal = new Animal(strtok(cadena, ","), *strtok(NULL, ","), *strtok(NULL, ","),
