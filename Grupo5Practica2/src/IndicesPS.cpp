@@ -314,7 +314,7 @@ RegistroIP IndicesPS::leerIP()
 		archivo.read((char*)(&rIP),sizeof(RegistroIP));
 		if(archivo.eof())
 			break;
-		cout << rIP->getClavePrimaria() << " - " << rIP->getPosRegistro() << endl;
+		cout <<"Clave Primaria: " << rIP->getClavePrimaria() << " - Posicion en ArchivoDatos:" << rIP->getPosRegistro() << endl;
 	}
 	delete rIP;
 	archivo.close();
