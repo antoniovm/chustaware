@@ -21,7 +21,7 @@ int main() {
 	indice.crearFicherosPS();
 
 	//menu(indices.getES());
-
+	cout << "Fin de Main";
 	return 0;
 }
 

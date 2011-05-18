@@ -36,11 +36,12 @@ bool EntradaSalida::comprobarArchivoVacio(fstream & archivo) {
  * Elimina todos los animales de memoria.
  */
 void EntradaSalida::vaciar() {
+	animals.clear();
 	list<Animal*>::iterator it;
 	for(it=animals.begin(); it!=animals.end(); it++){
 		delete (*it);
 	}
-	animals.clear();
+
 }
 /**
  * Lee el archivo de texto zoo-data.txt y lo almacena en memoria en una lista de Animales
@@ -205,8 +206,9 @@ int EntradaSalida::insertar(Animal* animal){
 		archivoEntrada.close();
 		generarCabecera(archivoSalida);
 		archivoSalida.write((char*)(&registro), sizeof(Registro));
+		posicion=archivoSalida.tellp()-sizeof(Registro);
 		archivoSalida.close();
-		return 0;
+		return (int)posicion;
 	}
 	archivoEntrada.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
 
