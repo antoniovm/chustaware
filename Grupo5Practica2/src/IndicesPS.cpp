@@ -33,10 +33,7 @@ void IndicesPS::insertarIS(fstream &archivoIS, Animal* animal, int posAux) {
 	if (posIS == -1) {//si no hay entrada en archivoIS
 		archivoIS.seekg(ios::end);
 		while (archivoIS.tellg() > ios::beg) {
-			cout<<archivoIS.tellg();
 			archivoIS.seekg(archivoIS.tellg() - (streampos) sizeof(RegistroIS)); // Posicionamos el puntero en la posicion del registro anterior.
-			cout<<archivoIS.tellg();
-			cout.flush();
 			delete rIS;
 			archivoIS.read((char*) (rIS), sizeof(RegistroIS)); // Leemos el registro.
 			// Si la clave del registro que vamos a insertar es mayor que la clave del registro que acabamos de leer, insertamos el registro.
@@ -137,7 +134,10 @@ int IndicesPS::insertarAux(fstream &archivoAux, Animal* animal, int posDatos) {
 		RegistroAux* rAux = NULL;
 		rAux = new RegistroAux(true,animal->getName(), -1,posDatos);// Creamos el registro.
 		// Si el archivo esta vacio insertamos directamente.
-		archivoAux.seekp(ios::ate);
+		cout<<archivoAux.tellg();
+		archivoAux.seekp(ios::end);
+		cout<<archivoAux.tellg();
+		cout.flush();
 		if (archivoAux.tellg() == ios::beg) {
 			archivoAux.write((char*)(rAux), sizeof(RegistroAux));
 			delete rAux;
