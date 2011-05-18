@@ -19,9 +19,12 @@ void Indice::crearFicherosPS(){
 	fstream IP("IP.dat",ios::binary|ios::out);	//borrado de archivos
 	fstream IS("IS.dat",ios::binary|ios::out);
 	fstream Aux("IAux.dat",ios::binary|ios::out);
+	fstream zooData("zoo-data.dat",ios::binary|ios::out);
+
 	IP.close();
 	IS.close();
 	Aux.close();
+	zooData.close();
 
 	list<Animal*> animales;
 	indicesPS.getES().leerTexto();	//lee el fichero zoo-data.txt para almacenar los animales en MP
