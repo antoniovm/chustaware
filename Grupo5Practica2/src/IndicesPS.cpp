@@ -107,10 +107,10 @@ int IndicesPS::buscarClaveS(int patas)
 int IndicesPS::insertarAux(fstream &archivoAux, Animal* animal, int posDatos) {
 	int posicion=0;
 		RegistroAux* rAux = NULL;
+		rAux = new RegistroAux(true,animal->getName(), -1,posDatos);// Creamos el registro.
 		// Si el archivo esta vacio insertamos directamente.
 		archivoAux.seekp(ios::ate);
 		if (archivoAux.tellg() == ios::beg) {
-			rAux = new RegistroAux(true,animal->getName(), -1,posDatos);	// Creamos el registro.
 			archivoAux.write((char*)(rAux), sizeof(RegistroAux));
 			delete rAux;
 			archivoAux.close();
@@ -118,6 +118,7 @@ int IndicesPS::insertarAux(fstream &archivoAux, Animal* animal, int posDatos) {
 		}
 		//comprueba si hay hueco libre para insercion apilada
 		archivoAux.seekp(ios::beg);
+
 		while(!archivoAux.eof()){
 			archivoAux.read((char*)(rAux), sizeof(RegistroAux));
 			if(!rAux->getValido()){
