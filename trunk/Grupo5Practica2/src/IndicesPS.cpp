@@ -25,7 +25,7 @@ void IndicesPS::crearIS()
 /*
  * Inserta en el indice secundario y actualiza la lista encadenada del fichero aux
  */
-void IndicesPS::insertarIS(fstream &ar, Animal* animal, int posAux) {
+void IndicesPS::insertarIS(Animal* animal, int posAux) {
 	RegistroIS* rIS = new RegistroIS(animal->getLegs(), posAux);	//Preparamos los datos del nuevo registro
 	RegistroAux* rAux = new RegistroAux(false,"",0,0);
 	int posIS = 0;
@@ -145,7 +145,7 @@ int IndicesPS::buscarClaveS(int patas)
 /**
  * inserta reg en el archivo aux y devuelve la posicion en la que se inserto
  */
-int IndicesPS::insertarAux(fstream &ar, Animal* animal, int posDatos) {
+int IndicesPS::insertarAux( Animal* animal, int posDatos) {
 	int posicion=0;
 		RegistroAux* rAux;
 		rAux = new RegistroAux(true,animal->getName(), -1,posDatos);// Creamos el registro.
@@ -208,7 +208,7 @@ void IndicesPS::crearIP(fstream of, Animal* a)
 /**
  * Inserta un registro en el indice primario y devuelve su posicion o -1 sino ha insertado.
  */
-int IndicesPS::insertarIP(fstream &ar, Animal* a)
+int IndicesPS::insertarIP(Animal* a)
 {
 	fstream archivo("IP.dat", ios::in | ios::out | ios::binary | ios::ate);
 	int posicion;
