@@ -16,36 +16,29 @@ Indice::~Indice() {
 	// TODO Auto-generated destructor stub
 }
 void Indice::crearFicherosPS(){
+	list<Animal*> animales;
+	indicesPS.getES().leerTexto();	//lee el fichero zoo-data.txt para almacenar los animales en MP
+	animales=indicesPS.getES().getAnimals();
+    int posicionDatos=0;
+	int posicionAux=0;
+
 	fstream IP("IP.dat",ios::binary|ios::out);	//borrado de archivos
 	fstream IS("IS.dat",ios::binary|ios::out);
 	fstream Aux("IAux.dat",ios::binary|ios::out);
 	fstream zooData("zoo-data.dat",ios::binary|ios::out);
-
 	IP.close();
 	IS.close();
 	Aux.close();
 	zooData.close();
 
-	list<Animal*> animales;
-	indicesPS.getES().leerTexto();	//lee el fichero zoo-data.txt para almacenar los animales en MP
-	animales=indicesPS.getES().getAnimals();
-	//fstream archivoIP("IP.dat",ios::binary|ios::in|ios::out);
-	//fstream archivoIS("IS.dat",ios::binary|ios::in|ios::out);
-	//fstream archivoAux("IAux.dat",ios::binary|ios::in|ios::out);
-	int posicionDatos=0;
-	int posicionAux=0;
-
 	while(!animales.empty()){
 		//inserta en fichero de datos e Indice Primario y devuelve la posicion en el fichero de datos
 		posicionDatos=indicesPS.insertarIP(animales.front());
 		posicionAux = indicesPS.insertarAux(animales.front(),posicionDatos);
-		//indicesPS.insertarIS(animales.front(),posicionAux); //falla la busquedaBinaria
+		//indicesPS.insertarIS(animales.front(),posicionAux); //-------falla la busquedaBinaria------
 		delete *animales.begin();
 		animales.pop_front();
 	}
-	//archivoIP.close();
-	//archivoIS.close();
-	//archivoAux.close();
 }
 
 void Indice::eliminar(string clave){
