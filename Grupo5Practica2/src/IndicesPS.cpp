@@ -26,13 +26,12 @@ void IndicesPS::crearIS()
  * Inserta en el indice secundario y actualiza la lista encadenada del fichero aux
  */
 void IndicesPS::insertarIS(fstream &archivoIS, Animal* animal, int posAux) {
-	RegistroIS* rIS;
-	RegistroAux* rAux;
-	int primero = 0;
-	primero=buscarClaveS(animal->getLegs());
-	if (primero == -1) {//si no hay entrada en archivoIS
-		rIS = new RegistroIS(animal->getLegs(), 0);
-		archivoIS.seekg(ios::ate);
+	RegistroIS* rIS = new RegistroIS(animal->getLegs(), 0);
+	RegistroAux* rAux = NULL;
+	int posIS = 0;
+	posIS=buscarClaveS(animal->getLegs());
+	if (posIS == -1) {//si no hay entrada en archivoIS
+		archivoIS.seekg(ios::end);
 		while (archivoIS.tellg() > ios::beg) {
 			archivoIS.seekg(archivoIS.tellg() - (streampos) sizeof(RegistroIS)); // Posicionamos el puntero en la posicion del registro anterior.
 			archivoIS.read((char*) (rIS), sizeof(RegistroIS)); // Leemos el registro.
@@ -49,22 +48,45 @@ void IndicesPS::insertarIS(fstream &archivoIS, Animal* animal, int posAux) {
 			archivoIS.seekg(archivoIS.tellg() - (streampos) (sizeof(RegistroIS)*2));
 		}
 	}
-	//si la clave secundaria ya existia, enlazamos la lista encadenada del fichero Aux
+	//si la clave secundaria ya existia, enlazamos  al principio de la lista encadenada del fichero Aux
 	fstream archivoAux("IAux.dat", ios::binary | ios::out | ios::in);
-	archivoAux.seekg(primero);
-	while (1) {
-		archivoAux.read((char*) (rAux), sizeof(RegistroAux));
-		if (rAux->getSiguiente() == -1) { //si es el final de la lista encadenada, hacemos que apunte al nuevo regAux
-			rAux->setSiguiente(posAux);
-			archivoAux.seekg(archivoAux.tellg() - (streampos)sizeof(RegistroAux));
-			archivoAux.write((char*)(rAux),sizeof(RegistroAux));
+	//leemos los registros
+	archivoAux.seekg(posAux);
+	archivoAux.read((char*)rAux, sizeof(RegistroAux));	//Lectura del nuevo registro aux
+	archivoIS.seekg(posIS);
+	archivoIS.read((char*)rIS, sizeof(RegistroIS));
+	//enlazamos los registros
+	rAux->setSiguiente(rIS->getPosPrimero());
+	rIS->setPosPrimero(posAux);
+	//escribimos los registros actualizados
+	archivoIS.seekp(archivoIS.tellp()-sizeof(RegistroIS));
+	archivoIS.write((char*)rIS, sizeof(RegistroIS));
+	archivoAux.seekg(archivoAux.tellp()-sizeof(RegistroAux));
+	archivoAux.write((char*)rAux, sizeof(RegistroAux));
+
+
+	//archivoAux.seekg(primero);
+
+
+
+
+	//Recorremos todos los animales con ese numero de patas y cuando lleguemos al final de la lista
+	//insertamos el animal.
+	/*while (1) {
+		archivoAux.read((char*) (rAuxLista), sizeof(RegistroAux));
+		if (rAuxLista->getSiguiente() == -1) { //si es el final de la lista encadenada, hacemos que apunte al nuevo regAux
+			rAuxLista->setSiguiente(posAux);
+			archivoAux.seekg(archivoAux.tellg() - (streampos)sizeof(RegistroAux)); //actualizar registro
+			archivoAux.write((char*)(rAuxLista),sizeof(RegistroAux));
 			archivoIS.close();
 			archivoAux.close();
-			delete rAux;
+			delete rAuxLista;
 			return;
 		}
+		if(rAux->getClavePrimaria()<rAuxLista->getClavePrimaria())
+
 		archivoAux.seekg(rAux->getSiguiente());
-	}
+	}*/
 }
 void IndicesPS::borrarIS(int int1)
 {
@@ -86,10 +108,10 @@ int IndicesPS::buscarClaveS(int patas)
 			archivo.seekg(centro*sizeof(RegistroIS),ios::beg);//ios::beg o cero??
 			archivo.read((char*)(rIS), sizeof(RegistroIS));
 			if(rIS->getClaveSecundaria()==patas){
-				posicionPrimero=rIS->getPosPrimero();
+				//posicionPrimero=rIS->getPosPrimero();
 				delete rIS;
 				archivo.close();
-				return posicionPrimero;
+				return archivo.tellg()-sizeof(RegistroIS);//posicionPrimero;
 			}
 			if(rIS->getClaveSecundaria() > patas)
 				superior = centro - 1;
