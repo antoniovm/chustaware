@@ -35,7 +35,7 @@ void Indice::crearFicherosPS(){
 		//inserta en fichero de datos e Indice Primario y devuelve la posicion en el fichero de datos
 		posicionDatos=indicesPS.insertarIP(animales.front());
 		posicionAux = indicesPS.insertarAux(animales.front(),posicionDatos);
-		//indicesPS.insertarIS(animales.front(),posicionAux); //-------falla la busquedaBinaria------
+		indicesPS.insertarIS(animales.front(),posicionAux); //-------falla la busquedaBinaria------
 		delete *animales.begin();
 		animales.pop_front();
 	}
