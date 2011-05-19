@@ -168,13 +168,13 @@ public class Afinador extends Thread{
 				return;
 			}				
 			if(frecuencia < notasTot[i] && i!=0){	//si encuentra una menor que no es la primera
-				if((notasTot[i] - frecuencia) < (frecuencia - notasTot[i-1])){	//compara restos
-					desafinio=notasTot[i] - frecuencia;
+				if(Math.abs(notasTot[i] - frecuencia) < Math.abs(frecuencia - notasTot[i+1])){	//compara restos
+					desafinio= frecuencia - notasTot[i];
 					notaReal=i%12;
 					octava=calcularOctava(i%12);
 					return;
 				}else{
-					desafinio=frecuencia - notasTot[i-1];
+					desafinio=frecuencia - notasTot[i+1];
 					notaReal=(i-1)%12;
 					octava=calcularOctava((i-1)%12);
 					return;

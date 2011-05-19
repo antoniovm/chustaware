@@ -221,11 +221,15 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		};
 		areaInfo.setFont(fuente);
 		areaInfo.setEditable(false);
-		areaInfo.setText(titulo+" es un programa creado con la intención de facilitar el trabajo a la hora de afinar una guitarra eléctrica.\n" +
-				"Para ello, tan solo hay que conectar la guitarra eléctrica al ordenador a través de la tarjeta de sonido o a través de la interfaz del micrófono.\n" +
-				"Una vez conectada, al tocar una nota, dicha nota se mostrará en la pantalla, y en caso de coincidir con alguna de las notas que aparecen en la parte\n" +
-				"inferior de la pantalla, se encenderá la luz correspondiente en verde, indicándonos que dicha cuerda está afinada.\n" +
-				"Si la cuerda está afinada, estará marcada la posición 0 en la barra central, en caso contrario, se muestra el grado de desafinio aproximado.\n");
+		areaInfo.setText(titulo+" es un programa creado con la intención de facilitar el trabajo a la hora de afinar una guitarra\n" +
+				"eléctrica.\n" +
+				"Para ello, tan solo hay que conectar la guitarra eléctrica al ordenador a través de la tarjeta de sonido o\n" +
+				"a través de la interfaz del micrófono.\n" +
+				"Una vez conectada, al tocar una nota, dicha nota se mostrará en la pantalla, y en caso de coincidir con\n" +
+				"alguna de las notas que aparecen en la parte inferior de la pantalla, se encenderá la luz correspondiente\n" +
+				"en verde, indicándonos que dicha cuerda está afinada.\n" +
+				"Si la cuerda está afinada, estará marcada la posición 0 en la barra central, en caso contrario, se muestra\n" +
+				"el grado de desafinio aproximado.\n");
 		
 		areaDisplay.setFont(fuente);
 		areaDisplay.setEditable(false);
@@ -233,15 +237,20 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		
 		areaSlider.setFont(fuente);
 		areaSlider.setEditable(false);
-		areaSlider.setText("Si la nota está afinada, la púa estará situada en la posición 0.\nCuanto más lejos se encuentre del 0, más desafinado está el instrumento.");
+		areaSlider.setText("Si la nota está afinada, la púa estará situada en la posición 0.\n" +
+				"Cuanto más lejos se encuentre del 0, más desafinado está el instrumento.");
 		
 		areaBombillaOn.setFont(fuente);
 		areaBombillaOn.setEditable(false);
-		areaBombillaOn.setText("Luz verde:\nLa nota se corresponde con la nota indicada en dicha bombilla. La cuerda está afinada.");
+		areaBombillaOn.setText("Luz verde:\n" +
+				"La nota se corresponde con la nota indicada en dicha bombilla.\n" +
+				"La cuerda está afinada.");
 		
 		areaBombillaOff.setFont(fuente);
 		areaBombillaOff.setEditable(false);
-		areaBombillaOff.setText("Luz roja:\nLa nota no se corresponde con la nota indicada en dicha bombilla. La cuerda no está afinada.");
+		areaBombillaOff.setText("Luz roja:\n" +
+				"La nota no se corresponde con la nota indicada en dicha bombilla.\n" +
+				"La cuerda no está afinada.");
 		
 		pImgDisplay.setPreferredSize(new Dimension(display.getFondo().getIconWidth(), display.getFondo().getIconHeight()));
 		pImgPua.setPreferredSize(new Dimension(slider.getPua().getIconWidth(), slider.getPua().getIconHeight()));
