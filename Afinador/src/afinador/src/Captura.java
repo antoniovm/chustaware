@@ -4,7 +4,7 @@ import javax.sound.sampled.*;
 
 public class Captura extends Thread {
 
-	public static final int NUMERO_DE_MUESTRAS = 8 * 1024;
+	public static final int NUMERO_DE_MUESTRAS = 32 * 1024;
 	private byte[] tiempo; // Buffer de datos de audio en el dominio del tiempo
 	private double[][] frecuencia; // Buffer de datos de audio en el dominio del
 									// tiempo
@@ -73,13 +73,14 @@ public class Captura extends Thread {
 	public void run() {
 		/* Variable para dejar de capturar */
 		long time = 0;
+		byte[]buffer = new byte[tiempo.length/32];
 		stopCapture = false;
 		try {
-
+			tarjetaSonido.read(tiempo, 0,	tiempo.length);
 			while (!stopCapture) {
 				/* Lee los datos capturados por el sismeta de audio */
 				// time=System.currentTimeMillis();
-				int cnt = tarjetaSonido.read(tiempo, 0, tiempo.length);
+				int cnt = tarjetaSonido.read(buffer, 0, buffer.length);
 				// System.out.println(System.currentTimeMillis()-time+"    "+cnt);
 				if (cnt > 0) {
 					// Save data in output stream object.
@@ -92,6 +93,8 @@ public class Captura extends Thread {
 					 
 
 				}
+				System.arraycopy(tiempo, buffer.length, tiempo, 0, tiempo.length-buffer.length);
+				System.arraycopy(buffer, 0, tiempo, tiempo.length-buffer.length, buffer.length);
 				// System.arraycopy(src, srcPos, dest, destPos, length)
 				ConversorTF.convertir(tiempo, frecuencia, enventanado);
 			}
