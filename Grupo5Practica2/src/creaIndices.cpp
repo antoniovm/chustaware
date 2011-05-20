@@ -12,81 +12,116 @@
 
 using namespace std;
 
-void menu(EntradaSalida&);
-void restaurarArchivo(EntradaSalida&);
+void menu(Indice&);
 
 int main() {
 	Indice indice;
-	indice.crearFicherosPS();
-	indice.mostrar("IP.dat");
-	indice.mostrar("IS.dat");
-	indice.mostrar("IAux.dat");
-
-
-	//menu(indices.getES());
+	//indice.crearFicherosPS();
+	//indice.mostrar("IP.dat");
+	//indice.mostrar("IS.dat");
+	//indice.mostrar("IAux.dat");
+	menu(indice);
 	cout << "Fin de Main";
 	return 0;
 }
+/*
+ * TAREAS A REALIZAR:
+ *crear fichero con indiceP
+ CREAR fichero con indiceS
+ Visualizacion de archivos de indices
+ Listado ordenado por claveP
+ Busqueda por claveP
+ Busqueda por claveS
+ Eliminar en datos e indices
+ Insertar en datos e indices
+ Crear archivo de bloques, con registros ordenados
+ */
 
-
-void menu(EntradaSalida &es){
+void menu(Indice &indice){
 	char c;
 	long l;
 	string s;
+	int posDatos=0;
+	int posAux=0;
+	Animal* animal;
 	do{
 		cout<<"---¿Qué desea hacer?--- \n"
-				"b-Leer del archivo binario.\n"
-				"t-Leer del archivo de texto.\n"
-				"e-Escribir todo en fichero.\n"
-				"d-Eliminar un registro.\n"
-				"i-Insertar un registro.\n"
-				"v-Vaciar memoria.\n"
-				"l-Leer un solo registro.\n"
-				"m-Mostrar todo.\n"
-				"f-Buscar por nombre.\n"
-				"r-Restaurar Archivo.\n"
-				"s-Salir."<<endl;
+				"t-Leer del archivo de texto y generar ficheros de datos e indices.\n"
+				"i-Insertar un Animal.\n"
+				"d-Eliminar un Animal.\n"
+				"k-Listado ordenado por clave Primaria.\n"
+				"m-Mostrar estado fichero de indice(Primario,Secundario o Auxiliar).\n"
+				"p-Buscar por clave Primaria.\n"
+				"s-Buscar por clave Secundaria.\n"
+				"e-Exit."<<endl;
 		cin>>c;
 		switch (c) {
-			case 'b':
-				es.vaciar();	//Limipamos memoria principal para sincronizar con el fichero binario
-				es.leerBinario();break;
-			case 't':	es.leerTexto();break;
-			case 'e':	es.escribir();break;
+			case 't':
+				indice.crearFicherosPS();break;
 			case 'd':
 				cout<<"Qué registro desea eliminar?"<<endl;
 				ws(cin);
 				getline(cin,s);
-				es.eliminar(es.buscar(s));break;
+				//es.eliminar(es.buscar(s));break;
+				break;
 			case 'i':
 				cout<< "Introduzca el nombre"<<endl;
 				ws(cin);	//Limpia el buffer de teclado de espacios en blanco
 				getline(cin,s);
-				es.insertar(new Animal(s,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1));break;
-			case 'm':	es.mostrar();break;
-			case 'v':	es.vaciar();break;
-			case 'r':	restaurarArchivo(es);break;
-			case 'f':
-				cout<< "Introduzca el nombre"<<endl;
+				animal=new Animal(s,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);
+				posDatos=indice.getIndicesPS().insertarIP(animal);
+				posAux=indice.getIndicesPS().insertarAux(animal,posDatos);
+				indice.getIndicesPS().insertarIS(animal,posAux);
+				break;
+			case 'k':
+				cout<< "Listado por clave primaria de zoo-data.dat"<<endl;
+				//ws(cin);
+				//getline(cin,s);
+				//indice.mostrar(s);
+				break;
+			case 'm':
+				cout<< "Introduzca el nombre del fichero a mostrar (IP.dat ,IS.dat ,IAux.dat)"<<endl;
 				ws(cin);
 				getline(cin,s);
-				es.leerRegistro(es.buscar(s));break;
-			case 'l':
-				cout<<"Qué registro desea leer?"<<endl;
+				indice.mostrar(s);
+				break;
+			case 'p':	//de momento falla........con las 2:13 de a mñ y toy asta la polla
+				cout<< "Introduzca una clave primaria (nombre de animal)"<<endl;
+				ws(cin);
+				getline(cin,s);
+				posAux=indice.getIndicesPS().buscarClaveP(s);
+				if(posAux==-1){
+					cout << "El animal no esta" << endl;
+					break;
+				}else{
+					fstream archivoIP("IP.dat",ios::binary|ios::in);
+					fstream archivoDatos("zoo-data.dat",ios::binary|ios::in);
+					RegistroIP rIP;
+					Registro rDatos;
+					archivoIP.seekg(posAux);
+					archivoIP.tellg();
+					archivoIP.read((char*)(&rIP),sizeof(RegistroIP));//leemos el regIP
+					archivoIP.close();
+					posDatos=rIP.getPosRegistro();
+					archivoDatos.seekg(posDatos);
+					archivoDatos.tellg();
+					archivoDatos.read((char*)(&rDatos),sizeof(Registro));
+					cout << *rDatos.getAnimal(false) <<endl;
+					archivoDatos.close();
+				}
+				break;
+			case 's':
+				cout<< "Introduzca una clave secundaria (nº de patas)"<<endl;
+				ws(cin);
 				cin>>l;
-				es.leerRegistro(l);break;
+				//es.leerRegistro(es.buscar(s));
+				break;
+
 			default:	break;
 		}
-	}while(c!='s');
+	}while(c!='e');
 	cout<<"Saliendo..."<<endl;
 }
-/**
- * Restaura el fichero
- */
-void restaurarArchivo(EntradaSalida &es){	//Restaura el fichero en caso de error
-	es.vaciar();
-	es.leerTexto();
-	es.escribir();
-	es.vaciar();
 
-}
+
+
