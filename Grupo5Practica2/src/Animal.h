@@ -57,7 +57,7 @@ public:
     bool getHair() const;
     int getLegs() const;
     bool getMilk() const;
-    char* getName();
+    string getName();
     bool getPredator() const;
     bool getTail() const;
     bool getToothed() const;

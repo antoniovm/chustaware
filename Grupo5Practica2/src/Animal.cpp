@@ -116,11 +116,9 @@ bool Animal::getMilk() const
     return milk;
 }
 
-char* Animal::getName()
+string Animal::getName()
 {
-	char* cadena;
-	cadena = new char[50];
-	strcpy(cadena, name);
+	string cadena(name);
     return cadena;
 }
 

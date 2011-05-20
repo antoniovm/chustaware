@@ -309,7 +309,7 @@ long EntradaSalida::buscar(string  s)
 			return -1;
 		}
 		if(registro.getValido())
-			if(strcmp(s.data(),registro.getAnimal(false)->getName())==0) {
+			if(strcmp(s.data(),registro.getAnimal(false)->getName().data())==0) {
 				posicion = ((long)entrada.tellg()-sizeof(Registro)-sizeof(Cabecera))/sizeof(Registro);
 				entrada.close();
 				return posicion;
