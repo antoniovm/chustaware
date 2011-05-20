@@ -54,17 +54,16 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 				return;
 			}
 			// Si no, copiamos el registro en la siguiente posicion y posicionamos el puntero en la posicion anterior.
-			//delete rIS;	//esto sobra no???
-			cout<<archivoIS.tellg()<<endl;
+			archivoIS.tellg();
 			archivoIS.write((char*) (rIS), sizeof(RegistroIS));
-			cout<<archivoIS.tellg()<<endl;
+			archivoIS.tellg();
 			archivoIS.seekg(archivoIS.tellg() - (streampos) (sizeof(RegistroIS)*2));
-			cout<<archivoIS.tellg()<<endl;
+			archivoIS.tellg();
 
 		}
 		delete rIS;
 		rIS = new RegistroIS(animal->getLegs(), posAux); // Primera entrada del fichero
-		cout << archivoIS.tellg()<<endl;
+		archivoIS.tellg();
 		archivoIS.write((char*) (rIS), sizeof(RegistroIS));
 		delete rIS;
 		return;
@@ -123,7 +122,7 @@ int IndicesPS::buscarClaveS(int patas)
 {
 	fstream archivo("IS.dat", ios::in | ios::out | ios::binary);//ojo con el ios::ate
 	archivo.seekg(0,ios::end);
-	cout << "Fin archivo: "<<archivo.tellg() << endl;
+	archivo.tellg();
 
 	int inf = 0;
 	int sup = archivo.tellg()-(streampos)sizeof(RegistroIS);
@@ -134,9 +133,9 @@ int IndicesPS::buscarClaveS(int patas)
 	while(inf <= sup) {
 	  centro = ((sup - inf) / 2) + inf;
 	  archivo.seekg(centro);
-	  cout << "Posicion: " << archivo.tellg() << endl;
+	  archivo.tellg();
 	  archivo.read((char*)rIS, sizeof(RegistroIS));
-	  cout << "Posicion tras leer: " << archivo.tellg() << endl;
+	  archivo.tellg();
 	  if (rIS->getClaveSecundaria() == patas) {
 		  archivo.close();
 		  return centro;
