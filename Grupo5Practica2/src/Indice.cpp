@@ -52,11 +52,24 @@ void Indice::eliminar(string clave){
 	indicesPS.getES().eliminar(posicion);
 	indicesPS.borrarIP(clave);
 }
-int Indice::buscarP(string clave){
+void Indice::buscarP(string clave){
+	fstream archivoIP("IP.dat", ios::in | ios::binary);
+	RegistroIP rIP;
+	int posIP = indicesPS.buscarClaveP(clave);
+
+	if (posIP == -1) {
+		cout << "No se ha encontrado ningun registro con clave <" << clave << ">" << endl;
+		archivoIP.close();
+		return;
+	}
+	cout << "Animal con clave primaria <" << clave << ">:" << endl;
+	archivoIP.seekg((streampos)posIP); //posicionamos el puntero del IP en la posicion en la que esta el animal que buscamos
+	archivoIP.read((char*)rIP, sizeof(RegistroIP)); //leemos el registro del IP
+	indicesPS.getES().leerRegistro(indicesPS.getES().calcularNumRegistro(rIP.getPosRegistro())); //leemos y mostramos el animal que se encuentra en el archivo de datos
 
 }
 
-int Indice::buscarS(int nPatas){
+void Indice::buscarS(int nPatas){
 	fstream archivoIS("IS.dat", ios::in | ios::binary);
 	fstream archivoIAux("IAux.dat", ios::in | ios::binary);
 	RegistroIS rIS;
@@ -65,13 +78,20 @@ int Indice::buscarS(int nPatas){
 	int posIS = indicesPS.buscarClaveS(nPatas);
 
 	if (posIS == -1) {
-		cout << "No se ha encontrado ningun registro con " << nPatas << endl;
+		cout << "No se ha encontrado ningun registro con " << nPatas << " patas" << endl;
 		archivoIS.close();
 		archivoIAux.close();
-		return -1;
+		return;
 	}
 	archivoIS.seekg((streampos)posIS); //posicionamos el puntero en la posicion en la que esta el registro
 	archivoIS.read((char*)&rIS, sizeof(RegistroIS)); //leemos el registro del indice secundario
+	if (rIS.getPosPrimero() == -1) {
+		cout << "No se ha encontrado ningun registro con " << nPatas << " patas" << endl;
+		archivoIS.close();
+		archivoIAux.close();
+		return;
+	}
+	cout << "Animales con clave secundaria <" << nPatas << ">:" << endl;
 	archivoIAux.seekg((streampos)rIS.getPosPrimero()); //posicionamos el puntero del IAux en la posicion donde apunta el registro del IS
 	while (!finPila) {
 		archivoIAux.read((char*) &rAux, sizeof(RegistroAux)); //leemos el registro en el IAux
