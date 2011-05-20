@@ -15,6 +15,9 @@ Indice::Indice() {
 Indice::~Indice() {
 	// TODO Auto-generated destructor stub
 }
+/**
+ * Lee del fichero de txt los animales y genera los ficheros binarios de datos e indices(primario,secundario y auxiliar)
+ */
 void Indice::crearFicherosPS(){
 	list<Animal*> animales;
 	indicesPS.getES().leerTexto();	//lee el fichero zoo-data.txt para almacenar los animales en MP
@@ -32,10 +35,9 @@ void Indice::crearFicherosPS(){
 	zooData.close();
 
 	while(!animales.empty()){
-		//inserta en fichero de datos e Indice Primario y devuelve la posicion en el fichero de datos
 		posicionDatos=indicesPS.insertarIP(animales.front());
 		posicionAux = indicesPS.insertarAux(animales.front(),posicionDatos);
-		indicesPS.insertarIS(animales.front(),posicionAux); //-------falla la busquedaBinaria------
+		indicesPS.insertarIS(animales.front(),posicionAux);
 		delete *animales.begin();
 		animales.pop_front();
 	}
@@ -52,6 +54,9 @@ void Indice::eliminar(string clave){
 	indicesPS.getES().eliminar(posicion);
 	indicesPS.borrarIP(clave);
 }
+/**
+ * Muestra por pantalla el animal con esa clave primaria(nombre)
+ */
 void Indice::buscarP(string clave){
 	fstream archivoIP("IP.dat", ios::in | ios::binary);
 	RegistroIP rIP;
@@ -68,7 +73,9 @@ void Indice::buscarP(string clave){
 	indicesPS.getES().leerRegistro(indicesPS.getES().calcularNumRegistro(rIP.getPosRegistro())); //leemos y mostramos el animal que se encuentra en el archivo de datos
 
 }
-
+/**
+ * Muestra por pantalla todos los animales con esa clave segundaria (patas)
+ */
 void Indice::buscarS(int nPatas){
 	fstream archivoIS("IS.dat", ios::in | ios::binary);
 	fstream archivoIAux("IAux.dat", ios::in | ios::binary);
@@ -107,10 +114,12 @@ void Indice::buscarS(int nPatas){
 	archivoIS.close();
 	archivoIAux.close();
 }
-
+/**
+ * muestra el contenido del fichero de indices q se le pase por parametro(se le puede añadir la cabecera tambien)
+ */
 void Indice::mostrar(string nombre) {
 	fstream archivoIndice(nombre.data(), fstream::in | fstream::binary);
-
+	int cont=1;
 	if (!archivoIndice.is_open()) {
 		cout << "No existe el archivo" << endl;
 		return;
@@ -122,41 +131,48 @@ void Indice::mostrar(string nombre) {
 		archivoIndice.close();
 		return;
 	}
-	archivoIndice.seekg(0, ios::beg);
 	if (nombre == "IP.dat") {
+		archivoIndice.seekg(sizeof(Cabecera));
+		cout << "----------FICHERO IP.dat----------" << endl;
 		RegistroIP registro;
-		printf("%-17s%-20s\n", "Clave primaria", "Posicion en datos");
+		printf("%-5s%-17s%-20s\n","Num", "Clave primaria", "Posicion en datos");
 		while (1) {
 			archivoIndice.read((char*) &registro, sizeof(RegistroIP));
 			if (archivoIndice.eof())
 				break;
-			printf("%-17s%-20d\n", registro.getClavePrimaria().data(), registro.getPosRegistro());
+			printf("%-5d%-17s%-20d\n", cont, registro.getClavePrimaria().data(), registro.getPosRegistro());
+			cont++;
 		}
 		cout << endl;
 	}
 	if (nombre == "IS.dat") {
+		cout << "----------FICHERO IS.dat----------" << endl;
 		archivoIndice.seekg(sizeof(Cabecera));
 		RegistroIS registro;
-		printf("%-20s%-20s\n", "Clave secundaria", "Posicion del primero en aux");
+		printf("%-5s%-20s%-20s\n","Num", "Clave secundaria", "Posicion del primero en aux");
 		while (1) {
 			archivoIndice.tellg();
 			archivoIndice.read((char*) &registro, sizeof(RegistroIS));
 			archivoIndice.tellg();
 			if (archivoIndice.eof())
 				break;
-			printf("%-20d%-20d\n", registro.getClaveSecundaria(), registro.getPosPrimero());
+			printf("%-5d%-20d%-20d\n",cont ,registro.getClaveSecundaria(), registro.getPosPrimero());
+			cont++;
 
 		}
 		cout << endl;
 	}
 	if (nombre == "IAux.dat") {
+		cout << "----------FICHERO IAux.dat----------" << endl;
 		RegistroAux registro;
-		printf("%-17s%-17s%-20s%-20s\n", "Bit de validez", "Clave primaria", "Posicion siguiente", "Posicion datos");
+		printf("%-5s%-17s%-20s%-20s\n","Num", "Clave primaria", "Posicion siguiente", "Posicion datos");
 		while (1) {
 			archivoIndice.read((char*) &registro, sizeof(RegistroAux));
 			if (archivoIndice.eof())
 				break;
-			printf("%-17s%-17d%-20d%-20d\n", registro.getValido(), registro.getClavePrimaria(), registro.getSiguiente(), registro.getPosDatos());
+			if(registro.getValido())
+				printf("%-5d%-17s%-20d%-20d\n",cont , registro.getClavePrimaria().data(), registro.getSiguiente(), registro.getPosDatos());
+			cont++;
 		}
 		cout << endl;
 	}
