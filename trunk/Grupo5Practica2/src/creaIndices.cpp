@@ -20,6 +20,8 @@ int main() {
 	Indice indice;
 	indice.crearFicherosPS();
 	indice.mostrar("IP.dat");
+	indice.mostrar("IP.dat");
+
 	//menu(indices.getES());
 	cout << "Fin de Main";
 	return 0;
