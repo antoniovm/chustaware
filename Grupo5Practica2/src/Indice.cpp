@@ -61,51 +61,55 @@ int Indice::buscarS(int patas){
 }
 
 void Indice::mostrar(string nombre) {
-	fstream archivo(nombre.data(), fstream::in | fstream::binary);
+	fstream archivoIndice(nombre.data(), fstream::in | fstream::binary);
 
-	if (!archivo.is_open()) {
+	if (!archivoIndice.is_open()) {
 		cout << "No existe el archivo" << endl;
 		return;
 	}
 	// Comprobamos si el archivo esta vacio
-	archivo.seekg(0, ios::end);
-	if (archivo.tellg() == 0) {
+	archivoIndice.seekg(0, ios::end);
+	if (archivoIndice.tellg() == 0) {
 		cout << "Archivo vacio" << endl;
-		archivo.close();
+		archivoIndice.close();
 		return;
 	}
+	archivoIndice.seekg(0, ios::beg);
 	if (nombre == "IP.dat") {
 		RegistroIP registro;
-		cout << "Clave primaria\t|\tPosicion en el archivo de datos\n";
+		printf("%-17s%-20s\n", "Clave primaria", "Posicion en datos");
 		while (1) {
-			archivo.read((char*) &registro, sizeof(registro));
-			if (archivo.eof())
+			archivoIndice.read((char*) &registro, sizeof(RegistroIP));
+			if (archivoIndice.eof())
 				break;
-			cout << registro.getClavePrimaria() << "\t|\t" << registro.getPosRegistro() << endl;
+			printf("%-17s%-20d\n", registro.getClavePrimaria().data(), registro.getPosRegistro());
 		}
+		cout << endl;
 	}
 	if (nombre == "IS.dat") {
 		RegistroIS registro;
-		cout << "Clave secundaria\t|\tPosicion del primero en el archivo auxiliar\n";
+		printf("%-20s%-20s\n", "Clave secundaria", "Posicion del primero en aux");
 		while (1) {
-			archivo.read((char*) &registro, sizeof(registro));
-			if (archivo.eof())
+			archivoIndice.read((char*) &registro, sizeof(RegistroIS));
+			if (archivoIndice.eof())
 				break;
-			cout <<registro.getClaveSecundaria() << "\t|\t"	<< registro.getPosPrimero() << endl;
+			printf("%-20d%-20d\n", registro.getClaveSecundaria(), registro.getPosPrimero());
 		}
+		cout << endl;
 	}
 	if (nombre == "IAux.dat") {
 		RegistroAux registro;
-		cout << "Bit de validez\t|\tClave primaria\t|\tPosicion del siguiente\t|\tPosicion en el archivo de datos\n";
+		printf("%-17s%-17s%-20s%-20s\n", "Bit de validez", "Clave primaria", "Posicion siguiente", "Posicion datos");
 		while (1) {
-			archivo.read((char*) &registro, sizeof(registro));
-			if (archivo.eof())
+			archivoIndice.read((char*) &registro, sizeof(RegistroAux));
+			if (archivoIndice.eof())
 				break;
-			cout << registro.getValido() << "\t|\t" << registro.getClavePrimaria() << "\t|\t" << registro.getSiguiente() << "\t|\t" << registro.getPosDatos() << endl;
+			printf("%-17s%-17d%-20d%-20d\n", registro.getValido(), registro.getClavePrimaria(), registro.getSiguiente(), registro.getPosDatos());
 		}
+		cout << endl;
 	}
 
-	archivo.close();
+	archivoIndice.close();
 }
 
 void Indice::crearFicheroBloques(){
