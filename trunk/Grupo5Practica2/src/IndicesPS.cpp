@@ -122,9 +122,9 @@ int IndicesPS::buscarClaveS(int patas)
 	while(inferior <= superior){
 		centro=((superior-inferior)/2)+inferior;
 		archivo.seekg(centro*sizeof(RegistroIS));//ios::beg o cero??
-		cout << "Posicion: " << archivo.tellg() << endl;
+		//cout << "Posicion: " << archivo.tellg() << endl;
 		archivo.read((char*)(rIS), sizeof(RegistroIS));
-		cout << "Posicion tras leer: " << archivo.tellg() << endl;
+		//cout << "Posicion tras leer: " << archivo.tellg() << endl;
 
 		if(rIS->getClaveSecundaria()==patas){
 			//posicionPrimero=rIS->getPosPrimero();
@@ -148,12 +148,13 @@ int IndicesPS::buscarClaveS(int patas)
  * inserta reg en el archivo aux y devuelve la posicion en la que se inserto
  */
 int IndicesPS::insertarAux( Animal* animal, int posDatos) {
-	int posicion=0;
+
 		RegistroAux* rAux;
 		rAux = new RegistroAux(true,animal->getName(), -1,posDatos);// Creamos el registro.
 		// Si el archivo esta vacio insertamos directamente.
 		fstream archivoAux("IAux.dat",ios::binary|ios::in|ios::out);
 		archivoAux.seekg(0,ios::end);
+		streampos posicion=0, tamano=archivoAux.tellg();
 
 		if (archivoAux.tellg() == ios::beg) {
 			archivoAux.write((char*)(rAux), sizeof(RegistroAux));
@@ -164,7 +165,7 @@ int IndicesPS::insertarAux( Animal* animal, int posDatos) {
 		//comprueba si hay hueco libre para insercion apilada
 		archivoAux.seekp(ios::beg);
 
-		while(!archivoAux.eof()){
+		while(archivoAux.tellg()<tamano){
 			archivoAux.read((char*)(rAux), sizeof(RegistroAux));
 			if(!rAux->getValido()){
 				archivoAux.seekg(archivoAux.tellg()-(streampos)sizeof(RegistroAux));
@@ -178,7 +179,7 @@ int IndicesPS::insertarAux( Animal* animal, int posDatos) {
 		}
 		//si no ha encontrado hueco, inserta al final
 		archivoAux.seekg(0,ios::end);
-		posicion=(int)archivoAux.tellg();
+		posicion=archivoAux.tellg();
 		rAux = new RegistroAux(true,animal->getName(), -1,posDatos);
 		archivoAux.write((char*)(rAux),sizeof(RegistroAux));
 		delete rAux;
@@ -213,23 +214,15 @@ void IndicesPS::crearIP(fstream of, Animal* a)
  */
 int IndicesPS::insertarIP(Animal* a)
 {
-	fstream archivo("IP.dat", ios::in | ios::out | ios::binary | ios::ate);
-	int posicion;
-	RegistroIP* rIP;
+	fstream archivo("IP.dat", ios::in | ios::out | ios::binary );
+	int posicion=es.insertar(a);
+	RegistroIP* rIP= new RegistroIP(a->getName(), posicion);// Creamos el registro.
 
-	posicion=es.insertar(a);
 
-	rIP = new RegistroIP(a->getName(), posicion);// Creamos el registro.
 	archivo.seekg(0,ios::end);
 	//cout <<"Fin de ArchivoIP: "<< archivo.tellg() << endl;
 
-	// Si el archivo esta vacio insertamos directamente.
-	if (archivo.tellg() == ios::beg) {
-		archivo.write((char*)(rIP), sizeof(RegistroIP));
-		delete rIP;
-		archivo.close();
-		return posicion;
-	}
+
 
 	while(archivo.tellg() > ios::beg) {
 		archivo.seekg(archivo.tellg()-(streampos)sizeof(RegistroIP));	// Posicionamos el puntero en la posicion del registro anterior.
@@ -248,9 +241,12 @@ int IndicesPS::insertarIP(Animal* a)
 		archivo.write((char*) (rIP), sizeof(RegistroIP));
 		archivo.seekg(archivo.tellg() - (streampos)(sizeof(RegistroIP)*2));
 	}
+
+	// Si el archivo esta vacio o es la primera posicion
+	archivo.write((char*) (rIP), sizeof(RegistroIP));
+	delete rIP;
 	archivo.close();
-	cout << "Error InsertarIP"<<endl;
-	return -1;	//Revisar error
+	return posicion;
 }
 /**
  * Elimina un registro en el indice primario.
