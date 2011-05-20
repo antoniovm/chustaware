@@ -17,18 +17,7 @@
 
 using namespace std;
 
-/*
- * TAREAS A REALIZAR:
- *crear fichero con indiceP
- CREAR fichero con indiceS
- Visualizacion de archivos de indices
- Listado ordenado por claveP
- Busqueda por claveP
- Busqueda por claveS
- Eliminar en datos e indices
- Insertar en datos e indices
- Crear archivo de bloques, con registros ordenados
- */
+
 class Indice {
 private:
 	IndicesPS indicesPS;
@@ -42,6 +31,7 @@ public:
 	void buscarS(int);
 	void mostrar(string);
 	void crearFicheroBloques();
+    IndicesPS& getIndicesPS();
 };
 
 #endif /* INDICE_H_ */

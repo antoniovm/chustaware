@@ -192,6 +192,11 @@ void Indice::mostrar(string nombre) {
 	archivoIndice.close();
 }
 
+IndicesPS& Indice::getIndicesPS()
+{
+    return indicesPS;
+}
+
 void Indice::crearFicheroBloques(){
 
 }
