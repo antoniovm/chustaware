@@ -115,11 +115,12 @@ void Indice::buscarS(int nPatas){
 	archivoIAux.close();
 }
 /**
- * muestra el contenido del fichero de indices q se le pase por parametro(se le puede añadir la cabecera tambien)
+ * muestra el contenido del fichero de indices q se le pase por parametro
  */
 void Indice::mostrar(string nombre) {
 	fstream archivoIndice(nombre.data(), fstream::in | fstream::binary);
 	int cont=1;
+	Cabecera cabecera;
 	if (!archivoIndice.is_open()) {
 		cout << "No existe el archivo" << endl;
 		return;
@@ -131,9 +132,13 @@ void Indice::mostrar(string nombre) {
 		archivoIndice.close();
 		return;
 	}
+	archivoIndice.seekg(0,ios::beg);
 	if (nombre == "IP.dat") {
-		archivoIndice.seekg(sizeof(Cabecera));
 		cout << "----------FICHERO IP.dat----------" << endl;
+		archivoIndice.tellg();
+		archivoIndice.read((char*)&cabecera,sizeof(Cabecera));
+		archivoIndice.tellg();
+		cout << cabecera << endl;
 		RegistroIP registro;
 		printf("%-5s%-17s%-20s\n","Num", "Clave primaria", "Posicion en datos");
 		while (1) {
@@ -147,7 +152,10 @@ void Indice::mostrar(string nombre) {
 	}
 	if (nombre == "IS.dat") {
 		cout << "----------FICHERO IS.dat----------" << endl;
-		archivoIndice.seekg(sizeof(Cabecera));
+		archivoIndice.tellg();
+		archivoIndice.read((char*)&cabecera,sizeof(Cabecera));
+		archivoIndice.tellg();
+		cout << cabecera << endl;
 		RegistroIS registro;
 		printf("%-5s%-20s%-20s\n","Num", "Clave secundaria", "Posicion del primero en aux");
 		while (1) {
@@ -164,6 +172,10 @@ void Indice::mostrar(string nombre) {
 	}
 	if (nombre == "IAux.dat") {
 		cout << "----------FICHERO IAux.dat----------" << endl;
+		archivoIndice.tellg();
+		archivoIndice.read((char*)&cabecera,sizeof(Cabecera));
+		archivoIndice.tellg();
+		cout << cabecera << endl;
 		RegistroAux registro;
 		printf("%-5s%-17s%-20s%-20s\n","Num", "Clave primaria", "Posicion siguiente", "Posicion datos");
 		while (1) {

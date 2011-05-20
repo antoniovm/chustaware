@@ -16,11 +16,12 @@ void menu(EntradaSalida&);
 void restaurarArchivo(EntradaSalida&);
 
 int main() {
-	//IndicesPS indices;
 	Indice indice;
 	indice.crearFicherosPS();
 	indice.mostrar("IP.dat");
-	//indice.mostrar("IS.dat");
+	indice.mostrar("IS.dat");
+	indice.mostrar("IAux.dat");
+
 
 	//menu(indices.getES());
 	cout << "Fin de Main";
