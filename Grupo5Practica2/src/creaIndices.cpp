@@ -19,8 +19,8 @@ int main() {
 	//IndicesPS indices;
 	Indice indice;
 	indice.crearFicherosPS();
-	//indice.mostrar("IP.dat");
-	indice.mostrar("IS.dat");
+	indice.mostrar("IP.dat");
+	//indice.mostrar("IS.dat");
 
 	//menu(indices.getES());
 	cout << "Fin de Main";
