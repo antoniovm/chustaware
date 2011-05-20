@@ -64,3 +64,11 @@ void Cabecera::setTamRegistro(long  tamRegistro)
 {
     this->tamRegistro = tamRegistro;
 }
+ostream& operator <<(ostream & os, Cabecera cabecera) {
+	os << "Numero de Registros: " << cabecera.getNRegistros() << endl;
+	os << "Numero de Eliminados: " << cabecera.getNEliminados()<< endl;
+	os << "Primer Hueco: " << cabecera.getPrimerHueco() << endl;
+	os << "Tamaño del Registro: " << cabecera.getTamRegistro() << endl;
+	return os;
+
+}

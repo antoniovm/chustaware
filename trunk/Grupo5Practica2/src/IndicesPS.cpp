@@ -23,44 +23,63 @@ void IndicesPS::crearIS()
  * Inserta en el indice secundario y actualiza la lista encadenada del fichero aux
  */
 int IndicesPS::insertarAux( Animal* animal, int posDatos) {
-
-		RegistroAux* rAux;
-		rAux = new RegistroAux(true,animal->getName(), -1,posDatos);// Creamos el registro.
-		// Si el archivo esta vacio insertamos directamente.
+	Cabecera cabecera;
+	RegistroAux* rAux = new RegistroAux(true,animal->getName(), -1,posDatos);// Creamos el registro.
+		int posAux = 0;
 		fstream archivoAux("IAux.dat",ios::binary|ios::in|ios::out);
-		archivoAux.seekg(0,ios::end);
-		streampos posicion=0, tamano=archivoAux.tellg();
 
-		if (archivoAux.tellg() == ios::beg) {
+		if (comprobarArchivoVacio(archivoAux)) { // Comprobamos si el tamaño del archivo es 0
+				generarCabecera(archivoAux);
+				archivoAux.tellg();
+				archivoAux.write((char*)(rAux), sizeof(RegistroAux));
+				archivoAux.tellg();
+				posAux=archivoAux.tellg()-(streampos)sizeof(RegistroAux);
+				archivoAux.close();
+				return posAux;
+		}
+		archivoAux.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
+
+		if(cabecera.getPrimerHueco() == -1) {	//No hay huecos, insercion al final
+			archivoAux.seekg(sizeof(Cabecera)+(int)cabecera.getNRegistros()*sizeof(RegistroAux));//ios::end
+			posAux = archivoAux.tellg();
 			archivoAux.write((char*)(rAux), sizeof(RegistroAux));
 			archivoAux.tellg();
-			delete rAux;
+			cabecera.setNRegistros(cabecera.getNRegistros()+1);
+			archivoAux.seekg(0,ios::beg);
+			archivoAux.tellg();
+			archivoAux.write((char*)&cabecera,sizeof(Cabecera));	//Actualizacion de la cabecera
+			archivoAux.tellg();
 			archivoAux.close();
-			return posicion;
+			return posAux;
 		}
-		//comprueba si hay hueco libre para insercion apilada
-		archivoAux.seekp(ios::beg);
 
-		while(archivoAux.tellg()<tamano){
-			archivoAux.read((char*)(rAux), sizeof(RegistroAux));
-			if(!rAux->getValido()){
-				archivoAux.seekg(archivoAux.tellg()-(streampos)sizeof(RegistroAux));
-				posicion=(int)archivoAux.tellg();
-				rAux = new RegistroAux(true,animal->getName(), -1,posDatos);
-				archivoAux.write((char*)(rAux),sizeof(RegistroAux));
-				delete rAux;
-				archivoAux.close();
-				return posicion;
-			}
-		}
-		//si no ha encontrado hueco, inserta al final
-		archivoAux.seekg(0,ios::end);
-		posicion=archivoAux.tellg();
-		rAux = new RegistroAux(true,animal->getName(), -1,posDatos);
-		archivoAux.write((char*)(rAux),sizeof(RegistroAux));
-		delete rAux;
+		posAux = cabecera.getPrimerHueco();	//Posicion de insercion
+
+		archivoAux.seekg(posAux);
+		archivoAux.tellg();
+		archivoAux.read((char*)rAux,sizeof(RegistroAux));//leemos el hueco para copiar la posSiguiente hueco a la cabecera
+		archivoAux.tellg();
+		int posSiguiente=rAux->getSiguiente();
+
+		rAux=new RegistroAux(true,animal->getName(), -1,posDatos);// Creamos el registro.
+		delete animal; //Liberar memoria dinamica
+
+		archivoAux.seekp(posAux);
+		archivoAux.tellg();
+		archivoAux.write((char*)(rAux), sizeof(RegistroAux));	//Insercion del nuevo registro
+		archivoAux.tellg();
+
+
+		cabecera.setNEliminados(cabecera.getNEliminados()-1);	//Modificar cabecera
+		cabecera.setNRegistros(cabecera.getNRegistros()+1);
+		cabecera.setPrimerHueco(posSiguiente);
+		archivoAux.seekp(0,ios::beg);
+		archivoAux.write((char*)&cabecera,sizeof(Cabecera));	//Actualizacion de la cabecera
+
 		archivoAux.close();
-		return posicion;
+		delete rAux;
+		return posAux;
+
 }
 
 void IndicesPS::insertarIS(Animal* animal, int posAux) {
@@ -81,19 +100,7 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 	}
 	archivoIS.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
 
-	/*if (cabecera.getPrimerHueco() == -1) {	//No hay huecos, insercion al final
-			rIS->.setAnimal(animal);
-			archivoSalida.seekp(0, ios::end);
-			posicion = archivoSalida.tellg();
-			archivoSalida.write((char*)(&registro), sizeof(Registro));
-			cabecera.setNRegistros(cabecera.getNRegistros()+1);
-			archivoSalida.seekp(0,ios::beg);
-			archivoSalida.write((char*)&cabecera,sizeof(Cabecera));	//Actualizacion de la cabecera
-			archivoSalida.close();
-			return (int)posicion;
-		}
-*/
-	archivoIS.seekg(0,ios::end);
+	archivoIS.seekg(0,ios::end);	//se puede kitar.....
 	posIS=buscarClaveS(animal->getLegs());
 	if (posIS == -1) {//si no hay entrada con esa clave secundaria en archivoIS
 		archivoIS.seekg(sizeof(Cabecera)+(int)cabecera.getNRegistros()*sizeof(RegistroIS));//ios::end

@@ -30,6 +30,8 @@ public:
     void setPrimerHueco(long  primerHueco);
     void setNRegistros(long  nRegistros);
     void setTamRegistro(long  tamRegistro);
+    friend ostream& operator<<(ostream&, Cabecera);
+
 };
 
 #endif /* CABECERA_H_ */
