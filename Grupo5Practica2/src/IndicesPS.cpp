@@ -113,7 +113,7 @@ int IndicesPS::buscarClaveS(int patas)
 {
 	fstream archivo("IS.dat", ios::in | ios::out | ios::binary);//ojo con el ios::ate
 	archivo.seekg(0,ios::end);
-	int inferior=0;
+	/*int inferior=0;
 	int superior=(archivo.tellg()/(streampos)sizeof(RegistroIS))-1;
 	int centro=0;
 	//int posicionPrimero;
@@ -141,6 +141,35 @@ int IndicesPS::buscarClaveS(int patas)
 	}
 	if(rIS!=NULL)
 		delete rIS;
+	archivo.close();
+	return -1;*/
+	int inf = 0;
+	int sup = archivo.tellg()-(streampos)sizeof(RegistroIS);
+	int centro = 0;
+	RegistroIS* rIS = new RegistroIS(0,0);
+
+	if(inf == sup) {
+		archivo.close();
+		return -1;
+	}
+
+	while(inf <= sup) {
+	  centro = ((sup - inf) / 2) + inf;
+	  archivo.seekg(centro);
+	  cout << "Posicion: " << archivo.tellg() << endl;
+	  archivo.read((char*)rIS, sizeof(RegistroIS));
+	  cout << "Posicion tras leer: " << archivo.tellg() << endl;
+	  if (rIS->getClaveSecundaria() == patas) {
+		  archivo.close();
+		  return centro;
+	  }
+	  if (patas < rIS->getClaveSecundaria()) {
+		sup = centro + sizeof(RegistroIS);
+	  }
+	  if (patas > rIS->getClaveSecundaria()) {
+		inf = centro+ sizeof(RegistroIS);
+	  }
+	}
 	archivo.close();
 	return -1;
 }
