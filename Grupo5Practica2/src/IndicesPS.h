@@ -25,7 +25,6 @@ public:
 	virtual ~IndicesPS();
 	void crearIP(fstream,Animal*);
 	void crearIS();
-	RegistroIP leerIP();
 	int insertarIP(Animal*);
 	void borrarIP(string);
 	void insertarIS(Animal*, int);
@@ -34,6 +33,7 @@ public:
 	void borrarAux(int);
 	long buscarClaveP(string);
 	int buscarClaveS(int);
+	void mostrar(string);
 	EntradaSalida& getES(){return es;}
 };
 
