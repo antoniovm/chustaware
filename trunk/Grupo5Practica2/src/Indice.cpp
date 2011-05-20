@@ -64,7 +64,7 @@ void Indice::buscarP(string clave){
 	}
 	cout << "Animal con clave primaria <" << clave << ">:" << endl;
 	archivoIP.seekg((streampos)posIP); //posicionamos el puntero del IP en la posicion en la que esta el animal que buscamos
-	archivoIP.read((char*)rIP, sizeof(RegistroIP)); //leemos el registro del IP
+	archivoIP.read((char*)&rIP, sizeof(RegistroIP)); //leemos el registro del IP
 	indicesPS.getES().leerRegistro(indicesPS.getES().calcularNumRegistro(rIP.getPosRegistro())); //leemos y mostramos el animal que se encuentra en el archivo de datos
 
 }
