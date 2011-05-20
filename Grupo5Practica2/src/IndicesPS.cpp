@@ -48,16 +48,23 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 				delete rIS;
 				rIS = new RegistroIS(animal->getLegs(), posAux); // Creamos el registro.
 				archivoIS.write((char*) (rIS), sizeof(RegistroIS));
+				archivoIS.tellg();
 				delete rIS;
 				archivoIS.close();
 				return;
 			}
 			// Si no, copiamos el registro en la siguiente posicion y posicionamos el puntero en la posicion anterior.
 			//delete rIS;	//esto sobra no???
+			cout<<archivoIS.tellg()<<endl;
 			archivoIS.write((char*) (rIS), sizeof(RegistroIS));
+			cout<<archivoIS.tellg()<<endl;
 			archivoIS.seekg(archivoIS.tellg() - (streampos) (sizeof(RegistroIS)*2));
+			cout<<archivoIS.tellg()<<endl;
 
 		}
+		delete rIS;
+		rIS = new RegistroIS(animal->getLegs(), posAux); // Primera entrada del fichero
+		cout << archivoIS.tellg()<<endl;
 		archivoIS.write((char*) (rIS), sizeof(RegistroIS));
 		delete rIS;
 		return;
@@ -71,11 +78,14 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 	archivoIS.read((char*)rIS, sizeof(RegistroIS));
 	//enlazamos los registros
 	rAux->setSiguiente(rIS->getPosPrimero());
+	rIS->setPosPrimero(posAux);
 	//escribimos los registros actualizados
 	archivoIS.seekp(archivoIS.tellp()-(streampos)sizeof(RegistroIS));
 	archivoIS.write((char*)rIS, (streampos)sizeof(RegistroIS));
-	archivoAux.seekg(archivoAux.tellp()-sizeof(RegistroAux));
+	archivoIS.tellg();
+	archivoAux.seekg(archivoAux.tellp()-(streampos)sizeof(RegistroAux));
 	archivoAux.write((char*)rAux, sizeof(RegistroAux));
+	archivoIS.tellg();
 
 	archivoAux.close();
 	archivoIS.close();
@@ -113,45 +123,13 @@ int IndicesPS::buscarClaveS(int patas)
 {
 	fstream archivo("IS.dat", ios::in | ios::out | ios::binary);//ojo con el ios::ate
 	archivo.seekg(0,ios::end);
-	/*int inferior=0;
-	int superior=(archivo.tellg()/(streampos)sizeof(RegistroIS))-1;
-	int centro=0;
-	//int posicionPrimero;
-	RegistroIS* rIS = new RegistroIS(0,0);
+	cout << "Fin archivo: "<<archivo.tellg() << endl;
 
-	while(inferior <= superior){
-		centro=((superior-inferior)/2)+inferior;
-		archivo.seekg(centro*sizeof(RegistroIS));//ios::beg o cero??
-		//cout << "Posicion: " << archivo.tellg() << endl;
-		archivo.read((char*)(rIS), sizeof(RegistroIS));
-		//cout << "Posicion tras leer: " << archivo.tellg() << endl;
-
-		if(rIS->getClaveSecundaria()==patas){
-			//posicionPrimero=rIS->getPosPrimero();
-			delete rIS;
-			centro=(archivo.tellg()-(streampos)sizeof(RegistroIS));//posicion reg
-			archivo.close();
-			return centro;
-		}
-		if(rIS->getClaveSecundaria() > patas)
-			superior = centro - 1;
-		else
-			inferior = centro + 1;
-
-	}
-	if(rIS!=NULL)
-		delete rIS;
-	archivo.close();
-	return -1;*/
 	int inf = 0;
 	int sup = archivo.tellg()-(streampos)sizeof(RegistroIS);
 	int centro = 0;
 	RegistroIS* rIS = new RegistroIS(0,0);
 
-	if(inf == sup) {
-		archivo.close();
-		return -1;
-	}
 
 	while(inf <= sup) {
 	  centro = ((sup - inf) / 2) + inf;
@@ -164,10 +142,12 @@ int IndicesPS::buscarClaveS(int patas)
 		  return centro;
 	  }
 	  if (patas < rIS->getClaveSecundaria()) {
-		sup = centro + sizeof(RegistroIS);
+		sup = centro - sizeof(RegistroIS);
+		continue;
 	  }
 	  if (patas > rIS->getClaveSecundaria()) {
 		inf = centro+ sizeof(RegistroIS);
+		continue;
 	  }
 	}
 	archivo.close();
@@ -187,6 +167,7 @@ int IndicesPS::insertarAux( Animal* animal, int posDatos) {
 
 		if (archivoAux.tellg() == ios::beg) {
 			archivoAux.write((char*)(rAux), sizeof(RegistroAux));
+			archivoAux.tellg();
 			delete rAux;
 			archivoAux.close();
 			return posicion;
