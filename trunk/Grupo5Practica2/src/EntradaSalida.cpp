@@ -318,7 +318,9 @@ long EntradaSalida::buscar(string  s)
 	entrada.close();
 }
 
-
+int EntradaSalida::calcularNumRegistro(int posicion) {
+	return (int)((posicion - sizeof(Cabecera)) / sizeof(Registro));
+}
 
 
 
