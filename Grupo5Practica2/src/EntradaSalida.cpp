@@ -17,14 +17,14 @@ EntradaSalida::~EntradaSalida() {
 /**
  * Inicializa la cabecera del archivo
  */
-void EntradaSalida::generarCabecera(fstream & archivo) {
+void generarCabecera(fstream & archivo) {
 	Cabecera cabecera(0,0,sizeof(Animal)+1,-1);
 	archivo.write((char*)(&cabecera), sizeof(Cabecera));
 }
 /**
  * Devuelve true si el archivo esta vacio
  */
-bool EntradaSalida::comprobarArchivoVacio(fstream & archivo) {
+bool comprobarArchivoVacio(fstream & archivo) {
 	int tam = 0;
 	streampos posActual = archivo.tellg();
 	archivo.seekg(0, ios::end);	// Ponemos el puntero al final del archivo
