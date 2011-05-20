@@ -135,6 +135,7 @@ void Indice::mostrar(string nombre) {
 		cout << endl;
 	}
 	if (nombre == "IS.dat") {
+		archivoIndice.seekg(sizeof(Cabecera));
 		RegistroIS registro;
 		printf("%-20s%-20s\n", "Clave secundaria", "Posicion del primero en aux");
 		while (1) {
