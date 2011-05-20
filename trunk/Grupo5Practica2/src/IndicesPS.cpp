@@ -26,11 +26,30 @@ void IndicesPS::crearIS()
  * Inserta en el indice secundario y actualiza la lista encadenada del fichero aux
  */
 void IndicesPS::insertarIS(Animal* animal, int posAux) {
+	EntradaSalida es;
 	RegistroIS* rIS = new RegistroIS(animal->getLegs(), posAux);	//Preparamos los datos del nuevo registro
 	RegistroAux* rAux = new RegistroAux(false,"",0,0);
 	int posIS = 0;
 	fstream archivoIS("IS.dat", ios::binary | ios::out | ios::in);
 	archivoIS.seekg(0,ios::end);
+
+
+
+	if (es.comprobarArchivoVacio(archivoIS)) { // Comprobamos si el tamaño del archivo es 0
+			generarCabecera(archivoIS);
+			archivoIS.tellg();
+			archivoIS.write((char*)(rIS), sizeof(RegistroIS));
+			archivoIS.tellg();
+			posIS=archivoSalida.tellp()-sizeof(RegistroIS);
+			archivoIS.close();
+			return posIS;
+	}
+
+
+
+
+
+
 	if(archivoIS.tellg()==ios::beg){//si no hay ninguna entrada(archivo vacio)
 		archivoIS.write((char*)(rIS),sizeof(RegistroIS));
 		archivoIS.close();

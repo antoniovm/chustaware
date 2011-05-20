@@ -21,9 +21,6 @@ class EntradaSalida {
 private:
 	list<Animal*> animals;
 
-	void generarCabecera(fstream&);
-	bool comprobarArchivoVacio(fstream&);
-
 public:
 	EntradaSalida();
 	virtual ~EntradaSalida();
@@ -37,6 +34,8 @@ public:
 	void vaciar();
 	long buscar(string);
 	list<Animal*>& getAnimals(){return animals;};
+	//void generarCabecera(fstream&);
+	bool comprobarArchivoVacio(fstream&);
 };
 
 #endif /* ENTRADASALIDA_HPP_ */
