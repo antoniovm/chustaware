@@ -33,7 +33,6 @@ public:
 	void borrarAux(int);
 	long buscarClaveP(string);
 	int buscarClaveS(int);
-	void mostrar(string);
 	EntradaSalida& getES(){return es;}
 };
 

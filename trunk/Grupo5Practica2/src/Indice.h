@@ -40,8 +40,7 @@ public:
 	void eliminar(string clave);
 	int buscarP(string);
 	int buscarS(int);
-	void mostrarIP();
-	void mostrarIS();
+	void mostrar(string);
 	void crearFicheroBloques();
 };
 
