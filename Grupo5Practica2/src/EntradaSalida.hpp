@@ -33,6 +33,7 @@ public:
 	bool eliminar(long);
 	void vaciar();
 	long buscar(string);
+	int calcularNumRegistro(int);
 	list<Animal*>& getAnimals(){return animals;};
 	//void generarCabecera(fstream&);
 	bool comprobarArchivoVacio(fstream&);

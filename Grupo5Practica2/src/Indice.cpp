@@ -52,12 +52,40 @@ void Indice::eliminar(string clave){
 	indicesPS.getES().eliminar(posicion);
 	indicesPS.borrarIP(clave);
 }
-int Indice::buscarP(string s){
+int Indice::buscarP(string clave){
 
 }
 
-int Indice::buscarS(int patas){
+int Indice::buscarS(int nPatas){
+	fstream archivoIS("IS.dat", ios::in | ios::binary);
+	fstream archivoIAux("IAux.dat", ios::in | ios::binary);
+	RegistroIS rIS;
+	RegistroAux rAux;
+	bool finPila = false;
+	int posIS = indicesPS.buscarClaveS(nPatas);
 
+	if (posIS == -1) {
+		cout << "No se ha encontrado ningun registro con " << nPatas << endl;
+		archivoIS.close();
+		archivoIAux.close();
+		return -1;
+	}
+	archivoIS.seekg((streampos)posIS); //posicionamos el puntero en la posicion en la que esta el registro
+	archivoIS.read((char*)&rIS, sizeof(RegistroIS)); //leemos el registro del indice secundario
+	archivoIAux.seekg((streampos)rIS.getPosPrimero()); //posicionamos el puntero del IAux en la posicion donde apunta el registro del IS
+	while (!finPila) {
+		archivoIAux.read((char*) &rAux, sizeof(RegistroAux)); //leemos el registro en el IAux
+		if (rAux.getValido()) {
+			indicesPS.getES().leerRegistro(indicesPS.getES().calcularNumRegistro(rAux.getPosDatos())); //mostramos el animal
+			if (rAux.getSiguiente() == -1) {
+				finPila = true;
+			} else {
+				archivoIAux.seekg((streampos) rAux.getSiguiente()); //posicionamos el puntero de IAux en el siguiente registro con la misma clave secundaria
+			}
+		}
+	}
+	archivoIS.close();
+	archivoIAux.close();
 }
 
 void Indice::mostrar(string nombre) {
