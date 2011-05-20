@@ -34,6 +34,8 @@ public:
 	long buscarClaveP(string);
 	int buscarClaveS(int);
 	EntradaSalida& getES(){return es;}
+	void generarCabecera(fstream&);
+	bool comprobarArchivoVacio(fstream&);
 };
 
 #endif /* INDICESPS_H_ */

@@ -26,39 +26,50 @@ void IndicesPS::crearIS()
  * Inserta en el indice secundario y actualiza la lista encadenada del fichero aux
  */
 void IndicesPS::insertarIS(Animal* animal, int posAux) {
-	EntradaSalida es;
+	//EntradaSalida es;
+	Cabecera cabecera;
 	RegistroIS* rIS = new RegistroIS(animal->getLegs(), posAux);	//Preparamos los datos del nuevo registro
 	RegistroAux* rAux = new RegistroAux(false,"",0,0);
 	int posIS = 0;
 	fstream archivoIS("IS.dat", ios::binary | ios::out | ios::in);
-	archivoIS.seekg(0,ios::end);
 
 
 
-	if (es.comprobarArchivoVacio(archivoIS)) { // Comprobamos si el tamaño del archivo es 0
+	if (comprobarArchivoVacio(archivoIS)) { // Comprobamos si el tamaño del archivo es 0
 			generarCabecera(archivoIS);
 			archivoIS.tellg();
 			archivoIS.write((char*)(rIS), sizeof(RegistroIS));
 			archivoIS.tellg();
-			posIS=archivoSalida.tellp()-sizeof(RegistroIS);
+			posIS=archivoIS.tellg()-(streampos)sizeof(RegistroIS);
 			archivoIS.close();
-			return posIS;
+			return;
 	}
+	archivoIS.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
 
-
-
-
-
-
-	if(archivoIS.tellg()==ios::beg){//si no hay ninguna entrada(archivo vacio)
+	/*if (cabecera.getPrimerHueco() == -1) {	//No hay huecos, insercion al final
+			rIS->.setAnimal(animal);
+			archivoSalida.seekp(0, ios::end);
+			posicion = archivoSalida.tellg();
+			archivoSalida.write((char*)(&registro), sizeof(Registro));
+			cabecera.setNRegistros(cabecera.getNRegistros()+1);
+			archivoSalida.seekp(0,ios::beg);
+			archivoSalida.write((char*)&cabecera,sizeof(Cabecera));	//Actualizacion de la cabecera
+			archivoSalida.close();
+			return (int)posicion;
+		}
+*/
+	archivoIS.seekg(0,ios::end);
+	if(cabecera.getNRegistros()*sizeof(RegistroIS)==(int)ios::beg){//si no hay ninguna entrada(archivo vacio)
+		archivoIS.tellg();
 		archivoIS.write((char*)(rIS),sizeof(RegistroIS));
+		archivoIS.tellg();
 		archivoIS.close();
 		return;
 	}
 	posIS=buscarClaveS(animal->getLegs());
 	if (posIS == -1) {//si no hay entrada con esa clave secundaria en archivoIS
-		archivoIS.seekg(0,ios::end);
-		while (archivoIS.tellg() > ios::beg) {
+		archivoIS.seekg(sizeof(Cabecera)+(int)cabecera.getNRegistros()*sizeof(RegistroIS));//ios::end
+		while (archivoIS.tellg() > sizeof(Cabecera)) {
 			archivoIS.seekg(archivoIS.tellg() - (streampos) sizeof(RegistroIS)); // Posicionamos el puntero en la posicion del registro anterior.
 			//delete rIS;
 			archivoIS.read((char*) (rIS), sizeof(RegistroIS)); // Leemos el registro.
@@ -69,6 +80,12 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 				archivoIS.tellg();
 				archivoIS.write((char*) (rIS), sizeof(RegistroIS));
 				archivoIS.tellg();
+				cabecera.setNRegistros(cabecera.getNRegistros()+1);
+				archivoIS.seekg(0,ios::beg);
+				archivoIS.tellg();
+				archivoIS.write((char*) (&cabecera), sizeof(Cabecera));
+				archivoIS.tellg();
+
 				delete rIS;
 				archivoIS.close();
 				return;
@@ -82,9 +99,14 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 
 		}
 		delete rIS;
-		rIS = new RegistroIS(animal->getLegs(), posAux); // Primera entrada del fichero
+		rIS = new RegistroIS(animal->getLegs(), posAux); // Primera entrada del fichero(en el top)
 		archivoIS.tellg();
 		archivoIS.write((char*) (rIS), sizeof(RegistroIS));
+		cabecera.setNRegistros(cabecera.getNRegistros()+1);
+		archivoIS.seekg(0,ios::beg);
+		archivoIS.tellg();
+		archivoIS.write((char*) (&cabecera), sizeof(Cabecera));
+		archivoIS.tellg();
 		delete rIS;
 		return;
 	}
@@ -140,25 +162,29 @@ void IndicesPS::borrarIS(int int1)
  */
 int IndicesPS::buscarClaveS(int patas)
 {
+
 	fstream archivo("IS.dat", ios::in | ios::out | ios::binary);//ojo con el ios::ate
+	Cabecera cabecera;
+	archivo.read((char*)(&cabecera),sizeof(Cabecera));
 	archivo.seekg(0,ios::end);
 	archivo.tellg();
 
 	int inf = 0;
-	int sup = (archivo.tellg()-(streampos)sizeof(RegistroIS))/sizeof(RegistroIS);
+	//numero de registros
+	int sup = ((archivo.tellg()-sizeof(Cabecera))-(streampos)sizeof(RegistroIS))/sizeof(RegistroIS);
 	int centro = 0;
 	RegistroIS* rIS = new RegistroIS(0,0);
 
 
 	while(inf <= sup) {
 	  centro = ((sup - inf) / 2) + inf;
-	  archivo.seekg(centro*sizeof(RegistroIS));
+	  archivo.seekg(centro*sizeof(RegistroIS)+sizeof(Cabecera));
 	  archivo.tellg();
 	  archivo.read((char*)rIS, sizeof(RegistroIS));
 	  archivo.tellg();
 	  if (rIS->getClaveSecundaria() == patas) {
 		  archivo.close();
-		  return centro*sizeof(RegistroIS);
+		  return centro*sizeof(RegistroIS)+sizeof(Cabecera);
 	  }
 	  if (patas < rIS->getClaveSecundaria()) {
 		sup = centro - 1;
@@ -352,4 +378,20 @@ long IndicesPS::buscarClaveP(string clave)
 	archivo.close();
 	return -1;
 }
-
+void IndicesPS::generarCabecera(fstream & archivo) {
+	Cabecera cabecera(1,0,sizeof(Animal)+1,-1);	//se inicializa con nReg a uno porq se inserta justo despues
+	archivo.tellg();
+	archivo.write((char*)(&cabecera), sizeof(Cabecera));
+	archivo.tellg();
+}
+/**
+ * Devuelve true si el archivo esta vacio
+ */
+bool IndicesPS::comprobarArchivoVacio(fstream & archivo) {
+	int tam = 0;
+	streampos posActual = archivo.tellg();
+	archivo.seekg(0, ios::end);	// Ponemos el puntero al final del archivo
+	tam = archivo.tellg();
+	archivo.seekg(posActual); // Volvemos a poner el puntero donde estaba
+	return (tam == 0);
+}

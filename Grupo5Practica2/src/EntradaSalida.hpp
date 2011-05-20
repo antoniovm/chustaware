@@ -35,7 +35,7 @@ public:
 	long buscar(string);
 	int calcularNumRegistro(int);
 	list<Animal*>& getAnimals(){return animals;};
-	//void generarCabecera(fstream&);
+	void generarCabecera(fstream&);
 	bool comprobarArchivoVacio(fstream&);
 };
 
