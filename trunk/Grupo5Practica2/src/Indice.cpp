@@ -90,10 +90,13 @@ void Indice::mostrar(string nombre) {
 		RegistroIS registro;
 		printf("%-20s%-20s\n", "Clave secundaria", "Posicion del primero en aux");
 		while (1) {
+			archivoIndice.tellg();
 			archivoIndice.read((char*) &registro, sizeof(RegistroIS));
+			archivoIndice.tellg();
 			if (archivoIndice.eof())
 				break;
 			printf("%-20d%-20d\n", registro.getClaveSecundaria(), registro.getPosPrimero());
+
 		}
 		cout << endl;
 	}
