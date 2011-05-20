@@ -243,13 +243,13 @@ void IndicesPS::crearIP(fstream of, Animal* a)
  */
 int IndicesPS::insertarIP(Animal* a)
 {
-	fstream archivo("IP.dat", ios::in | ios::out | ios::binary );
+	fstream archivo("IP.dat", ios::out | ios::in | ios::binary );
 	int posicion=es.insertar(a);
 	RegistroIP* rIP= new RegistroIP(a->getName(), posicion);// Creamos el registro.
 
 
 	archivo.seekg(0,ios::end);
-	//cout <<"Fin de ArchivoIP: "<< archivo.tellg() << endl;
+
 
 
 
@@ -257,11 +257,13 @@ int IndicesPS::insertarIP(Animal* a)
 		archivo.seekg(archivo.tellg()-(streampos)sizeof(RegistroIP));	// Posicionamos el puntero en la posicion del registro anterior.
 		archivo.read((char*)(rIP), sizeof(RegistroIP));	// Leemos el registro.
 		// Si la clave del registro que vamos a insertar es mayor que la clave del registro que acabamos de leer, insertamos el registro.
-		//cout <<"Tras leer: "<< archivo.tellg() << endl;
+		archivo.tellg();//-----------------------------------------------IS THE KEY!!
 		if (a->getName() > rIP->getClavePrimaria()) {
 			rIP = new RegistroIP(a->getName(), posicion);	// Creamos el nuevo registro.
 			archivo.write((char*) (rIP), sizeof(RegistroIP));
-			//cout <<"Tras escribir: "<< archivo.tellg() << endl;
+
+
+
 			delete rIP;
 			archivo.close();
 			return posicion;
