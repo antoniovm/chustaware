@@ -46,14 +46,14 @@ void menu(Indice &indice){
 	Animal* animal;
 	do{
 		cout<<"---¿Qué desea hacer?--- \n"
-				"t-Leer del archivo de texto y generar ficheros de datos e indices.\n"
-				"i-Insertar un Animal.\n"
-				"d-Eliminar un Animal.\n"
-				"k-Listado ordenado por clave Primaria.\n"
-				"m-Mostrar estado fichero de indice(Primario,Secundario o Auxiliar).\n"
-				"p-Buscar por clave Primaria.\n"
-				"s-Buscar por clave Secundaria.\n"
-				"e-Exit."<<endl;
+				"t - Leer del archivo de texto y generar ficheros de datos e indices.\n"
+				"i - Insertar un Animal.\n"
+				"d - Eliminar un Animal.\n"
+				"k - Listado completo ordenado por clave Primaria.\n"
+				"p - Buscar animal por clave Primaria.\n"
+				"s - Buscar animales por clave Secundaria.\n"
+				"m - Mostrar estado fichero de indice(Primario,Secundario o Auxiliar).\n"
+				"e - Exit."<<endl;
 		cin>>c;
 		switch (c) {
 			case 't':
