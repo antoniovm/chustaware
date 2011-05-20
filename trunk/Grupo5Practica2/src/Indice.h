@@ -38,8 +38,8 @@ public:
 	void crearFicherosPS();
 	void insertar(Animal);
 	void eliminar(string clave);
-	int buscarP(string);
-	int buscarS(int);
+	void buscarP(string);
+	void buscarS(int);
 	void mostrar(string);
 	void crearFicheroBloques();
 };
