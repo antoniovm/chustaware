@@ -306,7 +306,6 @@ long IndicesPS::buscarClaveP(string clave)
 	int inferior=0;
 	int superior=((archivo.tellg()-sizeof(Cabecera))-(streampos)sizeof(RegistroIP))/sizeof(RegistroIP);
 	int centro=0;
-	long posicionReg;
 	RegistroIP* rIP = new RegistroIP("",0);
 
 	while(inferior <= superior){
@@ -318,7 +317,7 @@ long IndicesPS::buscarClaveP(string clave)
 
 		if(rIP->getClavePrimaria()==clave){
 			archivo.close();
-			return centro*sizeof(RegistroIS)+sizeof(Cabecera);
+			return centro*sizeof(RegistroIP)+sizeof(Cabecera);
 		}
 		if(rIP->getClavePrimaria() > clave){
 			superior = centro - 1;
