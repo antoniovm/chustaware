@@ -57,7 +57,9 @@ void menu(Indice &indice){
 		cin>>c;
 		switch (c) {
 			case 't':
-				indice.crearFicherosPS();break;
+				indice.crearFicherosPS();
+				cout << "Ficheros creados correctamente "<< endl;
+				break;
 			case 'd':
 				cout<<"Qué registro desea eliminar?"<<endl;
 				ws(cin);
@@ -74,7 +76,7 @@ void menu(Indice &indice){
 				indice.getIndicesPS().insertarIS(animal,posAux);
 				break;
 			case 'k':
-				cout<< "Listado por clave primaria de zoo-data.dat"<<endl;
+				cout<< "Listado completo por clave primaria de zoo-data.dat"<<endl;
 				//ws(cin);
 				//getline(cin,s);
 				//indice.mostrar(s);
@@ -85,7 +87,7 @@ void menu(Indice &indice){
 				getline(cin,s);
 				indice.mostrar(s);
 				break;
-			case 'p':	//de momento falla........con las 2:13 de a mñ y toy asta la polla
+			case 'p':
 				cout<< "Introduzca una clave primaria (nombre de animal)"<<endl;
 				ws(cin);
 				getline(cin,s);
@@ -103,10 +105,12 @@ void menu(Indice &indice){
 					archivoIP.read((char*)(&rIP),sizeof(RegistroIP));//leemos el regIP
 					archivoIP.close();
 					posDatos=rIP.getPosRegistro();
+					archivoDatos.tellg();
 					archivoDatos.seekg(posDatos);
 					archivoDatos.tellg();
 					archivoDatos.read((char*)(&rDatos),sizeof(Registro));
-					cout << *rDatos.getAnimal(false) <<endl;
+					archivoDatos.tellg();
+					cout << *rDatos.getAnimal(false) <<"\nPosicion en IP: "<< posAux <<"\nPosicion en Datos: "<< posDatos<< endl;
 					archivoDatos.close();
 				}
 				break;
