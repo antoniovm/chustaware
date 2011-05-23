@@ -28,7 +28,7 @@ public:
 	int insertarIP(Animal*);
 	void borrarIP(string);
 	void insertarIS(Animal*, int);
-	void borrarIS(int, string);
+	void borrarIS(string, int);
 	int insertarAux(Animal*, int);
 	void borrarAux(int);
 	long buscarClaveP(string);

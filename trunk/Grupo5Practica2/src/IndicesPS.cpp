@@ -282,35 +282,96 @@ int IndicesPS::insertarIP(Animal* a)
 	return posDatos;
 
 }
-void IndicesPS::borrarIS(int claveSecundaria, string clavePrimaria)
+void IndicesPS::borrarIS(string clavePrimaria, int claveSecundaria)
 {
 	vector<RegistroAux>vAux;
 	vector<RegistroAux>::iterator it;
 	fstream archivoIS("IS.dat", ios::in | ios::out | ios::binary);
 	fstream archivoAux("IAux.dat", ios::in | ios::out | ios::binary);
 	RegistroIS rIS;
-	RegistroAux rAux, rAux2;
-	int posicion = buscarClaveS(claveSecundaria);
-	if (posicion == -1) {
+	RegistroAux rAux;
+	Cabecera cabeceraAux;
+	int posicionIS = buscarClaveS(claveSecundaria);
+	streampos posAnterior = -1;
+	streampos posSiguiente = -1;
+
+	if (posicionIS == -1) {
 		cout << "No hay ningun registro con clave secundaria " << claveSecundaria << endl;
 		archivoIS.close();
 		archivoAux.close();
 		return;
 	}
 
-	archivoIS.seekg((streampos)posicion);
+	// Leemos la cabecera del IAux
+	archivoAux.read((char*)&cabeceraAux, sizeof(Cabecera));
+	// Leemos el registro del IS
+	archivoIS.seekg((streampos)posicionIS);
 	archivoIS.read((char*)&rIS, sizeof(RegistroIS));
+	// Si no apunta a ningun registro no hacemos nada
 	if (rIS.getPosPrimero() == -1) {
 		archivoIS.close();
 		archivoAux.close();
 		return;
 	}
-
+	// Recorremos la lista encadenada de animales con la misma clave secundaria
 	archivoAux.seekg((streampos)rIS.getPosPrimero());
-	archivoAux.read((char*)&rAux, sizeof(RegistroAux)); //leemos el primero con esta clave secundaria en aux
-	while(1) {
+	while (1) {
+		archivoAux.read((char*) &rAux, sizeof(RegistroAux));
 		if (rAux.getClavePrimaria() == clavePrimaria) {
-			//if
+			// Si posAnterior es -1 significa que es el primero de la lista
+			if (posAnterior == -1) {
+				rIS.setPosPrimero(rAux.getSiguiente());
+				archivoIS.seekg((streampos) posicionIS);
+				archivoIS.tellg();
+				archivoIS.write((char*) &rIS, sizeof(RegistroIS));
+				archivoIS.tellg();
+				rAux.setValido(false); //Ponemos el bit de validez a 0
+				archivoAux.seekg(archivoAux.tellg()	- (streampos) sizeof(RegistroAux));
+				archivoAux.tellg();
+				archivoAux.write((char*) &rAux, sizeof(RegistroAux)); // Escribimos el registro con el bit a 0
+				archivoAux.tellg();
+				//Modificamos y sobreeescribimos la cabecera
+				cabeceraAux.setNRegistros(cabeceraAux.getNRegistros() - 1);
+				cabeceraAux.setNEliminados(cabeceraAux.getNEliminados() + 1);
+				archivoAux.seekg(0, ios::beg);
+				archivoAux.tellg();
+				archivoAux.write((char*) &cabeceraAux, sizeof(Cabecera));
+				archivoAux.tellg();
+				archivoIS.close();
+				archivoAux.close();
+				return;
+			}
+			// Si el anterior es un registro de IAux (posAnterior != -1)...
+			posSiguiente = rAux.getSiguiente(); // Guardamos la posicion del siguiente
+			rAux.setValido(false); // Desactivamos el registro
+			archivoAux.seekg(archivoAux.tellg()	- (streampos) sizeof(RegistroAux)); // Nos posicionamos para sobreescribirlo
+			archivoAux.tellg();
+			archivoAux.write((char*) &rAux, sizeof(RegistroAux)); //Sobreescribimos el registro desactivado
+			archivoAux.tellg();
+			archivoAux.seekg(posAnterior); // Nos posicionamos para leer el anterior
+			archivoAux.read((char*) &rAux, sizeof(RegistroAux)); // Leemos el anterior
+			rAux.setSiguiente(posSiguiente); // Enganchamos en el anterior el siguiente al actual
+			archivoAux.seekg(posAnterior); // Nos posicionamos de nuevo para sobreescribir el anterior
+			archivoAux.tellg();
+			archivoAux.write((char*) &rAux, sizeof(RegistroAux)); // Escribimos el anterior modificado
+			archivoAux.tellg();
+			archivoIS.close();
+			archivoAux.close();
+			return;
+
+		}
+		// Si la clave primaria no coincide
+		else {
+			// posAnterior es la posicion del que acabamos de leer
+			posAnterior = archivoAux.tellg() - (streampos) sizeof(RegistroAux);
+			if (rAux.getSiguiente() == -1) {
+				// No hay ningun animal con la clave primaria y secundaria indicadas
+				archivoIS.close();
+				archivoAux.close();
+				return;
+			} else {
+				archivoAux.seekg((streampos) rAux.getSiguiente());
+			}
 		}
 	}
 }
@@ -418,8 +479,7 @@ void IndicesPS::borrarIP(string clave) {
 		archivo.tellg();
 		archivo.read((char*) (&rIP), sizeof(RegistroIP));
 		archivo.tellg();
-		string c = rIP.getClavePrimaria();
-		if (c != clave) {
+		if (rIP.getClavePrimaria() != clave) {
 			registros.push_back(rIP);
 		}
 	}
