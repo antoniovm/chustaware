@@ -61,10 +61,10 @@ void menu(Indice &indice){
 				cout << "Ficheros creados correctamente "<< endl;
 				break;
 			case 'd':
-				cout<<"Qué registro desea eliminar?"<<endl;
+				cout<<"Qué animal desea eliminar?"<<endl;
 				ws(cin);
 				getline(cin,s);
-				//es.eliminar(es.buscar(s));break;
+				indice.eliminar(s);
 				break;
 			case 'i':
 				cout<< "Introduzca el nombre"<<endl;

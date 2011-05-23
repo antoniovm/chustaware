@@ -249,6 +249,8 @@ int IndicesPS::insertarIP(Animal* a)
 }
 void IndicesPS::borrarIS(int claveSecundaria, string clavePrimaria)
 {
+	vector<RegistroAux>vAux;
+	vector<RegistroAux>::iterator it;
 	fstream archivoIS("IS.dat", ios::in | ios::out | ios::binary);
 	fstream archivoAux("IAux.dat", ios::in | ios::out | ios::binary);
 	RegistroIS rIS;
@@ -273,7 +275,7 @@ void IndicesPS::borrarIS(int claveSecundaria, string clavePrimaria)
 	archivoAux.read((char*)&rAux, sizeof(RegistroAux)); //leemos el primero con esta clave secundaria en aux
 	while(1) {
 		if (rAux.getClavePrimaria() == clavePrimaria) {
-			//. . .
+			//if
 		}
 	}
 }
