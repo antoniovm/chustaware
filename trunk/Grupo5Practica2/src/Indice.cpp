@@ -114,6 +114,32 @@ void Indice::buscarS(int nPatas){
 	archivoIS.close();
 	archivoIAux.close();
 }
+void Indice::lecturaOrdenada(){
+	fstream archivoIP("IP.dat", ios::in|ios::binary), archivoDatos("zoo-data.dat", ios::in|ios::binary);
+	RegistroIP rIP;
+	Registro rDatos;
+	Cabecera cabecera;
+	int cont=1;
+	archivoIP.read((char*)&cabecera,sizeof(Cabecera));
+
+	while(1){
+		archivoIP.read((char*)&rIP,sizeof(RegistroIP));
+
+		archivoDatos.seekg(rIP.getPosRegistro());
+
+		archivoDatos.read((char*)&rDatos,sizeof(Registro));
+
+		cout<< cont <<"   "<< *rDatos.getAnimal(false)<<endl;
+
+		cont++;
+
+		if(archivoIP.tellg()>=cabecera.getNRegistros()*sizeof(RegistroIP))
+			return;
+
+	}
+
+
+}
 /**
  * muestra el contenido del fichero de indices q se le pase por parametro
  */

@@ -30,6 +30,7 @@ public:
 	void buscarP(string);
 	void buscarS(int);
 	void mostrar(string);
+	void lecturaOrdenada();
 	void crearFicheroBloques();
     IndicesPS& getIndicesPS();
 };
