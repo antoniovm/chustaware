@@ -52,24 +52,29 @@ void Indice::crearFicherosPS(){
 
 void Indice::eliminar(string clave){
 	fstream archivoIP("IP.dat", ios::in | ios::binary);
+	fstream archivoDatos("zoo-data.dat", ios::in | ios::binary);
 	RegistroIP rIP;
-	string c = clave;
-	long posicion = indicesPS.buscarClaveP(clave);
-	if(posicion == -1){
+	Registro rDatos;
+	long posicionIP = indicesPS.buscarClaveP(clave);
+	if(posicionIP == -1){
 		cout << "El animal no esta en el archivo de datos" << endl;
 		archivoIP.close();
 		return;
 	}
-	archivoIP.seekg((streampos)posicion);
+	archivoIP.seekg((streampos)posicionIP);
 	archivoIP.read((char*)&rIP, sizeof(RegistroIP));
 	if(rIP.getPosRegistro() == -1) {
 		cout << "El animal no esta en el archivo de datos" << endl;
 		archivoIP.close();
 		return;
 	}
+	archivoDatos.seekg((streampos)rIP.getPosRegistro());
+	archivoDatos.read((char*)&rDatos, sizeof(Registro));
+	archivoDatos.close();
+	archivoIP.close();
 	indicesPS.getES().eliminar(indicesPS.getES().calcularNumRegistro(rIP.getPosRegistro()));
 	indicesPS.borrarIP(clave);
-	//indicesPS.borrarIS();
+	indicesPS.borrarIS(clave, rDatos.getAnimal(false)->getLegs());
 }
 /**
  * Muestra por pantalla el animal con esa clave primaria(nombre)
