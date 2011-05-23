@@ -86,7 +86,7 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 	Cabecera cabecera;
 	RegistroIS* rIS = new RegistroIS(animal->getLegs(), posAux);	//Preparamos los datos del nuevo registro
 	RegistroAux* rAux = new RegistroAux(false,"",0,0), *rAux2 = new RegistroAux(false,"",0,0);
-	int posIS = 0;
+	int posIS = 0, siguiente = 0, anterior = 0;
 	fstream archivoIS("IS.dat", ios::binary | ios::out | ios::in);
 
 	if (comprobarArchivoVacio(archivoIS)) { // Comprobamos si el tamaño del archivo es 0
@@ -162,17 +162,31 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 		rAux->setSiguiente(rIS->getPosPrimero());
 		rIS->setPosPrimero(posAux);
 	}else{
+		siguiente=rIS->getPosPrimero();
 		while(rAux2->getSiguiente()>0){
-			archivoAux.seekg(rAux2->getSiguiente());
-			archivoAux.read((char*)(rAux2), sizeof(RegistroAux));
 
 			if(rAux->getClavePrimaria()<rAux2->getClavePrimaria()){
-				rAux->setSiguiente(rAux2->getSiguiente());
-				//rAux->setPosPrimero(posAux);
+				rAux->setSiguiente(siguiente);	//enganchyamos en la lista
+				archivoAux.seekg(anterior);		//posicionamos para leer y actualizar
+				archivoAux.read((char*)rAux2,sizeof(RegistroAux));
+				rAux2->setSiguiente(posAux);	//actualizamos
+				archivoAux.seekg(anterior);		//reposicionamos para escribir
+				archivoAux.write((char*)rAux2,sizeof(RegistroAux));
 				break;
 			}
 
+			anterior=siguiente;
+			siguiente=rAux2->getSiguiente();
+
+			archivoAux.seekg(siguiente);
+			archivoAux.read((char*)(rAux2), sizeof(RegistroAux));
+
 		}
+		rAux->setSiguiente(-1);
+		archivoAux.seekg(anterior);
+		archivoAux.read((char*)rAux2,sizeof(RegistroAux));
+		rAux2->setSiguiente(posAux);
+
 
 
 	}
