@@ -128,7 +128,7 @@ streampos EntradaSalida::leerRegistro(int nRegistro) {
 		return -1;
 	}
 	// Comprobamos que el registro indicado esta en el archivo
-	if ((nRegistro<0)||(nRegistro >= (cabecera.getNRegistros()+cabecera.getNEliminados()))) {
+	if ((nRegistro<0)||(nRegistro > (cabecera.getNRegistros()+cabecera.getNEliminados()))) {
 		cout << "El registro indicado no esta en el archivo" << endl;
 		archivo.close();
 		return -1;
