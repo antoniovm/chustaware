@@ -51,15 +51,15 @@ void Indice::crearFicherosPS(){
 }
 
 void Indice::eliminar(string clave){
-	long posicion=0;
-	posicion=indicesPS.buscarClaveP(clave);
-	if(-1==posicion){
+	long posicion = indicesPS.buscarClaveP(clave);
+	if(posicion == -1){
 		cout << "El animal no esta en el archivo de datos" << endl;
 		return;
 	}
 
 	indicesPS.getES().eliminar(posicion);
 	indicesPS.borrarIP(clave);
+	//indicesPS.borrarIS();
 }
 /**
  * Muestra por pantalla el animal con esa clave primaria(nombre)

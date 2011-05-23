@@ -247,8 +247,35 @@ int IndicesPS::insertarIP(Animal* a)
 	return posDatos;
 
 }
-void IndicesPS::borrarIS(int int1)
+void IndicesPS::borrarIS(int claveSecundaria, string clavePrimaria)
 {
+	fstream archivoIS("IS.dat", ios::in | ios::out | ios::binary);
+	fstream archivoAux("IAux.dat", ios::in | ios::out | ios::binary);
+	RegistroIS rIS;
+	RegistroAux rAux, rAux2;
+	int posicion = buscarClaveS(claveSecundaria);
+	if (posicion == -1) {
+		cout << "No hay ningun registro con clave secundaria " << claveSecundaria << endl;
+		archivoIS.close();
+		archivoAux.close();
+		return;
+	}
+
+	archivoIS.seekg((streampos)posicion);
+	archivoIS.read((char*)&rIS, sizeof(RegistroIS));
+	if (rIS.getPosPrimero() == -1) {
+		archivoIS.close();
+		archivoAux.close();
+		return;
+	}
+
+	archivoAux.seekg((streampos)rIS.getPosPrimero());
+	archivoAux.read((char*)&rAux, sizeof(RegistroAux)); //leemos el primero con esta clave secundaria en aux
+	while(1) {
+		if (rAux.getClavePrimaria() == clavePrimaria) {
+			//. . .
+		}
+	}
 }
 /**
  * Devuelve la posicion del primer elemento de la lista encadenada con esa clave secundaria.-1 si no esta en el archivoIS.
