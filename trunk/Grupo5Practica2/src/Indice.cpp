@@ -15,6 +15,13 @@ Indice::Indice() {
 Indice::~Indice() {
 	// TODO Auto-generated destructor stub
 }
+
+void Indice::insertar(Animal *animal) {
+	int posDatos=0, posAux=0;
+	posDatos = indicesPS.insertarIP(animal);
+	posAux = indicesPS.insertarAux(animal, posDatos);
+	indicesPS.insertarIS(animal, posAux);
+}
 /**
  * Lee del fichero de txt los animales y genera los ficheros binarios de datos e indices(primario,secundario y auxiliar)
  */

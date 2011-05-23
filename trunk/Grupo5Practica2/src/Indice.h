@@ -25,7 +25,7 @@ public:
 	Indice();
 	virtual ~Indice();
 	void crearFicherosPS();
-	void insertar(Animal);
+	void insertar(Animal*);
 	void eliminar(string clave);
 	void buscarP(string);
 	void buscarS(int);

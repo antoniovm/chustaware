@@ -70,10 +70,9 @@ void menu(Indice &indice){
 				cout<< "Introduzca el nombre"<<endl;
 				ws(cin);	//Limpia el buffer de teclado de espacios en blanco
 				getline(cin,s);
-				animal=new Animal(s,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);
-				posDatos=indice.getIndicesPS().insertarIP(animal);
-				posAux=indice.getIndicesPS().insertarAux(animal,posDatos);
-				indice.getIndicesPS().insertarIS(animal,posAux);
+				animal = new Animal(s, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+				indice.insertar(animal);
+				delete animal;
 				break;
 			case 'k':
 				cout<< "Listado completo por clave primaria de zoo-data.dat"<<endl;
@@ -89,7 +88,7 @@ void menu(Indice &indice){
 				cout<< "Introduzca una clave primaria (nombre de animal)"<<endl;
 				ws(cin);
 				getline(cin,s);
-				posAux=indice.getIndicesPS().buscarClaveP(s);
+				/*posAux=indice.getIndicesPS().buscarClaveP(s);
 				if(posAux==-1){
 					cout << "El animal no esta" << endl;
 					break;
@@ -110,12 +109,14 @@ void menu(Indice &indice){
 					archivoDatos.tellg();
 					cout << *rDatos.getAnimal(false) <<"\nPosicion en IP: "<< posAux <<"\nPosicion en Datos: "<< posDatos<< endl;
 					archivoDatos.close();
-				}
+				}*/
+				indice.buscarP(s);
 				break;
 			case 's':
 				cout<< "Introduzca una clave secundaria (nº de patas)"<<endl;
 				ws(cin);
 				cin>>l;
+				indice.buscarS(l);
 				//es.leerRegistro(es.buscar(s));
 				break;
 
