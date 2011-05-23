@@ -53,6 +53,7 @@ void Indice::crearFicherosPS(){
 void Indice::eliminar(string clave){
 	fstream archivoIP("IP.dat", ios::in | ios::binary);
 	RegistroIP rIP;
+	string c = clave;
 	long posicion = indicesPS.buscarClaveP(clave);
 	if(posicion == -1){
 		cout << "El animal no esta en el archivo de datos" << endl;
@@ -66,9 +67,8 @@ void Indice::eliminar(string clave){
 		archivoIP.close();
 		return;
 	}
-	cout<<endl<<"Posicion IP: "<<posicion << endl;
 	indicesPS.getES().eliminar(indicesPS.getES().calcularNumRegistro(rIP.getPosRegistro()));
-	indicesPS.borrarIP(posicion);
+	indicesPS.borrarIP(clave);
 	//indicesPS.borrarIS();
 }
 /**

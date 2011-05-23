@@ -404,32 +404,22 @@ void IndicesPS::crearIP(fstream of, Animal* a)
 /**
  * Elimina un registro en el indice primario.
  */
-void IndicesPS::borrarIP(long posicion) {
+void IndicesPS::borrarIP(string clave) {
 	fstream archivo("IP.dat", ios::in | ios::out | ios::binary);
-	RegistroIP rIP;// = new RegistroIP();
+	RegistroIP rIP;
 	vector<RegistroIP> registros;
 	vector<RegistroIP>::iterator it;
 
-	/*RegistroIP** regs = new RegistroIP*[150];
-	int n = 0;
-*/
-	if (posicion == -1) {
-		archivo.close();
-		return;
-	}
-
 	// Cargamos en memoria todos los registros excepto el registro que queremos eliminar.
+	archivo.seekg((streampos)sizeof(Cabecera));
 	while (!archivo.eof()) {
-		if (archivo.tellg() == posicion) {
-			cout<<"AQUI"<<endl;
-			archivo.seekg(posicion + (streampos)sizeof(RegistroIP));
-			cout<<archivo.tellg()<<"\t"<<posicion<<endl;
-		}
 		archivo.tellg();
 		archivo.read((char*) (&rIP), sizeof(RegistroIP));
 		archivo.tellg();
-		registros.push_back(rIP);
-		//regs[n++] = rIP;
+		string c = rIP.getClavePrimaria();
+		if (c != clave) {
+			registros.push_back(rIP);
+		}
 	}
 	archivo.close();
 
@@ -440,17 +430,7 @@ void IndicesPS::borrarIP(long posicion) {
 		archivo.write((char*)&(*it), sizeof(RegistroIP));
 		archivo.tellg();
 	}
-	/*for(int i = 0; i < n; i++) {
-		cout << i<<"\t"<<regs[i]->getClavePrimaria()<<endl;
-	}*/
 	archivo.close();
-/*
-	// Liberamos memoria.
-	delete rIP;
-	for (it = registros.begin(); it != registros.end(); it++) {
-		delete (*it);
-	}
-	registros.clear();*/
 }
 
 /**
