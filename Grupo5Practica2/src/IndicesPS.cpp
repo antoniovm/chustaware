@@ -16,9 +16,6 @@ IndicesPS::~IndicesPS() {
 	// TODO Auto-generated destructor stub
 }
 
-void IndicesPS::crearIS()
-{
-}
 /*
  * Inserta en el indice secundario y actualiza la lista encadenada del fichero aux
  */
@@ -389,7 +386,7 @@ int IndicesPS::buscarClaveS(int patas)
 
 	int inf = 0;
 	//numero de registros
-	int sup = ((archivo.tellg()-sizeof(Cabecera))-(streampos)sizeof(RegistroIS))/sizeof(RegistroIS);
+	int sup = ((archivo.tellg()-(streampos)sizeof(Cabecera))-(streampos)sizeof(RegistroIS))/(streampos)sizeof(RegistroIS);
 	int centro = 0;
 	RegistroIS* rIS = new RegistroIS(0,0);
 
@@ -429,7 +426,7 @@ long IndicesPS::buscarClaveP(string clave)
 
 	//inf,sup y centro indican el numRegistro no la posicion
 	int inferior=0;
-	int superior=((archivo.tellg()-sizeof(Cabecera))-(streampos)sizeof(RegistroIP))/sizeof(RegistroIP);
+	int superior=((archivo.tellg()-(streampos)sizeof(Cabecera))-(streampos)sizeof(RegistroIP))/(streampos)sizeof(RegistroIP);
 	int centro=0;
 	RegistroIP* rIP = new RegistroIP("",0);
 
@@ -456,12 +453,6 @@ long IndicesPS::buscarClaveP(string clave)
 	archivo.close();
 	return -1;
 }
-//esto no vale pa na....
-void IndicesPS::crearIP(fstream of, Animal* a)
-{
-
-}
-
 /**
  * Elimina un registro en el indice primario.
  */
@@ -479,6 +470,7 @@ void IndicesPS::borrarIP(string clave) {
 		archivo.tellg();
 		archivo.read((char*) (&rIP), sizeof(RegistroIP));
 		archivo.tellg();
+		if (archivo.eof()) break;
 		if (rIP.getClavePrimaria() != clave) {
 			registros.push_back(rIP);
 		}

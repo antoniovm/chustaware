@@ -23,14 +23,11 @@ private:
 public:
 	IndicesPS();
 	virtual ~IndicesPS();
-	void crearIP(fstream,Animal*);
-	void crearIS();
 	int insertarIP(Animal*);
 	void borrarIP(string);
 	void insertarIS(Animal*, int);
 	void borrarIS(string, int);
 	int insertarAux(Animal*, int);
-	void borrarAux(int);
 	long buscarClaveP(string);
 	int buscarClaveS(int);
 	EntradaSalida& getES(){return es;}
