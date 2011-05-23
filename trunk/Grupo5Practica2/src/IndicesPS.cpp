@@ -407,11 +407,13 @@ void IndicesPS::crearIP(fstream of, Animal* a)
 void IndicesPS::borrarIP(string clave) {
 	fstream archivo("IP.dat", ios::in | ios::out | ios::binary);
 	RegistroIP rIP;
+	Cabecera cabecera;
 	vector<RegistroIP> registros;
 	vector<RegistroIP>::iterator it;
 
+	// Leemos la cabecera
+	archivo.read((char*)&cabecera, sizeof(Cabecera));
 	// Cargamos en memoria todos los registros excepto el registro que queremos eliminar.
-	archivo.seekg((streampos)sizeof(Cabecera));
 	while (!archivo.eof()) {
 		archivo.tellg();
 		archivo.read((char*) (&rIP), sizeof(RegistroIP));
@@ -425,9 +427,14 @@ void IndicesPS::borrarIP(string clave) {
 
 	// Sobreescribimos el archivo con los datos que tenemos en memoria.
 	archivo.open("IP.dat", ios::out | ios::binary);
+	cabecera.setNEliminados(cabecera.getNEliminados()+1);
+	cabecera.setNRegistros(cabecera.getNRegistros()-1);
+	archivo.tellg();
+	archivo.write((char*)&cabecera, sizeof(Cabecera));
+	archivo.tellg();
 	for (it = registros.begin(); it != registros.end(); it++) {
 		archivo.tellg();
-		archivo.write((char*)&(*it), sizeof(RegistroIP));
+		archivo.write((char*)(&*it), sizeof(RegistroIP));
 		archivo.tellg();
 	}
 	archivo.close();
