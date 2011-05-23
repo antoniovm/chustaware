@@ -77,9 +77,7 @@ void menu(Indice &indice){
 				break;
 			case 'k':
 				cout<< "Listado completo por clave primaria de zoo-data.dat"<<endl;
-				//ws(cin);
-				//getline(cin,s);
-				//indice.mostrar(s);
+				indice.lecturaOrdenada();
 				break;
 			case 'm':
 				cout<< "Introduzca el nombre del fichero a mostrar (IP.dat ,IS.dat ,IAux.dat)"<<endl;
