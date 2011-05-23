@@ -85,7 +85,7 @@ int IndicesPS::insertarAux( Animal* animal, int posDatos) {
 void IndicesPS::insertarIS(Animal* animal, int posAux) {
 	Cabecera cabecera;
 	RegistroIS* rIS = new RegistroIS(animal->getLegs(), posAux);	//Preparamos los datos del nuevo registro
-	RegistroAux* rAux = new RegistroAux(false,"",0,0);
+	RegistroAux* rAux = new RegistroAux(false,"",0,0), *rAux2 = new RegistroAux(false,"",0,0);
 	int posIS = 0;
 	fstream archivoIS("IS.dat", ios::binary | ios::out | ios::in);
 
@@ -100,7 +100,7 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 	}
 	archivoIS.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
 
-	archivoIS.seekg(0,ios::end);	//se puede kitar.....
+
 	posIS=buscarClaveS(animal->getLegs());
 	if (posIS == -1) {//si no hay entrada con esa clave secundaria en archivoIS
 		archivoIS.seekg(sizeof(Cabecera)+(int)cabecera.getNRegistros()*sizeof(RegistroIS));//ios::end
@@ -152,8 +152,32 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 	archivoIS.seekg(posIS);
 	archivoIS.read((char*)rIS, sizeof(RegistroIS));
 	//enlazamos los registros
-	rAux->setSiguiente(rIS->getPosPrimero());
-	rIS->setPosPrimero(posAux);
+
+	//posicionamos para leer el primer registro de la lista encadenada
+
+	archivoAux.seekg(rIS->getPosPrimero());
+	archivoAux.read((char*)(rAux2), sizeof(RegistroAux));
+
+	if(rAux->getClavePrimaria()<rAux2->getClavePrimaria()){
+		rAux->setSiguiente(rIS->getPosPrimero());
+		rIS->setPosPrimero(posAux);
+	}else{
+		while(rAux2->getSiguiente()>0){
+			archivoAux.seekg(rAux2->getSiguiente());
+			archivoAux.read((char*)(rAux2), sizeof(RegistroAux));
+
+			if(rAux->getClavePrimaria()<rAux2->getClavePrimaria()){
+				rAux->setSiguiente(rAux2->getSiguiente());
+				//rAux->setPosPrimero(posAux);
+				break;
+			}
+
+		}
+
+
+	}
+
+
 	//escribimos los registros actualizados
 	archivoIS.seekp(posIS);
 	archivoIS.write((char*)rIS, (streampos)sizeof(RegistroIS));
