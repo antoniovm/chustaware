@@ -86,7 +86,7 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 	Cabecera cabecera;
 	RegistroIS* rIS = new RegistroIS(animal->getLegs(), posAux);	//Preparamos los datos del nuevo registro
 	RegistroAux* rAux = new RegistroAux(false,"",0,0), *rAux2 = new RegistroAux(false,"",0,0);
-	int posIS = 0, siguiente = 0, anterior = 0;
+	int posIS = 0, siguiente = 0, anterior = sizeof(Cabecera);
 	fstream archivoIS("IS.dat", ios::binary | ios::out | ios::in);
 
 	if (comprobarArchivoVacio(archivoIS)) { // Comprobamos si el tamaño del archivo es 0
@@ -161,65 +161,62 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 	if(rAux->getClavePrimaria()<rAux2->getClavePrimaria()){
 		rAux->setSiguiente(rIS->getPosPrimero());
 		rIS->setPosPrimero(posAux);
-	}else{
-		siguiente=rIS->getPosPrimero();
-		while(rAux2->getSiguiente()>0){
+		//escribimos los registros actualizados
+		archivoIS.seekp(posIS);
+		archivoIS.write((char*)rIS, (streampos)sizeof(RegistroIS));
+		archivoIS.tellg();
+		archivoAux.seekg(posAux);
+		archivoAux.write((char*)rAux, sizeof(RegistroAux));
+		archivoIS.tellg();
 
-			if(rAux->getClavePrimaria()<rAux2->getClavePrimaria()){
-				rAux->setSiguiente(siguiente);	//enganchyamos en la lista
-				archivoAux.seekg(anterior);		//posicionamos para leer y actualizar
-				archivoAux.read((char*)rAux2,sizeof(RegistroAux));
-				rAux2->setSiguiente(posAux);	//actualizamos
-				archivoAux.seekg(anterior);		//reposicionamos para escribir
-				archivoAux.write((char*)rAux2,sizeof(RegistroAux));
-				break;
-			}
-
-			anterior=siguiente;
-			siguiente=rAux2->getSiguiente();
-
-			archivoAux.seekg(siguiente);
-			archivoAux.read((char*)(rAux2), sizeof(RegistroAux));
-
-		}
-		rAux->setSiguiente(-1);
-		archivoAux.seekg(anterior);
-		archivoAux.read((char*)rAux2,sizeof(RegistroAux));
-		rAux2->setSiguiente(posAux);
-
-
-
+		archivoAux.close();
+		archivoIS.close();
+		return;
 	}
+	siguiente=rIS->getPosPrimero();
+	while(rAux2->getSiguiente()>0){
 
-
-	//escribimos los registros actualizados
-	archivoIS.seekp(posIS);
-	archivoIS.write((char*)rIS, (streampos)sizeof(RegistroIS));
-	archivoIS.tellg();
-	archivoAux.seekg(posAux);
-	archivoAux.write((char*)rAux, sizeof(RegistroAux));
-	archivoIS.tellg();
-
-	archivoAux.close();
-	archivoIS.close();
-
-	//Recorremos todos los animales con ese numero de patas y cuando lleguemos al final de la lista
-	//insertamos el animal.
-	/*while (1) {
-		archivoAux.read((char*) (rAuxLista), sizeof(RegistroAux));
-		if (rAuxLista->getSiguiente() == -1) { //si es el final de la lista encadenada, hacemos que apunte al nuevo regAux
-			rAuxLista->setSiguiente(posAux);
-			archivoAux.seekg(archivoAux.tellg() - (streampos)sizeof(RegistroAux)); //actualizar registro
-			archivoAux.write((char*)(rAuxLista),sizeof(RegistroAux));
-			archivoIS.close();
+		if(rAux->getClavePrimaria()<rAux2->getClavePrimaria()){
+			rAux->setSiguiente(siguiente);	//enganchyamos en la lista
+			archivoAux.seekg(anterior);		//posicionamos para leer y actualizar
+			archivoAux.read((char*)rAux2,sizeof(RegistroAux));
+			rAux2->setSiguiente(posAux);	//actualizamos
+			archivoAux.seekg(anterior);		//reposicionamos para escribir
+			archivoAux.tellg();
+			archivoAux.write((char*)rAux2,sizeof(RegistroAux));
+			archivoAux.tellg();
+			archivoAux.seekg(posAux);
+			archivoAux.tellg();
+			archivoAux.write((char*)rAux,sizeof(RegistroAux));
+			archivoAux.tellg();
 			archivoAux.close();
-			delete rAuxLista;
+			archivoIS.close();
 			return;
 		}
-		if(rAux->getClavePrimaria()<rAuxLista->getClavePrimaria())
 
-		archivoAux.seekg(rAux->getSiguiente());
-	}*/
+		anterior=siguiente;
+		siguiente=rAux2->getSiguiente();
+
+		archivoAux.seekg(siguiente);
+		archivoAux.read((char*)(rAux2), sizeof(RegistroAux));
+
+	}
+	archivoAux.seekg(siguiente);
+	archivoAux.read((char*)rAux2,sizeof(RegistroAux));
+	rAux2->setSiguiente(posAux);
+	archivoAux.seekg(siguiente);
+	archivoAux.tellg();
+	archivoAux.write((char*)rAux2,sizeof(RegistroAux));
+	archivoAux.tellg();
+	archivoAux.seekg(posAux);
+	rAux->setSiguiente(-1);
+	archivoAux.tellg();
+	archivoAux.write((char*)rAux,sizeof(RegistroAux));
+	archivoAux.tellg();
+	archivoAux.close();
+	archivoIS.close();
+	return;
+
 }
 /**
  * Inserta en fichero de datos e Indice Primario y devuelve la posicion del fichero de datos
