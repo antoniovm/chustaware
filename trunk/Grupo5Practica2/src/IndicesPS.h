@@ -26,7 +26,7 @@ public:
 	void crearIP(fstream,Animal*);
 	void crearIS();
 	int insertarIP(Animal*);
-	void borrarIP(long);
+	void borrarIP(string);
 	void insertarIS(Animal*, int);
 	void borrarIS(int, string);
 	int insertarAux(Animal*, int);
