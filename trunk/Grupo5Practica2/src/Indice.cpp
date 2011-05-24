@@ -19,8 +19,10 @@ Indice::~Indice() {
 void Indice::insertar(Animal *animal) {
 	int posDatos=0, posAux=0;
 	posDatos = indicesPS.insertarIP(animal);
-	posAux = indicesPS.insertarAux(animal, posDatos);
-	indicesPS.insertarIS(animal, posAux);
+	if(posDatos>0){
+		posAux = indicesPS.insertarAux(animal, posDatos);
+		indicesPS.insertarIS(animal, posAux);
+	}
 }
 /**
  * Lee del fichero de txt los animales y genera los ficheros binarios de datos e indices(primario,secundario y auxiliar)
@@ -43,8 +45,10 @@ void Indice::crearFicherosPS(){
 
 	while(!animales.empty()){
 		posicionDatos=indicesPS.insertarIP(animales.front());
-		posicionAux = indicesPS.insertarAux(animales.front(),posicionDatos);
-		indicesPS.insertarIS(animales.front(),posicionAux);
+		if(posicionDatos>0){
+			posicionAux = indicesPS.insertarAux(animales.front(),posicionDatos);
+			indicesPS.insertarIS(animales.front(),posicionAux);
+		}
 		delete *animales.begin();
 		animales.pop_front();
 	}

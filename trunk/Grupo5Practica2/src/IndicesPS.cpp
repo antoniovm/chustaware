@@ -234,11 +234,13 @@ int IndicesPS::insertarIP(Animal* a)
 		return posDatos;
 	}
 	archivoIP.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
-	//posIP=buscarClaveP(a->getName()); //o hace falta buscar,al ser clave primaria seguro que no esta
+
+	if(buscarClaveP(a->getName())>0) return -1;	//Ya esta insertado
 	archivoIP.seekg(sizeof(Cabecera)+(int)cabecera.getNRegistros()*sizeof(RegistroIP));//ios::end
 
 	while (archivoIP.tellg() > sizeof(Cabecera)) {
 		archivoIP.seekg(archivoIP.tellg() - (streampos) sizeof(RegistroIP)); // Posicionamos el puntero en la posicion del registro anterior.
+		archivoIP.tellg();
 		archivoIP.read((char*) (rIP), sizeof(RegistroIP)); // Leemos el registro.
 		// Si la clave del registro que vamos a insertar es mayor que la clave del registro que acabamos de leer, insertamos el registro.
 		archivoIP.tellg();//-----------------------------------------------IS THE KEY!!
@@ -276,6 +278,7 @@ int IndicesPS::insertarIP(Animal* a)
 	archivoIP.write((char*) (&cabecera), sizeof(Cabecera));
 	archivoIP.tellg();
 	delete rIP;
+	archivoIP.close();
 	return posDatos;
 
 }
