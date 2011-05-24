@@ -237,6 +237,7 @@ int IndicesPS::insertarIP(Animal* a)
 	archivoIP.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
 
 	if(buscarClaveP(a->getName())>0) return -1;	//Ya esta insertado
+
 	archivoIP.seekg(sizeof(Cabecera)+(int)cabecera.getNRegistros()*sizeof(RegistroIP));//ios::end
 
 	while (archivoIP.tellg() > sizeof(Cabecera)) {
