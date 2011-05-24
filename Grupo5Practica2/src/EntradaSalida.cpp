@@ -243,14 +243,18 @@ int EntradaSalida::insertar(Animal* animal){
 
 
 	archivoSalida.seekp(posicion);
+	archivoSalida.tellg();
 	archivoSalida.write((char*)(&registro), sizeof(Registro));	//Insercion del nuevo registro
+	archivoSalida.tellg();
 
 
 	cabecera.setNEliminados(cabecera.getNEliminados()-1);	//Modificar cabecera
 	cabecera.setNRegistros(cabecera.getNRegistros()+1);
 	cabecera.setPrimerHueco(registro.getDireccion());
 	archivoSalida.seekp(0,ios::beg);
+	archivoSalida.tellg();
 	archivoSalida.write((char*)&cabecera,sizeof(Cabecera));	//Actualizacion de la cabecera
+	archivoSalida.tellg();
 
 	archivoSalida.close();
 
@@ -285,12 +289,14 @@ bool EntradaSalida::eliminar(long  pos)
 		cabecera.setNRegistros(cabecera.getNRegistros()-1);
 
 		salida.seekp(posicionReg);
+		salida.tellg();
 		salida.write((char*)&registro,sizeof(Registro));
-
+		salida.tellg();
 
 		salida.seekp(0,ios::beg);
+		salida.tellg();
 		salida.write((char*)&cabecera,sizeof(Cabecera));
-
+		salida.tellg();
 
 	}
 	entrada.close();

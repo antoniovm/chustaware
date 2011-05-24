@@ -72,7 +72,8 @@ void menu(Indice &indice){
 				getline(cin,s);
 				animal = new Animal(s, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 				indice.insertar(animal);
-				delete animal;
+				if(animal)
+					delete animal;
 				break;
 			case 'k':
 				cout<< "Listado completo por clave primaria de zoo-data.dat"<<endl;
@@ -88,28 +89,6 @@ void menu(Indice &indice){
 				cout<< "Introduzca una clave primaria (nombre de animal)"<<endl;
 				ws(cin);
 				getline(cin,s);
-				/*posAux=indice.getIndicesPS().buscarClaveP(s);
-				if(posAux==-1){
-					cout << "El animal no esta" << endl;
-					break;
-				}else{
-					fstream archivoIP("IP.dat",ios::binary|ios::in);
-					fstream archivoDatos("zoo-data.dat",ios::binary|ios::in);
-					RegistroIP rIP;
-					Registro rDatos;
-					archivoIP.seekg(posAux);
-					archivoIP.tellg();
-					archivoIP.read((char*)(&rIP),sizeof(RegistroIP));//leemos el regIP
-					archivoIP.close();
-					posDatos=rIP.getPosRegistro();
-					archivoDatos.tellg();
-					archivoDatos.seekg(posDatos);
-					archivoDatos.tellg();
-					archivoDatos.read((char*)(&rDatos),sizeof(Registro));
-					archivoDatos.tellg();
-					cout << *rDatos.getAnimal(false) <<"\nPosicion en IP: "<< posAux <<"\nPosicion en Datos: "<< posDatos<< endl;
-					archivoDatos.close();
-				}*/
 				indice.buscarP(s);
 				break;
 			case 's':
