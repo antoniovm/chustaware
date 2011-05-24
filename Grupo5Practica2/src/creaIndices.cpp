@@ -41,8 +41,6 @@ void menu(Indice &indice){
 	char c;
 	long l;
 	string s;
-	int posDatos=0;
-	int posAux=0;
 	Animal* animal;
 	do{
 		cout<<"---¿Qué desea hacer?--- \n"
