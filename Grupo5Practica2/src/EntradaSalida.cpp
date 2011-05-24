@@ -220,7 +220,9 @@ int EntradaSalida::insertar(Animal* animal){
 		archivoSalida.write((char*)(&registro), sizeof(Registro));
 		cabecera.setNRegistros(cabecera.getNRegistros()+1);
 		archivoSalida.seekp(0,ios::beg);
+		archivoSalida.tellg();
 		archivoSalida.write((char*)&cabecera,sizeof(Cabecera));	//Actualizacion de la cabecera
+		archivoSalida.tellg();
 		archivoSalida.close();
 		return (int)posicion;
 	}
