@@ -239,7 +239,7 @@ int EntradaSalida::insertar(Animal* animal){
 	registro.setAnimal(animal);
 	registro.setValido(true);
 	delete animal; //Liberar memoria dinamica
-
+	animal=NULL;
 
 
 	archivoSalida.seekp(posicion);
