@@ -13,6 +13,7 @@
 #include <fstream>
 #include <iostream>
 #include <list>
+#include <ctime>
 #include "Animal.h"
 
 using namespace std;
@@ -33,6 +34,7 @@ public:
 	void lecturaOrdenada();
 	void crearFicheroBloques();
     IndicesPS& getIndicesPS();
+    void desordenar(list<Animal*>&);
 };
 
 #endif /* INDICE_H_ */
