@@ -19,7 +19,9 @@ EntradaSalida::~EntradaSalida() {
  */
 void EntradaSalida::generarCabecera(fstream & archivo) {
 	Cabecera cabecera(0,0,sizeof(Animal)+1,-1);
+	archivo.tellg();
 	archivo.write((char*)(&cabecera), sizeof(Cabecera));
+	archivo.tellg();
 }
 /**
  * Devuelve true si el archivo esta vacio
@@ -205,8 +207,9 @@ int EntradaSalida::insertar(Animal* animal){
 	if (comprobarArchivoVacio(archivoEntrada)) { // Comprobamos si el tamaño del archivo es 0
 		archivoEntrada.close();
 		generarCabecera(archivoSalida);
+		registro.setAnimal(animal);
 		archivoSalida.write((char*)(&registro), sizeof(Registro));
-		posicion=archivoSalida.tellp()-sizeof(Registro);
+		posicion=archivoSalida.tellg()-sizeof(Registro);
 		archivoSalida.close();
 		return (int)posicion;
 	}
