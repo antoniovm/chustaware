@@ -60,6 +60,7 @@ int IndicesPS::insertarAux( Animal* animal, int posDatos) {
 
 		rAux=new RegistroAux(true,animal->getName(), -1,posDatos);// Creamos el registro.
 		delete animal; //Liberar memoria dinamica
+		animal=NULL;
 
 		archivoAux.seekp(posAux);
 		archivoAux.tellg();
