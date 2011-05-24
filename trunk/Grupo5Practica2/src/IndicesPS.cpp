@@ -200,7 +200,7 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 		archivoAux.seekg(siguiente);
 		archivoAux.read((char*)(rAux2), sizeof(RegistroAux));
 
-	}//si hemos legado al registro final de la lista (al q apunta a -1) y la clave a insertar es mayor
+	}//si hemos legado al registro final de la lista (al q apunta a -1) y la clave a insertar es mayor, es decir, insertar al final de la lista
 	archivoAux.seekg(siguiente);
 	archivoAux.read((char*)rAux2,sizeof(RegistroAux));
 	rAux2->setSiguiente(posAux);
