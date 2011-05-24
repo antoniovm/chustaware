@@ -86,6 +86,10 @@ public class Afinador extends Thread{
 			
 		}
 	}
+	private void intervaloDeDesafinio() {
+		
+
+	}
 	public void afinarDeUnaVez(){
 		double umbral=1000;
 		captura.capturar();
