@@ -38,10 +38,8 @@ void Indice::desordenar(list<Animal*>&l){
 			aux.push_back(*it);
 			l.erase(it);
 	}
-	while(aux.size()>0) {
-		l.push_back(*aux.begin());
-		aux.erase(aux.begin());
-	}
+
+	l=aux;
 
 
 
