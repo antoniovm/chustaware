@@ -49,7 +49,7 @@ void menu(Indice &indice){
 				"t - Leer del archivo de texto y generar ficheros de datos e indices.\n"
 				"i - Insertar un Animal.\n"
 				"d - Eliminar un Animal.\n"
-				"k - Listado completo ordenado por clave Primaria.\n"
+				"k - Lectura ordenada por clave Primaria.\n"
 				"p - Buscar animal por clave Primaria.\n"
 				"s - Buscar animales por clave Secundaria.\n"
 				"m - Mostrar estado fichero de indice(Primario,Secundario o Auxiliar).\n"
