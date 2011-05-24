@@ -229,13 +229,13 @@ void Indice::mostrar(string nombre) {
 		archivoIndice.tellg();
 		cout << cabecera << endl;
 		RegistroAux registro;
-		printf("%-5s%-17s%-20s%-20s\n","Num", "Clave primaria", "Posicion siguiente", "Posicion datos");
+		printf("%-15s%-17s%-20s%-20s\n","PosRegistroAux", "Clave primaria", "Posicion siguiente", "Posicion en datos");
 		while (1) {
 			archivoIndice.read((char*) &registro, sizeof(RegistroAux));
 			if (archivoIndice.eof())
 				break;
 			if(registro.getValido())
-				printf("%-5d%-17s%-20d%-20d\n",cont , registro.getClavePrimaria().data(), registro.getSiguiente(), registro.getPosDatos());
+				printf("%-15d%-17s%-20d%-20d\n",(int)archivoIndice.tellg()-sizeof(RegistroAux) , registro.getClavePrimaria().data(), registro.getSiguiente(), registro.getPosDatos());
 			cont++;
 		}
 		cout << endl;

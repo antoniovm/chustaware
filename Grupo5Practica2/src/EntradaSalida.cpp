@@ -238,8 +238,8 @@ int EntradaSalida::insertar(Animal* animal){
 
 	registro.setAnimal(animal);
 	registro.setValido(true);
-	delete animal; //Liberar memoria dinamica
-	animal=NULL;
+	//delete animal; //Liberar memoria dinamica y zaaaasca en IndicePS.....
+	//animal=NULL;
 
 
 	archivoSalida.seekp(posicion);
@@ -250,7 +250,7 @@ int EntradaSalida::insertar(Animal* animal){
 
 	cabecera.setNEliminados(cabecera.getNEliminados()-1);	//Modificar cabecera
 	cabecera.setNRegistros(cabecera.getNRegistros()+1);
-	cabecera.setPrimerHueco(registro.getDireccion());
+	cabecera.setPrimerHueco(registro.getDireccion());	//getDireccion que tenia el registro eliminado
 	archivoSalida.seekp(0,ios::beg);
 	archivoSalida.tellg();
 	archivoSalida.write((char*)&cabecera,sizeof(Cabecera));	//Actualizacion de la cabecera
