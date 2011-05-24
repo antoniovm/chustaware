@@ -4,7 +4,8 @@ import javax.sound.sampled.*;
 
 public class Captura extends Thread {
 
-	public static final int NUMERO_DE_MUESTRAS = 32 * 1024;
+	private final static int SOLAPAMIENTOS=8;
+	public static final int NUMERO_DE_MUESTRAS = SOLAPAMIENTOS * 1024;
 	private byte[] tiempo; // Buffer de datos de audio en el dominio del tiempo
 	private double[][] frecuencia; // Buffer de datos de audio en el dominio del
 									// tiempo
@@ -15,6 +16,7 @@ public class Captura extends Thread {
 	private DataLine.Info linea; // Linea de entrada de captura
 	private TargetDataLine tarjetaSonido; // Puente entre la zona de memoria
 	private boolean stopCapture;
+	
 
 	// donde escribe la tarjeta de
 	// sonido y memoria principal
@@ -73,29 +75,17 @@ public class Captura extends Thread {
 	public void run() {
 		/* Variable para dejar de capturar */
 		long time = 0;
-		byte[]buffer = new byte[tiempo.length/32];
+		byte[]buffer = new byte[tiempo.length/SOLAPAMIENTOS];
 		stopCapture = false;
 		try {
 			tarjetaSonido.read(tiempo, 0,	tiempo.length);
 			while (!stopCapture) {
-				/* Lee los datos capturados por el sismeta de audio */
-				// time=System.currentTimeMillis();
+				
 				int cnt = tarjetaSonido.read(buffer, 0, buffer.length);
-				// System.out.println(System.currentTimeMillis()-time+"    "+cnt);
-				if (cnt > 0) {
-					// Save data in output stream object.
-					/*
-					 * byteArrayOutputStream.write(tempBuffer, 0, cnt);
-					 */
-					
-					  /*for (int i = 0; i < tiempo.length; i++) {
-					  System.out.println(tiempo[i]); }*/
-					 
-
-				}
+				
 				System.arraycopy(tiempo, buffer.length, tiempo, 0, tiempo.length-buffer.length);
 				System.arraycopy(buffer, 0, tiempo, tiempo.length-buffer.length, buffer.length);
-				// System.arraycopy(src, srcPos, dest, destPos, length)
+				
 				ConversorTF.convertir(tiempo, frecuencia, enventanado);
 			}
 			tarjetaSonido.stop();
@@ -106,7 +96,7 @@ public class Captura extends Thread {
 	}
 
 	private void formatoAudioPorDefecto() {
-		float frecuenciaMuestreo = 44100;
+		float frecuenciaMuestreo = 8000;
 		// 8000,11025,16000,22050,44100
 		int tamanoMuestraBits = 16;
 		// 8,16
