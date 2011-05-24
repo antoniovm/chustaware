@@ -59,8 +59,8 @@ int IndicesPS::insertarAux( Animal* animal, int posDatos) {
 		int posSiguiente=rAux->getSiguiente();
 
 		rAux=new RegistroAux(true,animal->getName(), -1,posDatos);// Creamos el registro.
-		delete animal; //Liberar memoria dinamica
-		animal=NULL;
+		//delete animal; //Liberar memoria dinamica NOOOOOOO
+		//animal=NULL;
 
 		archivoAux.seekp(posAux);
 		archivoAux.tellg();
@@ -161,21 +161,23 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 		rIS->setPosPrimero(posAux);
 		//escribimos los registros actualizados
 		archivoIS.seekp(posIS);
+		archivoIS.tellg();
 		archivoIS.write((char*)rIS, (streampos)sizeof(RegistroIS));
 		archivoIS.tellg();
 		archivoAux.seekg(posAux);
+		archivoAux.tellg();
 		archivoAux.write((char*)rAux, sizeof(RegistroAux));
-		archivoIS.tellg();
+		archivoAux.tellg();
 
 		archivoAux.close();
 		archivoIS.close();
 		return;
 	}
 	siguiente=rIS->getPosPrimero();
-	while(rAux2->getSiguiente()>0){
+	while(rAux2->getSiguiente()>0 || rAux->getClavePrimaria()<rAux2->getClavePrimaria()){
 
 		if(rAux->getClavePrimaria()<rAux2->getClavePrimaria()){
-			rAux->setSiguiente(siguiente);	//enganchyamos en la lista
+			rAux->setSiguiente(siguiente);	//enganchamos en la lista
 			archivoAux.seekg(anterior);		//posicionamos para leer y actualizar
 			archivoAux.read((char*)rAux2,sizeof(RegistroAux));
 			rAux2->setSiguiente(posAux);	//actualizamos
@@ -198,7 +200,7 @@ void IndicesPS::insertarIS(Animal* animal, int posAux) {
 		archivoAux.seekg(siguiente);
 		archivoAux.read((char*)(rAux2), sizeof(RegistroAux));
 
-	}
+	}//si hemos legado al registro final de la lista (al q apunta a -1) y la clave a insertar es mayor
 	archivoAux.seekg(siguiente);
 	archivoAux.read((char*)rAux2,sizeof(RegistroAux));
 	rAux2->setSiguiente(posAux);
@@ -236,7 +238,10 @@ int IndicesPS::insertarIP(Animal* a)
 	}
 	archivoIP.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
 
-	if(buscarClaveP(a->getName())>0) return -1;	//Ya esta insertado
+	if(buscarClaveP(a->getName())>0){
+		cout << "Ya existe un animal con ese nombre" << endl;
+		return -1;	//Ya esta insertado
+	}
 
 	archivoIP.seekg(sizeof(Cabecera)+(int)cabecera.getNRegistros()*sizeof(RegistroIP));//ios::end
 
