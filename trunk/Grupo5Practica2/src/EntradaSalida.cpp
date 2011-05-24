@@ -53,6 +53,7 @@ void EntradaSalida::leerTexto() {
 	string buffer;	//Cadena temporal
 	//char* cadena;	//Puntero buffer
 	Animal* animal;	//Objeto temporal
+	animals.clear();//--------------------------THE t-KEY
 	while(!archivo.eof()){
 		getline(archivo, buffer);
 		if(archivo.eof())break;
@@ -67,7 +68,6 @@ void EntradaSalida::leerTexto() {
 				*strtok(NULL, ","), *strtok(NULL, ","), atoi(strtok(NULL, ",")));
 
 		animals.push_back(animal);	//se añade a la lista de animales
-
 		//delete [] cadena;		//Borrado de buffer
 	}
 	archivo.close();
