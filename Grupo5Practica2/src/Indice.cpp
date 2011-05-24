@@ -27,10 +27,30 @@ void Indice::insertar(Animal *animal) {
 /**
  * Lee del fichero de txt los animales y genera los ficheros binarios de datos e indices(primario,secundario y auxiliar)
  */
+void Indice::desordenar(list<Animal*>&l){
+	list<Animal*> aux;
+	list<Animal*>::iterator it;
+	int j=0;
+	srand ( time(NULL) );
+	while(l.size()>0) {
+		j=(rand()%l.size());
+		for (it=l.begin(); j>0;it++,j--) {}
+			aux.push_back(*it);
+			l.erase(it);
+	}
+	while(aux.size()>0) {
+		l.push_back(*aux.begin());
+		aux.erase(aux.begin());
+	}
+
+
+
+}
 void Indice::crearFicherosPS(){
 	list<Animal*> animales;
 	indicesPS.getES().leerTexto();	//lee el fichero zoo-data.txt para almacenar los animales en MP
 	animales=indicesPS.getES().getAnimals();
+	desordenar(animales);
     int posicionDatos=0;
 	int posicionAux=0;
 
