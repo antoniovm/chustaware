@@ -44,7 +44,7 @@ void Indice::crearFicherosPS(){
 	list<Animal*> animales;
 	indicesPS.getES().leerTexto();	//lee el fichero zoo-data.txt para almacenar los animales en MP
 	animales=indicesPS.getES().getAnimals();
-	desordenar(animales);
+	//desordenar(animales);
     int posicionDatos=0;
 
 	fstream IP("IP.dat",ios::binary|ios::out);	//borrado de archivos

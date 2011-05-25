@@ -45,7 +45,7 @@ Bloque* Bloque::insertar(Registro registro)
     	// Insercion ordenada
 		for (int i = nRegistros-1; i >= 0; i--) {
 			if (registros[i].getAnimal(false)->getName() < registro.getAnimal(false)->getName()) {
-				registros[i] = registro;
+				registros[i+1] = registro;	// aki es i+1 no i
 				nRegistros++;
 				return NULL;
 			}
