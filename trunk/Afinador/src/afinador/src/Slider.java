@@ -37,7 +37,7 @@ public class Slider extends JComponent {
 	}
 
 	public void setOffset(int offset) {
-		this.offset = offset*20;	//escala del slider
+		this.offset = offset*(barra.getIconWidth()/2)/50;	//escala del slider
 		repaint();
 	}
 
