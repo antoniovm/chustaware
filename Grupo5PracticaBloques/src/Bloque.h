@@ -19,8 +19,8 @@ private:
 public:
 	Bloque();
 	virtual ~Bloque();
-	Registro* getPrimerRegistro() const;
-    Registro* getUltimoRegistro() const;
+	Registro* getPrimerRegistro();
+    Registro* getUltimoRegistro();
     Bloque* insertar(Registro);
     int eliminar(string);
 };

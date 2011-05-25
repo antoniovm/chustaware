@@ -15,7 +15,7 @@ Bloque::~Bloque() {
 
 }
 
-Registro* Bloque::getPrimerRegistro() const
+Registro* Bloque::getPrimerRegistro()
 {
 	if (nRegistros>0) {
 		return &registros[0];
@@ -23,7 +23,7 @@ Registro* Bloque::getPrimerRegistro() const
     return NULL;
 }
 
-Registro* Bloque::getUltimoRegistro() const
+Registro* Bloque::getUltimoRegistro()
 {
 	if (nRegistros>0) {
 		return &registros[nRegistros-1];
