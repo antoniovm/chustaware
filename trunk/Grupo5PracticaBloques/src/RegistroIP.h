@@ -24,7 +24,7 @@ public:
     virtual ~RegistroIP();
     string getClavePrimaria() const;
     int getPosRegistro() const;
-    void setClavePrimaria(char*);
+    void setClavePrimaria(string);
     void setPosRegistro(int);
 
 };

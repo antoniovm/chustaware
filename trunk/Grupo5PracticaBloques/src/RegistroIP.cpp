@@ -30,9 +30,9 @@ int RegistroIP::getPosRegistro() const
     return posRegistro;
 }
 
-void RegistroIP::setClavePrimaria(char* clave)
+void RegistroIP::setClavePrimaria(string clave)
 {
-	strcpy(this->clavePrimaria, clave);
+	strcpy(this->clavePrimaria, clave.data());
 }
 
 void RegistroIP::setPosRegistro(int posRegistro)

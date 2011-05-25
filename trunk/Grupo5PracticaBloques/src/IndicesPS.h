@@ -10,10 +10,11 @@
 
 #include "EntradaSalida.hpp"
 #include "RegistroIP.h"
+#include "Bloque.h"
 #include "Animal.h"
 #include <fstream>
-#include<vector>
-#include<list>
+#include <vector>
+#include <list>
 
 class IndicesPS {
 private:
@@ -21,12 +22,13 @@ private:
 public:
 	IndicesPS();
 	virtual ~IndicesPS();
+	int insertarDatos(Animal*);
 	int insertarIP(Animal*);
 	void borrarIP(string);
 	long buscarClaveP(string);
-	EntradaSalida& getES(){return es;}
 	void generarCabecera(fstream&);
 	bool comprobarArchivoVacio(fstream&);
+	EntradaSalida& getES() {return es;};
 };
 
 #endif /* INDICESPS_H_ */
