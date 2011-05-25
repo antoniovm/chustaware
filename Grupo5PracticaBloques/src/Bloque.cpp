@@ -42,7 +42,8 @@ Bloque* Bloque::insertar(Registro registro)
 	}
 	if (nRegistros < 10) {
     	// Insercion ordenada
-		for (int i = nRegistros-1; i >= 0; i--) {
+		int i;
+		for (i = nRegistros-1; i >= 0; i--) {
 			if (registros[i].getAnimal(false)->getName() < registro.getAnimal(false)->getName()) {
 				registros[i+1] = registro;	// aki es i+1 no i
 				nRegistros++;
@@ -50,6 +51,8 @@ Bloque* Bloque::insertar(Registro registro)
 			}
 			registros[i+1] = registros[i];
 		}
+		registros[i+1] = registro; //Posicion 0
+		return NULL;
 	}
     bloque = new Bloque();
     // Dividimos los registros en 2 bloques
