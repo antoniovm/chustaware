@@ -42,10 +42,9 @@ void IndicesPS::insertarDatos(Animal* animal) {
 		generarCabecera(archivoDatos, 0);
 		generarCabecera(archivoIP, 1);
 		bloque.insertar(registro); // Insertamos el registro en un bloque vacio
-		archivoDatos.tellg();
+		posicion=archivoDatos.tellg(); // Posicion de escritura
 		archivoDatos.write((char*) (&bloque), sizeof(Bloque)); // Escribimos el bloque
 		archivoDatos.tellg();
-		posicion = archivoDatos.tellg() - (streampos)sizeof(Bloque); // Posicion en la que se ha escrito
 		// Inicializamos el registro del IP y lo escibimos
 		rIP.setClavePrimaria(bloque.getUltimoRegistro()->getAnimal(false)->getName());
 		rIP.setPosRegistro(posicion);
@@ -62,7 +61,7 @@ void IndicesPS::insertarDatos(Animal* animal) {
 
 	// Leemos las cabeceras
 	archivoDatos.read((char*) &cabeceraDatos, sizeof(Cabecera));
-	archivoDatos.read((char*) &cabeceraIP, sizeof(Cabecera));
+	archivoIP.read((char*) &cabeceraIP, sizeof(Cabecera));
 
 	posicionClaveP = buscarClaveP(animal->getName()); //Buscamos en IP la posicion del registro que contiene el bloque en el que tenemos que insertar
 	archivoIP.seekg(posicionClaveP);
@@ -71,10 +70,9 @@ void IndicesPS::insertarDatos(Animal* animal) {
 	archivoDatos.read((char*)&bloque, sizeof(Bloque)); // Leemos el bloque
 	bloqueAux = bloque.insertar(registro); // Insertamos el registro en el bloque
 	archivoDatos.seekg(archivoDatos.tellg()-(streampos)sizeof(Bloque));
-	archivoDatos.tellg();
+	posicion = archivoDatos.tellg(); //Posicion de escritura
 	archivoDatos.write((char*)&bloque, sizeof(Bloque)); // Sobreescribimos el bloque
 	archivoDatos.tellg();
-	posicion = archivoDatos.tellg() - (streampos)sizeof(Bloque); // Posicion en la que se ha escrito
 	// Actualizamos el registro del IP
 	rIP.setClavePrimaria(bloque.getUltimoRegistro()->getAnimal(false)->getName());
 	rIP.setPosRegistro(posicion);
@@ -279,6 +277,10 @@ long IndicesPS::buscarClaveP(string clave)
 	int centro=0;
 	RegistroIP* rIP = new RegistroIP("",0);
 
+	if(superior==0){
+		return inferior*sizeof(RegistroIP)+sizeof(Cabecera);
+	}
+
 	while(inferior <= superior){
 		centro=((superior-inferior)/2)+inferior;
 		archivo.seekg(centro*sizeof(RegistroIP)+sizeof(Cabecera));
@@ -304,7 +306,7 @@ long IndicesPS::buscarClaveP(string clave)
 		}
 	}
 	archivo.close();
-	return -1;
+	return inferior*sizeof(RegistroIP)+sizeof(Cabecera);
 }
 /**
  * Elimina un registro en el indice primario.
