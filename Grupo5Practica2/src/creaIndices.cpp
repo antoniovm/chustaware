@@ -42,16 +42,20 @@ void menu(Indice &indice){
 	long l;
 	string s;
 	Animal* animal;
+	cout << "**********************************************************************" << endl;
+	cout << "*                         GRUPO 5. PRACTICA 2.                       *" << endl;
+	cout << "*                 GESTOR DE FICHEROS POR INDEXACION                  *" << endl;
+	cout << "**********************************************************************" << endl;
 	do{
-		cout<<"---¿Qué desea hacer?--- \n"
-				"t - Leer del archivo de texto y generar ficheros de datos e indices.\n"
-				"i - Insertar un Animal.\n"
-				"d - Eliminar un Animal.\n"
-				"k - Lectura ordenada por clave Primaria.\n"
-				"p - Buscar animal por clave Primaria.\n"
-				"s - Buscar animales por clave Secundaria.\n"
-				"m - Mostrar estado fichero de indice(Primario,Secundario o Auxiliar).\n"
-				"e - Exit."<<endl;
+		cout << "---------------------------------MENU---------------------------------\n";
+		cout <<	"t"; cout << " - Leer del archivo de texto y generar ficheros de datos e indices.\n";
+		cout <<	"i"; cout << " - Insertar un Animal.\n";
+		cout << "d"; cout << " - Eliminar un Animal.\n";
+		cout << "k"; cout << " - Lectura ordenada por clave Primaria.\n";
+		cout << "p"; cout << " - Buscar animal por clave Primaria.\n";
+		cout << "s"; cout << " - Buscar animales por clave Secundaria.\n";
+		cout << "m"; cout << " - Mostrar estado fichero de indice(Primario,Secundario o Auxiliar).\n";
+		cout << "e"; cout << " - Exit." << endl;
 		cin>>c;
 		switch (c) {
 			case 't':
