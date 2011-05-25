@@ -299,6 +299,7 @@ void IndicesPS::borrarIS(string clavePrimaria, int claveSecundaria)
 	RegistroAux rAux;
 	Cabecera cabeceraAux;
 	int posicionIS = buscarClaveS(claveSecundaria);
+	streampos posHueco = -1;
 	streampos posAnterior = -1;
 	streampos posSiguiente = -1;
 
@@ -327,17 +328,20 @@ void IndicesPS::borrarIS(string clavePrimaria, int claveSecundaria)
 		if (rAux.getClavePrimaria() == clavePrimaria) {
 			// Si posAnterior es -1 significa que es el primero de la lista
 			if (posAnterior == -1) {
+				posHueco = rIS.getPosPrimero(); //Guardamos la posicion del primer hueco
 				rIS.setPosPrimero(rAux.getSiguiente());
 				archivoIS.seekg((streampos) posicionIS);
 				archivoIS.tellg();
 				archivoIS.write((char*) &rIS, sizeof(RegistroIS));
 				archivoIS.tellg();
 				rAux.setValido(false); //Ponemos el bit de validez a 0
+				rAux.setSiguiente(cabeceraAux.getPrimerHueco());
 				archivoAux.seekg(archivoAux.tellg()	- (streampos) sizeof(RegistroAux));
 				archivoAux.tellg();
 				archivoAux.write((char*) &rAux, sizeof(RegistroAux)); // Escribimos el registro con el bit a 0
 				archivoAux.tellg();
 				//Modificamos y sobreeescribimos la cabecera
+				cabeceraAux.setPrimerHueco(posHueco);
 				cabeceraAux.setNRegistros(cabeceraAux.getNRegistros() - 1);
 				cabeceraAux.setNEliminados(cabeceraAux.getNEliminados() + 1);
 				archivoAux.seekg(0, ios::beg);
@@ -351,8 +355,9 @@ void IndicesPS::borrarIS(string clavePrimaria, int claveSecundaria)
 			// Si el anterior es un registro de IAux (posAnterior != -1)...
 			posSiguiente = rAux.getSiguiente(); // Guardamos la posicion del siguiente
 			rAux.setValido(false); // Desactivamos el registro
+			rAux.setSiguiente(cabeceraAux.getPrimerHueco());
 			archivoAux.seekg(archivoAux.tellg()	- (streampos) sizeof(RegistroAux)); // Nos posicionamos para sobreescribirlo
-			archivoAux.tellg();
+			posHueco = archivoAux.tellg();
 			archivoAux.write((char*) &rAux, sizeof(RegistroAux)); //Sobreescribimos el registro desactivado
 			archivoAux.tellg();
 			archivoAux.seekg(posAnterior); // Nos posicionamos para leer el anterior
@@ -361,6 +366,14 @@ void IndicesPS::borrarIS(string clavePrimaria, int claveSecundaria)
 			archivoAux.seekg(posAnterior); // Nos posicionamos de nuevo para sobreescribir el anterior
 			archivoAux.tellg();
 			archivoAux.write((char*) &rAux, sizeof(RegistroAux)); // Escribimos el anterior modificado
+			archivoAux.tellg();
+			//Modificamos y sobreeescribimos la cabecera
+			cabeceraAux.setPrimerHueco(posHueco);
+			cabeceraAux.setNRegistros(cabeceraAux.getNRegistros() - 1);
+			cabeceraAux.setNEliminados(cabeceraAux.getNEliminados() + 1);
+			archivoAux.seekg(0, ios::beg);
+			archivoAux.tellg();
+			archivoAux.write((char*) &cabeceraAux, sizeof(Cabecera));
 			archivoAux.tellg();
 			archivoIS.close();
 			archivoAux.close();
