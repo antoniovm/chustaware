@@ -302,8 +302,8 @@ long IndicesPS::buscarClaveP(string clave)
 		}
 	}
 	archivo.close();
-	cout << "ERROR  en busquedaClaveP" << endl;
-	return -1;
+	//cout << "ERROR  en busquedaClaveP" << endl;
+	return inferior*sizeof(RegistroIP)+sizeof(Cabecera);
 }
 /**
  * Elimina un registro en el indice primario.
