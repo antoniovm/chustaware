@@ -127,6 +127,7 @@ void Indice::lecturaOrdenada(){
 		archivoIP.tellg();
 		archivoDatos.read((char*)&bloque,sizeof(Bloque));
 		archivoIP.tellg();
+		cout << "Bloque " << nBloquesLeidos+1 << endl;
 		bloque.mostrar();
 		archivoIP.tellg();
 		nBloquesLeidos++;

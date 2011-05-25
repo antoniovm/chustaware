@@ -117,7 +117,7 @@ void Bloque::setValido(bool valido)
 
 void Bloque::mostrar() {
 	for (int i = 0; i < nRegistros; i++) {
-		cout << *registros[i].getAnimal(false) << endl;
+		cout << i+1 <<" - " <<  *registros[i].getAnimal(false) << endl;
 	}
 	cout << endl;
 }
