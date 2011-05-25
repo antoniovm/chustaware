@@ -103,7 +103,7 @@ void IndicesPS::insertarDatos(Animal* animal) {
 		// Inicializamos el registro del IP y lo escibimos
 		rIP.setClavePrimaria(bloqueAux->getUltimoRegistro()->getAnimal(false)->getName());
 		rIP.setPosRegistro(posicion);
-		insertarIP(archivoIP, &rIP);
+		insertarIP(archivoIP, rIP);
 		// Cerramos los flujos
 		archivoDatos.close();
 		archivoIP.close();
@@ -131,7 +131,7 @@ void IndicesPS::insertarDatos(Animal* animal) {
 	// Inicializamos el registro del IP y lo escibimos
 	rIP.setClavePrimaria(bloqueAux->getUltimoRegistro()->getAnimal(false)->getName());
 	rIP.setPosRegistro(posicion);
-	insertarIP(archivoIP, &rIP);
+	insertarIP(archivoIP, rIP);
 	// Cerramos los flujos
 	archivoDatos.close();
 	archivoIP.close();
@@ -143,8 +143,51 @@ void IndicesPS::insertarDatos(Animal* animal) {
 /*
  * Insercion ordenada de un RegistroIP en el indice.
  */
-void IndicesPS::insertarIP(fstream& archivoIP, RegistroIP* rIP) {
+void IndicesPS::insertarIP(fstream& archivoIP, RegistroIP rIPInsertar) {
+	Cabecera cabeceraIP;
+	RegistroIP rIP;
 
+	// Leemos la cabecera
+	archivoIP.seekg(0, ios::beg);
+	archivoIP.read((char*)&cabeceraIP, sizeof(Cabecera));
+
+	archivoIP.seekg(sizeof(Cabecera)+(int)cabeceraIP.getNRegistros()*sizeof(RegistroIP));//ios::end
+
+	while (archivoIP.tellg() > sizeof(Cabecera)) {
+		archivoIP.seekg(archivoIP.tellg() - (streampos) sizeof(RegistroIP)); // Posicionamos el puntero en la posicion del registro anterior.
+		archivoIP.tellg();
+		archivoIP.read((char*)&rIP, sizeof(RegistroIP)); // Leemos el registro.
+		archivoIP.tellg();
+		// Si la clave del registro que vamos a insertar es mayor que la clave del registro que acabamos de leer, insertamos el registro.
+		if (rIPInsertar.getClavePrimaria() > rIP.getClavePrimaria()) {
+			archivoIP.tellg();
+			archivoIP.write((char*) &rIPInsertar, sizeof(RegistroIP));
+			archivoIP.tellg();
+			//Actualizamos la cabecera
+			cabeceraIP.setNRegistros(cabeceraIP.getNRegistros() + 1);
+			archivoIP.seekg(0, ios::beg);
+			archivoIP.tellg();
+			archivoIP.write((char*) (&cabeceraIP), sizeof(Cabecera));
+			archivoIP.tellg();
+			return;
+		}
+		// Si no, copiamos el registro en la siguiente posicion y posicionamos el puntero en la posicion anterior.
+		archivoIP.tellg();
+		archivoIP.write((char*)&rIP, sizeof(RegistroIP));
+		archivoIP.tellg();
+		archivoIP.seekg(archivoIP.tellg() - (streampos) (sizeof(RegistroIP) * 2));
+		archivoIP.tellg();
+	}
+	archivoIP.tellg();
+	archivoIP.write((char*) &rIPInsertar, sizeof(RegistroIP));
+	archivoIP.tellg();
+	// Actualizamos la cabecera
+	cabeceraIP.setNRegistros(cabeceraIP.getNRegistros() + 1);
+	archivoIP.seekg(0, ios::beg);
+	archivoIP.tellg();
+	archivoIP.write((char*) (&cabeceraIP), sizeof(Cabecera));
+	archivoIP.tellg();
+	return;
 }
 
 /**
