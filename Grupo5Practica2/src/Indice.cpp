@@ -67,6 +67,7 @@ void Indice::crearFicherosPS(){
 			posicionAux = indicesPS.insertarAux(animales.front(),posicionDatos);
 			indicesPS.insertarIS(animales.front(),posicionAux);
 		}
+		cout << *animales.front() << endl;
 		delete *animales.begin();
 		animales.pop_front();
 	}
