@@ -19,10 +19,6 @@ Indice::~Indice() {
 void Indice::insertar(Animal *animal) {
 	int posDatos=0, posAux=0;
 	posDatos = indicesPS.insertarIP(animal);
-	if(posDatos>0){
-		posAux = indicesPS.insertarAux(animal, posDatos);
-		indicesPS.insertarIS(animal, posAux);
-	}
 }
 /**
  * Lee del fichero de txt los animales y genera los ficheros binarios de datos e indices(primario,secundario y auxiliar)
@@ -50,23 +46,14 @@ void Indice::crearFicherosPS(){
 	animales=indicesPS.getES().getAnimals();
 	desordenar(animales);
     int posicionDatos=0;
-	int posicionAux=0;
 
 	fstream IP("IP.dat",ios::binary|ios::out);	//borrado de archivos
-	fstream IS("IS.dat",ios::binary|ios::out);
-	fstream Aux("IAux.dat",ios::binary|ios::out);
 	fstream zooData("zoo-data.dat",ios::binary|ios::out);
 	IP.close();
-	IS.close();
-	Aux.close();
 	zooData.close();
 
 	while(!animales.empty()){
-		posicionDatos=indicesPS.insertarIP(animales.front());
-		if(posicionDatos>0){
-			posicionAux = indicesPS.insertarAux(animales.front(),posicionDatos);
-			indicesPS.insertarIS(animales.front(),posicionAux);
-		}
+		posicionDatos=indicesPS.insertarDatos(animales.front());
 		delete *animales.begin();
 		animales.pop_front();
 	}
@@ -96,7 +83,6 @@ void Indice::eliminar(string clave){
 	archivoIP.close();
 	indicesPS.getES().eliminar(indicesPS.getES().calcularNumRegistro(rIP.getPosRegistro()));
 	indicesPS.borrarIP(clave);
-	indicesPS.borrarIS(clave, rDatos.getAnimal(false)->getLegs());
 }
 /**
  * Muestra por pantalla el animal con esa clave primaria(nombre)
@@ -122,8 +108,8 @@ void Indice::lecturaOrdenada(){
 	fstream archivoIP("IP.dat", ios::in|ios::binary), archivoDatos("zoo-data.dat", ios::in|ios::binary);
 	RegistroIP rIP;
 	Registro rDatos;
+	Bloque bloque;
 	Cabecera cabecera;
-	int cont=1;
 	archivoIP.read((char*)&cabecera,sizeof(Cabecera));
 
 	while(1){
@@ -131,15 +117,16 @@ void Indice::lecturaOrdenada(){
 
 		archivoDatos.seekg(rIP.getPosRegistro());
 
-		archivoDatos.read((char*)&rDatos,sizeof(Registro));
+		archivoDatos.read((char*)&bloque,sizeof(Bloque));
 
-		cout<< cont <<"   "<< *rDatos.getAnimal(false)<<endl;
+		bloque.mostrar();
 
-		cont++;
 
-		if(archivoIP.tellg()>=cabecera.getNRegistros()*sizeof(RegistroIP))
+		if(archivoIP.tellg()>=cabecera.getNRegistros()*sizeof(RegistroIP)) {
+			archivoIP.close();
+			archivoDatos.close();
 			return;
-
+		}
 	}
 
 

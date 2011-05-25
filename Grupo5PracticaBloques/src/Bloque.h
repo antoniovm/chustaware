@@ -16,6 +16,8 @@ class Bloque {
 private:
 	Registro registros[10];
 	int nRegistros;
+	bool valido;
+	int siguiente;
 public:
 	Bloque();
 	virtual ~Bloque();
@@ -24,6 +26,11 @@ public:
     Bloque* insertar(Registro);
     int eliminar(string);
     void mostrar();
+    bool getValido() const;
+    void setValido(bool valido);
+    int getSiguiente() const;
+    void setSiguiente(int siguiente);
+
 };
 
 #endif /* BLOQUE_H_ */

@@ -16,26 +16,10 @@ void menu(Indice&);
 
 int main() {
 	Indice indice;
-	//indice.crearFicherosPS();
-	//indice.mostrar("IP.dat");
-	//indice.mostrar("IS.dat");
-	//indice.mostrar("IAux.dat");
 	menu(indice);
 	cout << "Fin de Main";
 	return 0;
 }
-/*
- * TAREAS A REALIZAR:
- *crear fichero con indiceP
- CREAR fichero con indiceS
- Visualizacion de archivos de indices
- Listado ordenado por claveP
- Busqueda por claveP
- Busqueda por claveS
- Eliminar en datos e indices
- Insertar en datos e indices
- Crear archivo de bloques, con registros ordenados
- */
 
 void menu(Indice &indice){
 	char c;
@@ -53,8 +37,7 @@ void menu(Indice &indice){
 		cout << "d"; cout << " - Eliminar un Animal.\n";
 		cout << "k"; cout << " - Lectura ordenada por clave Primaria.\n";
 		cout << "p"; cout << " - Buscar animal por clave Primaria.\n";
-		cout << "s"; cout << " - Buscar animales por clave Secundaria.\n";
-		cout << "m"; cout << " - Mostrar estado fichero de indice(Primario,Secundario o Auxiliar).\n";
+		cout << "m"; cout << " - Mostrar estado fichero de indice primario.\n";
 		cout << "e"; cout << " - Exit." << endl;
 		cin>>c;
 		switch (c) {
@@ -82,23 +65,13 @@ void menu(Indice &indice){
 				indice.lecturaOrdenada();
 				break;
 			case 'm':
-				cout<< "Introduzca el nombre del fichero a mostrar (IP.dat ,IS.dat ,IAux.dat)"<<endl;
-				ws(cin);
-				getline(cin,s);
-				indice.mostrar(s);
+				indice.mostrar("IP.dat");
 				break;
 			case 'p':
 				cout<< "Introduzca una clave primaria (nombre de animal)"<<endl;
 				ws(cin);
 				getline(cin,s);
 				indice.buscarP(s);
-				break;
-			case 's':
-				cout<< "Introduzca una clave secundaria (nº de patas)"<<endl;
-				ws(cin);
-				cin>>l;
-				indice.buscarS(l);
-				//es.leerRegistro(es.buscar(s));
 				break;
 
 			default:	break;

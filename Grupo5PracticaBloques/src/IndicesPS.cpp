@@ -16,32 +16,136 @@ IndicesPS::~IndicesPS() {
 	// TODO Auto-generated destructor stub
 }
 
+int IndicesPS::insertarDatos(Animal* animal) {
+	fstream archivoIP("IP.dat", fstream::in | fstream::out | fstream::binary);
+	fstream archivoDatos("zoo-data.dat", fstream::out | fstream::in | fstream::binary);
+	Cabecera cabecera;
+	Registro registro;
+	RegistroIP rIP;
+	Bloque bloque;
+	Bloque* bloqueAux = NULL;
+	streampos posicion, posicionClaveP;
+
+	if (!archivoDatos.is_open()) {
+		cout << "No existe el archivo zoo-data.dat" << endl;
+		return -1;
+	}
+	if (!archivoIP.is_open()) {
+		cout << "No existe el archivo IP.dat" << endl;
+		return -1;
+	}
+
+	if (comprobarArchivoVacio(archivoDatos)) { // Comprobamos si el tamaño del archivo es 0
+		generarCabecera(archivoDatos);
+		registro.setAnimal(animal);
+		bloque.insertar(registro);
+		archivoDatos.tellg();
+		archivoDatos.write((char*) (&bloque), sizeof(Bloque));
+		archivoDatos.tellg();
+		posicion = archivoDatos.tellg() - (streampos)sizeof(Bloque);
+		rIP.setClavePrimaria(bloque.getUltimoRegistro()->getAnimal(false)->getName());
+		rIP.setPosRegistro(posicion);
+		archivoIP.seekg((streampos)sizeof(Cabecera));
+		archivoIP.tellg();
+		archivoIP.write((char*)&rIP, sizeof(RegistroIP));
+		archivoIP.tellg();
+		archivoDatos.close();
+		archivoIP.close();
+		return (int) posicion;
+	}
+	archivoDatos.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
+
+	posicionClaveP = buscarClaveP(animal->getName());
+	archivoIP.seekg(posicionClaveP);
+	archivoIP.read((char*)&rIP, sizeof(RegistroIP));
+	archivoDatos.seekg((streampos)rIP.getPosRegistro()); //"getPosicionBloque"
+	archivoDatos.read((char*)&bloque, sizeof(Bloque));
+
+	registro.setAnimal(animal);
+	bloqueAux = bloque.insertar(registro);
+	archivoDatos.seekg(archivoDatos.tellg()-(streampos)sizeof(Bloque));
+	archivoDatos.write((char*)&bloque, sizeof(Bloque)); // Sobreescribimos el bloque
+	archivoDatos.tellg();
+	rIP.setClavePrimaria(bloque.getUltimoRegistro()->getAnimal(false)->getName());
+	archivoIP.seekg(posicionClaveP);
+	archivoIP.tellg();
+	archivoIP.write((char*)&rIP, sizeof(RegistroIP));
+	archivoIP.tellg();
+
+	if (!bloqueAux) {
+		archivoDatos.close();
+		archivoIP.close();
+		return (int)rIP.getPosRegistro();
+	}
+
+	if (cabecera.getPrimerHueco() == -1) { //No hay huecos, insercion al final
+		archivoDatos.seekp(0, ios::end);
+		posicion = archivoDatos.tellg();
+		archivoDatos.write((char*)bloqueAux, sizeof(Bloque));
+		archivoDatos.tellg();
+		cabecera.setNRegistros(cabecera.getNRegistros() + 1);
+		archivoDatos.seekp(0, ios::beg);
+		archivoDatos.tellg();
+		archivoDatos.write((char*) &cabecera, sizeof(Cabecera)); //Actualizacion de la cabecera
+		archivoDatos.tellg();
+		archivoDatos.close();
+		archivoIP.close();
+		return (int) posicion;
+	}
+	// Si hay huecos...
+	posicion = cabecera.getPrimerHueco(); //Posicion de insercion
+	archivoDatos.seekg(posicion);
+	archivoDatos.read((char*)&bloque, sizeof(Bloque)); //leemos para saber la direccion del siguiente hueco
+	archivoDatos.seekp(posicion);
+	archivoDatos.tellg();
+	archivoDatos.write((char*) bloqueAux, sizeof(Bloque)); //Insercion del nuevo bloque
+	archivoDatos.tellg();
+
+	cabecera.setNEliminados(cabecera.getNEliminados() - 1); //Modificar cabecera
+	cabecera.setNRegistros(cabecera.getNRegistros() + 1);
+	cabecera.setPrimerHueco(bloque.getSiguiente()); //getDireccion que tenia el registro eliminado
+	archivoDatos.seekp(0, ios::beg);
+	archivoDatos.tellg();
+	archivoDatos.write((char*) &cabecera, sizeof(Cabecera)); //Actualizacion de la cabecera
+	archivoDatos.tellg();
+
+	if (bloqueAux) {
+		delete bloqueAux;
+		bloqueAux = NULL;
+	}
+
+	archivoDatos.close();
+	archivoIP.close();
+
+	return (int) posicion;
+}
+
 /**
  * Inserta en fichero de datos e Indice Primario y devuelve la posicion del fichero de datos
  */
-int IndicesPS::insertarIP(Animal* a)
-{
-	fstream archivoIP("IP.dat", ios::out | ios::in | ios::binary );
-	int posDatos=es.insertar(a);	//inserta el animal en el archivo de datos
-	RegistroIP* rIP= new RegistroIP(a->getName(), posDatos);// Creamos el registro.
+int IndicesPS::insertarIP(Animal* a) {
+	fstream archivoIP("IP.dat", ios::out | ios::in | ios::binary);
+	int posDatos = es.insertar(a); //inserta el animal en el archivo de datos
+	RegistroIP* rIP = new RegistroIP(a->getName(), posDatos);// Creamos el registro.
 	Cabecera cabecera;
 
 	if (comprobarArchivoVacio(archivoIP)) { // Comprobamos si el tamaño del archivo es 0
 		generarCabecera(archivoIP);
 		archivoIP.tellg();
-		archivoIP.write((char*)(rIP), sizeof(RegistroIP));
+		archivoIP.write((char*) (rIP), sizeof(RegistroIP));
 		archivoIP.tellg();
 		archivoIP.close();
 		return posDatos;
 	}
 	archivoIP.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
 
-	if(buscarClaveP(a->getName())>0){
+	if (buscarClaveP(a->getName()) > 0) {
 		cout << "Ya existe un animal con ese nombre" << endl;
-		return -1;	//Ya esta insertado
+		return -1; //Ya esta insertado
 	}
 
-	archivoIP.seekg(sizeof(Cabecera)+(int)cabecera.getNRegistros()*sizeof(RegistroIP));//ios::end
+	archivoIP.seekg(sizeof(Cabecera) + (int) cabecera.getNRegistros()
+			* sizeof(RegistroIP));//ios::end
 
 	while (archivoIP.tellg() > sizeof(Cabecera)) {
 		archivoIP.seekg(archivoIP.tellg() - (streampos) sizeof(RegistroIP)); // Posicionamos el puntero en la posicion del registro anterior.
@@ -112,9 +216,13 @@ long IndicesPS::buscarClaveP(string clave)
 		archivo.read((char*)(rIP), sizeof(RegistroIP));
 		archivo.tellg();
 
-		if(rIP->getClavePrimaria()==clave){
+		/*if(rIP->getClavePrimaria()==clave){
 			archivo.close();
 			return centro*sizeof(RegistroIP)+sizeof(Cabecera);
+		}*/
+		if (superior - inferior == 1) {
+			archivo.close();
+			return inferior*sizeof(RegistroIP)+sizeof(Cabecera);
 		}
 		if(rIP->getClavePrimaria() > clave){
 			superior = centro - 1;

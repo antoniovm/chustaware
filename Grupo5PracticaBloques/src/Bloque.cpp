@@ -9,6 +9,8 @@
 
 Bloque::Bloque() {
 	this->nRegistros = 0;
+	this->valido = true;
+	this->siguiente = -1;
 }
 
 Bloque::~Bloque() {
@@ -34,7 +36,12 @@ Registro* Bloque::getUltimoRegistro()
 Bloque* Bloque::insertar(Registro registro)
 {
 	Bloque* bloque;
-    if (nRegistros < 10) {
+    if (nRegistros == 0) {
+		registros[0] = registro;
+		nRegistros++;
+		return NULL;
+	}
+	if (nRegistros < 10) {
     	// Insercion ordenada
 		for (int i = nRegistros-1; i >= 0; i--) {
 			if (registros[i].getAnimal(false)->getName() < registro.getAnimal(false)->getName()) {
@@ -83,8 +90,29 @@ int Bloque::eliminar(string clave) {
 	return 0;
 }
 
+bool Bloque::getValido() const
+{
+    return valido;
+}
+
+int Bloque::getSiguiente() const
+{
+    return siguiente;
+}
+
+void Bloque::setSiguiente(int siguiente)
+{
+    this->siguiente = siguiente;
+}
+
+void Bloque::setValido(bool valido)
+{
+    this->valido = valido;
+}
+
 void Bloque::mostrar() {
 	for (int i = 0; i < nRegistros; i++) {
 		cout << registros[i].getAnimal(false) << endl;
 	}
+	cout << endl;
 }
