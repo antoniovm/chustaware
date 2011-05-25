@@ -82,3 +82,9 @@ int Bloque::eliminar(string clave) {
 	if (eliminado) return 1;
 	return 0;
 }
+
+void Bloque::mostrar() {
+	for (int i = 0; i < nRegistros; i++) {
+		cout << registros[i].getAnimal(false) << endl;
+	}
+}

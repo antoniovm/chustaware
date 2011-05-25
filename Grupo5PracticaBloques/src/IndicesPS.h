@@ -23,11 +23,7 @@ public:
 	virtual ~IndicesPS();
 	int insertarIP(Animal*);
 	void borrarIP(string);
-	void insertarIS(Animal*, int);
-	void borrarIS(string, int);
-	int insertarAux(Animal*, int);
 	long buscarClaveP(string);
-	int buscarClaveS(int);
 	EntradaSalida& getES(){return es;}
 	void generarCabecera(fstream&);
 	bool comprobarArchivoVacio(fstream&);

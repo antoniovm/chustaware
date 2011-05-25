@@ -23,6 +23,7 @@ public:
     Registro* getUltimoRegistro();
     Bloque* insertar(Registro);
     int eliminar(string);
+    void mostrar();
 };
 
 #endif /* BLOQUE_H_ */
