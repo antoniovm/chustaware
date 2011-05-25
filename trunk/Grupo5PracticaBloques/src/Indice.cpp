@@ -115,19 +115,23 @@ void Indice::lecturaOrdenada(){
 	Registro rDatos;
 	Bloque bloque;
 	Cabecera cabecera;
+	int nBloquesLeidos = 0;
+
 	archivoIP.read((char*)&cabecera,sizeof(Cabecera));
 
 	while(1){
+		archivoIP.tellg();
 		archivoIP.read((char*)&rIP,sizeof(RegistroIP));
-
+		archivoIP.tellg();
 		archivoDatos.seekg(rIP.getPosRegistro());
-
+		archivoIP.tellg();
 		archivoDatos.read((char*)&bloque,sizeof(Bloque));
-
+		archivoIP.tellg();
 		bloque.mostrar();
+		archivoIP.tellg();
+		nBloquesLeidos++;
 
-
-		if(archivoIP.tellg()>=cabecera.getNRegistros()*sizeof(Bloque)) {
+		if(nBloquesLeidos == cabecera.getNRegistros()) {
 			archivoIP.close();
 			archivoDatos.close();
 			return;
