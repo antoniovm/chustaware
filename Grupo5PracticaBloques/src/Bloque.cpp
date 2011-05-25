@@ -37,8 +37,7 @@ Bloque* Bloque::insertar(Registro registro)
 {
 	Bloque* bloque;
     if (nRegistros == 0) {
-		registros[0] = registro;
-		nRegistros++;
+		registros[nRegistros++] = registro;
 		return NULL;
 	}
 	if (nRegistros < 10) {
@@ -112,7 +111,7 @@ void Bloque::setValido(bool valido)
 
 void Bloque::mostrar() {
 	for (int i = 0; i < nRegistros; i++) {
-		cout << registros[i].getAnimal(false) << endl;
+		cout << *registros[i].getAnimal(false) << endl;
 	}
 	cout << endl;
 }

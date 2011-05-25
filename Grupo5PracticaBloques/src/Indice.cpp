@@ -17,8 +17,7 @@ Indice::~Indice() {
 }
 
 void Indice::insertar(Animal *animal) {
-	int posDatos=0, posAux=0;
-	posDatos = indicesPS.insertarIP(animal);
+	//indicesPS.insertarIP(animal);
 }
 /**
  * Lee del fichero de txt los animales y genera los ficheros binarios de datos e indices(primario,secundario y auxiliar)
@@ -52,8 +51,14 @@ void Indice::crearFicherosPS(){
 	IP.close();
 	zooData.close();
 
+	int i=1;
+	for(list<Animal*>::iterator it=animales.begin();it!=animales.end(); it++) {
+		cout << i << "\t" << *(*it) << endl;
+		i++;
+	}
+
 	while(!animales.empty()){
-		posicionDatos=indicesPS.insertarDatos(animales.front());
+		indicesPS.insertarDatos(animales.front());
 		delete *animales.begin();
 		animales.pop_front();
 	}
@@ -122,7 +127,7 @@ void Indice::lecturaOrdenada(){
 		bloque.mostrar();
 
 
-		if(archivoIP.tellg()>=cabecera.getNRegistros()*sizeof(RegistroIP)) {
+		if(archivoIP.tellg()>=cabecera.getNRegistros()*sizeof(Bloque)) {
 			archivoIP.close();
 			archivoDatos.close();
 			return;

@@ -22,11 +22,12 @@ private:
 public:
 	IndicesPS();
 	virtual ~IndicesPS();
-	int insertarDatos(Animal*);
+	void insertarDatos(Animal*);
+	void insertarIP(fstream&, RegistroIP*);
 	int insertarIP(Animal*);
 	void borrarIP(string);
 	long buscarClaveP(string);
-	void generarCabecera(fstream&);
+	void generarCabecera(fstream&, int);
 	bool comprobarArchivoVacio(fstream&);
 	EntradaSalida& getES() {return es;};
 };
