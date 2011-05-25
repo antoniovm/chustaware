@@ -23,7 +23,7 @@ public:
 	IndicesPS();
 	virtual ~IndicesPS();
 	void insertarDatos(Animal*);
-	void insertarIP(fstream&, RegistroIP*);
+	void insertarIP(fstream&, RegistroIP);
 	int insertarIP(Animal*);
 	void borrarIP(string);
 	long buscarClaveP(string);

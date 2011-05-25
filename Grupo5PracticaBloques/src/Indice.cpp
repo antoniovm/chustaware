@@ -17,7 +17,7 @@ Indice::~Indice() {
 }
 
 void Indice::insertar(Animal *animal) {
-	//indicesPS.insertarIP(animal);
+	indicesPS.insertarDatos(animal);
 }
 /**
  * Lee del fichero de txt los animales y genera los ficheros binarios de datos e indices(primario,secundario y auxiliar)
