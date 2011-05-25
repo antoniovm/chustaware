@@ -29,7 +29,6 @@ public:
 	void insertar(Animal*);
 	void eliminar(string clave);
 	void buscarP(string);
-	void buscarS(int);
 	void mostrar(string);
 	void lecturaOrdenada();
 	void crearFicheroBloques();
