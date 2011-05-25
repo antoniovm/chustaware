@@ -73,9 +73,9 @@ public class Display extends JComponent {
 		fm = g.getFontMetrics();
 		g.drawImage(fondo.getImage(), 0, 0, this);
 		if(signal){
-			x = getWidth() / 2 - fm.stringWidth(notas[nNota]+octava) / 2;
+			x = getWidth() / 2 - fm.stringWidth(notas[nNota%12]+octava) / 2;
 			y = getHeight() / 2 + fm.getHeight() / 4;
-			g.drawString(notas[nNota]+octava, x, y);
+			g.drawString(notas[nNota%12]+octava, x, y);
 		}
 	}
 }

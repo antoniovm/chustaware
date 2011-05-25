@@ -4,7 +4,7 @@ import javax.sound.sampled.*;
 
 public class Captura extends Thread {
 
-	private final static int SOLAPAMIENTOS=8;
+	private final static int SOLAPAMIENTOS=16;
 	public static final int NUMERO_DE_MUESTRAS = SOLAPAMIENTOS * 1024;
 	private byte[] tiempo; // Buffer de datos de audio en el dominio del tiempo
 	private double[][] frecuencia; // Buffer de datos de audio en el dominio del

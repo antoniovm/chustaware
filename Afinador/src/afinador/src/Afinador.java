@@ -113,7 +113,7 @@ public class Afinador extends Thread{
 		}
 	}
 	public boolean haySenal() {
-		for (int i = 20; i < frecuencia[canal].length/4; i++) 
+		for (int i = 20; i < frecuencia[canal].length; i++) 
 			if(frecuencia[canal][i]>UMBRAL) return true;
 		return false;
 	}
@@ -123,7 +123,7 @@ public class Afinador extends Thread{
 		captura.capturar();
 		afinando=true;
 		while (afinando) {
-			for (int i = 20; i < frecuencia[canal].length/4; i++) {
+			for (int i = 20; i < (frecuencia[canal].length-1)/2; i++) {
 				//System.out.println(frecuencia[canal][i]);
 				if(frecuencia[canal][i]<UMBRAL) continue;	//Si no supera el umbral, no se busca
 				
@@ -132,30 +132,36 @@ public class Afinador extends Thread{
 				
 				pico=i;	//Al haber una bajada, hemos encontrado un pico
 				
-				if((pico/candidatoPitch==2)||((pico/candidatoPitch+candidatoPitch)==2))		//Si un pico es multiplo del otro, el primero es el pitch
+				
+				if((frecuencia[canal][pico*2]>UMBRAL)&&(frecuencia[canal][pico*2]>(frecuencia[canal][pico]/2))){
+					pitch=pico;
+					calcularNotaDeUnaVez();
+					break;
+				}
+				/*if((pico/candidatoPitch==2)||((pico/candidatoPitch+candidatoPitch)==2))		//Si un pico es multiplo del otro, el primero es el pitch
 					if((Math.abs(pico%candidatoPitch)<2)||(Math.abs(pico%candidatoPitch+candidatoPitch)<2)){
 							pitch=candidatoPitch;
 							calcularNotaDeUnaVez();
 							break;
 					}
-				if(frecuencia[canal][pico]>frecuencia[canal][candidatoPitch])	//Si el candidato es menor que el pico, este pasa a ser candidato
-					candidatoPitch=pico;
+				if(frecuencia[canal][pico]>frecuencia[canal][candidatoPitch])	//Si el candidato es menor que el pico, este pasa a ser nuevo candidato
+					candidatoPitch=pico;*/
 				
 
 			}
-			System.out.println("FRECUENCIA: "+escalarFrecuencia() + "\t DESAFINIO: " + desafinio+ "\t OCTAVA: " + octava);
+			//System.out.println("FRECUENCIA: "+escalarFrecuencia() + "\t DESAFINIO: " + desafinio+ "\t OCTAVA: " + octava);
 			
 			
 			
 		}
 	}
 	public int calcularOctava(int i){
-		double aux=escalarFrecuencia();
+		double aux=notasTot[i];
 		int j;
-		for (j = 1; aux > notas[i]; j++) {
+		for (j = 1; aux > notas[i%12]; j++) {
 			aux/=2;
 		}
-		return j;
+		return j-1;
 	}
 	public double calcularPuntoMedio(int nota,int octava){
 		if(nota==notas.length-1)
@@ -164,14 +170,25 @@ public class Afinador extends Thread{
 	}
 	private void calcularNotaDeUnaVez(){
 		double frecuencia=escalarFrecuencia();
-		for (int i = 0; i < notasTot.length; i++) {
-			if(frecuencia == notasTot[i]){	//si encuentra frec igual
-				desafinio=0;
-				notaReal=i%12;
-				octava=calcularOctava(i%12);
+		int notaInf, notaSup;
+		double media;
+		for (int i = 1; i < notasTot.length-1; i++) {
+			if(frecuencia < notasTot[i]){	//si encuentra frec igual
+				notaSup=i;
+				notaInf=i-1;
+				media=(notasTot[notaSup]+notasTot[notaInf])/2;
+				
+				if(frecuencia<media)
+					notaReal=notaInf;
+					
+				else
+					notaReal=notaSup;
+				
+				octava=calcularOctava(notaReal);
+				desafinio=calcularDesafinio(notasTot[notaReal], media, frecuencia);
 				return;
 			}				
-			if(frecuencia < notasTot[i] && i!=0){	//si encuentra una menor que no es la primera
+			/*if(frecuencia < notasTot[i] && i!=0){	//si encuentra una menor que no es la primera
 				if(Math.abs(notasTot[i] - frecuencia) < Math.abs(frecuencia - notasTot[i+1])){	//compara restos
 					desafinio= frecuencia - notasTot[i];
 					notaReal=i%12;
@@ -183,32 +200,14 @@ public class Afinador extends Thread{
 					octava=calcularOctava((i-1)%12);
 					return;
 				}
-			}
+			}*/
 		}
 	}
-		/*Intento fallido de busqueda binaria...
-		while(inf<=sup){
-			centro=((sup - inf) / 2) + inf;
-			
-			if(frecuencia == notasTot[centro]){
-				desafinio=0;
-				notaReal=centro%12;
-				octava=calcularOctava(centro%12);
-				return;
-			}
-				break;
-			
-			if(frecuencia < notasTot[centro])
-				sup = centro - 1;
-			else
-				inf = centro + 1;	
-		}
-		if(notasTot[inf] < frecuencia){
-			if(notasTot[inf-1] < frecuencia)
-				
-		}
-		*/
-	
+		
+	private double calcularDesafinio(double a, double b, double f) {
+		if(a<b)return (f-a)*50/(b-a);
+		return -(f-a)*50/(b-a);
+	}
 	private void calcularNota() {
 		int octavaExceso=0,octavaDefecto=0, notaExceso=-1, notaDefecto=-1;
 		double exceso=Double.POSITIVE_INFINITY,defecto=Double.NEGATIVE_INFINITY;
@@ -261,6 +260,6 @@ public class Afinador extends Thread{
 	 * @return
 	 */
 	private double escalarFrecuencia(){
-		return (captura.getAudioFormat().getSampleRate()/2)*pitch/captura.NUMERO_DE_MUESTRAS;
+		return (captura.getAudioFormat().getSampleRate()/2)*pitch/(captura.NUMERO_DE_MUESTRAS/2);
 	}
 }

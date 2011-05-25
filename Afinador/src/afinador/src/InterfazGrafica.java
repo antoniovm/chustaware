@@ -497,12 +497,30 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 			display.setnNota(afinador.getNotaReal());
 			display.setOctava(afinador.getOctava());
 			display.setSignal(afinador.haySenal());
+			if((afinador.getNotaReal()%12==4)&&(afinador.getOctava()==2)) {activarBombilla(0);continue;}
+			if((afinador.getNotaReal()%12==9)&&(afinador.getOctava()==2)) {activarBombilla(1);continue;}
+			if((afinador.getNotaReal()%12==2)&&(afinador.getOctava()==3)) {activarBombilla(2);continue;}
+			if((afinador.getNotaReal()%12==6)&&(afinador.getOctava()==3)) {activarBombilla(3);continue;}
+			if((afinador.getNotaReal()%12==11)&&(afinador.getOctava()==3)){ activarBombilla(4);continue;}
+			if((afinador.getNotaReal()%12==4)&&(afinador.getOctava()==4)) {activarBombilla(5);continue;}
+			activarBombilla(-1);
 			/*try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}*/
+		}
+		
+	}
+	private void activarBombilla(int on) {
+		for (int i = 0; i < bombillas.length; i++) {
+			if(i==on){
+				bombillas[i].setOn(true);
+				bombillas[i].repaint();
+			}
+			bombillas[i].setOn(false);
+			bombillas[i].repaint();
 		}
 		
 	}
