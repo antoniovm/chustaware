@@ -50,7 +50,10 @@ Bloque* Bloque::insertar(Registro registro)
 				return NULL;
 			}
 			registros[i+1] = registros[i];
-		}
+		}//si sale del bucle,se inserta en la primera posicion
+		registros[0]=registro;
+		nRegistros++;
+		return NULL;
 		registros[i+1] = registro; //Posicion 0
 		return NULL;
 	}
