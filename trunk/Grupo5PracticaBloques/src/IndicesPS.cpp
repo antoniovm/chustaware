@@ -277,6 +277,9 @@ long IndicesPS::buscarClaveP(string clave)
 	int centro=0;
 	RegistroIP* rIP = new RegistroIP("",0);
 
+	if (superior == 0) {
+		return sizeof(Cabecera);
+	}
 	while(inferior <= superior){
 		centro=((superior-inferior)/2)+inferior;
 		archivo.seekg(centro*sizeof(RegistroIP)+sizeof(Cabecera));
@@ -289,8 +292,11 @@ long IndicesPS::buscarClaveP(string clave)
 			return centro*sizeof(RegistroIP)+sizeof(Cabecera);
 		}*/
 		if (superior - inferior == 0) {
+			if ((rIP->getClavePrimaria() < clave) && (centro+1 < cabecera.getNRegistros())) {
+				centro += 1;
+			}
 			archivo.close();
-			return inferior*sizeof(RegistroIP)+sizeof(Cabecera);
+			return centro*sizeof(RegistroIP)+sizeof(Cabecera);
 		}
 		if(rIP->getClavePrimaria() > clave){
 			superior = centro - 1;
@@ -302,7 +308,6 @@ long IndicesPS::buscarClaveP(string clave)
 		}
 	}
 	archivo.close();
-	//cout << "ERROR  en busquedaClaveP" << endl;
 	return inferior*sizeof(RegistroIP)+sizeof(Cabecera);
 }
 /**
