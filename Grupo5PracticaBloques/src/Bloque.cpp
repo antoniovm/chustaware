@@ -36,6 +36,10 @@ Registro* Bloque::getUltimoRegistro()
 Bloque* Bloque::insertar(Registro registro)
 {
 	Bloque* bloque;
+
+	if(buscar(registro.getAnimal(false)->getName())) return NULL; //Si ya esta insertado
+
+
     if (nRegistros == 0) {
 		registros[nRegistros++] = registro;
 		return NULL;
