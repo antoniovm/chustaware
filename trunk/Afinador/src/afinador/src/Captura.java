@@ -16,6 +16,7 @@ public class Captura extends Thread {
 	private DataLine.Info linea; // Linea de entrada de captura
 	private TargetDataLine tarjetaSonido; // Puente entre la zona de memoria
 	private boolean stopCapture;
+	private InterfazGrafica ig;
 	
 
 	// donde escribe la tarjeta de
@@ -23,6 +24,24 @@ public class Captura extends Thread {
 	// manejable por nosotros
 
 	public Captura() {
+		formatoAudioPorDefecto();
+		tiempo = new byte[NUMERO_DE_MUESTRAS * audioFormat.getChannels()
+				* (audioFormat.getSampleSizeInBits() / 8)];
+		frecuencia = new double[2][NUMERO_DE_MUESTRAS];
+		enventanado = new double[NUMERO_DE_MUESTRAS];
+		
+		/*
+		 * Peticion al sistema de audio para obtener un listado de mezcladores
+		 * disponibles
+		 */
+		mixerInfo = AudioSystem.getMixerInfo();
+		linea = new DataLine.Info(TargetDataLine.class, audioFormat);
+		Window.computeCoefficients(1, enventanado);	//Ventana temporal de tipo 1 (Hamming)
+		inicializarCaptura();
+
+	}
+	public Captura(InterfazGrafica ig) {
+		this.ig = ig;
 		formatoAudioPorDefecto();
 		tiempo = new byte[NUMERO_DE_MUESTRAS * audioFormat.getChannels()
 				* (audioFormat.getSampleSizeInBits() / 8)];
@@ -87,6 +106,7 @@ public class Captura extends Thread {
 				System.arraycopy(buffer, 0, tiempo, tiempo.length-buffer.length, buffer.length);
 				
 				ConversorTF.convertir(tiempo, frecuencia, enventanado);
+				ig.pintar();
 			}
 			tarjetaSonido.stop();
 		} catch (Exception e) {
@@ -95,6 +115,12 @@ public class Captura extends Thread {
 		}
 	}
 
+	public InterfazGrafica getIg() {
+		return ig;
+	}
+	public void setIg(InterfazGrafica ig) {
+		this.ig = ig;
+	}
 	private void formatoAudioPorDefecto() {
 		float frecuenciaMuestreo = 8000;
 		// 8000,11025,16000,22050,44100

@@ -62,6 +62,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	private JMenuItem iSalir, iOpciones, iAbout, iInstrucciones;
 	
 	public InterfazGrafica(Afinador afinador) {
+		afinador.getCaptura().setIg(this);
 		setLayout(new GridBagLayout());
 		this.constraints = new GridBagConstraints();
 		this.constraints.insets = new Insets(15, 15, 15, 15);
@@ -492,17 +493,16 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 	}
 
 	public void pintar() {
-		while(true){
 			slider.setOffset((int)afinador.getDesafinio());	//escala de slider
 			display.setnNota(afinador.getNotaReal());
 			display.setOctava(afinador.getOctava());
 			display.setSignal(afinador.haySenal());
-			if((afinador.getNotaReal()%12==4)&&(afinador.getOctava()==2)) {activarBombilla(0);continue;}
-			if((afinador.getNotaReal()%12==9)&&(afinador.getOctava()==2)) {activarBombilla(1);continue;}
-			if((afinador.getNotaReal()%12==2)&&(afinador.getOctava()==3)) {activarBombilla(2);continue;}
-			if((afinador.getNotaReal()%12==6)&&(afinador.getOctava()==3)) {activarBombilla(3);continue;}
-			if((afinador.getNotaReal()%12==11)&&(afinador.getOctava()==3)){ activarBombilla(4);continue;}
-			if((afinador.getNotaReal()%12==4)&&(afinador.getOctava()==4)) {activarBombilla(5);continue;}
+			if((afinador.getNotaReal()%12==4)&&(afinador.getOctava()==2)) {activarBombilla(0);return;}
+			if((afinador.getNotaReal()%12==9)&&(afinador.getOctava()==2)) {activarBombilla(1);return;}
+			if((afinador.getNotaReal()%12==2)&&(afinador.getOctava()==3)) {activarBombilla(2);return;}
+			if((afinador.getNotaReal()%12==6)&&(afinador.getOctava()==3)) {activarBombilla(3);return;}
+			if((afinador.getNotaReal()%12==11)&&(afinador.getOctava()==3)){ activarBombilla(4);return;}
+			if((afinador.getNotaReal()%12==4)&&(afinador.getOctava()==4)) {activarBombilla(5);return;}
 			activarBombilla(-1);
 			/*try {
 				Thread.sleep(100);
@@ -510,7 +510,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}*/
-		}
+		
 		
 	}
 	private void activarBombilla(int on) {
