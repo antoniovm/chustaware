@@ -75,7 +75,15 @@ void Indice::eliminar(string clave){
 
 	if (rIP.getPosRegistro() == -1) { // El bloque se ha quedado vacio al eliminar el registro
 		indicesPS.borrarIP(posicionIP); // Eliminamos la entrada del indice, porque no apunta a nada
+		archivoIP.close();
+		return;
 	}
+	// Si no hemos tenido que eliminar el registro del IP, lo actualizamos
+	archivoIP.seekg(posicionIP);
+	archivoIP.tellg();
+	archivoIP.write((char*)&rIP, sizeof(RegistroIP)); // Sobreescribimos el registro
+	archivoIP.tellg();
+
 	archivoIP.close();
 }
 /**
