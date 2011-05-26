@@ -518,6 +518,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 			if(i==on){
 				bombillas[i].setOn(true);
 				bombillas[i].repaint();
+				continue;
 			}
 			bombillas[i].setOn(false);
 			bombillas[i].repaint();
