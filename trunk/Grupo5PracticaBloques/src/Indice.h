@@ -31,7 +31,6 @@ public:
 	void buscarP(string);
 	void mostrar(string);
 	void lecturaOrdenada();
-	void crearFicheroBloques();
     IndicesPS& getIndicesPS();
     void desordenar(list<Animal*>&);
 };

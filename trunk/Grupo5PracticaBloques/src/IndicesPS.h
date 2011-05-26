@@ -25,7 +25,8 @@ public:
 	void insertarDatos(Animal*);
 	void insertarIP(fstream&, RegistroIP);
 	int insertarIP(Animal*);
-	void borrarIP(string);
+	void eliminarRegistro(string, RegistroIP&);
+	void borrarIP(streampos);
 	long buscarClaveP(string);
 	void generarCabecera(fstream&, int);
 	bool comprobarArchivoVacio(fstream&);
