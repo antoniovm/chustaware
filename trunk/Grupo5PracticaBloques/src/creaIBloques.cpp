@@ -23,12 +23,11 @@ int main() {
 
 void menu(Indice &indice){
 	char c;
-	long l;
 	string s;
 	Animal* animal;
 	cout << "**********************************************************************" << endl;
 	cout << "*                         GRUPO 5. PRACTICA 2.                       *" << endl;
-	cout << "*                 GESTOR DE FICHEROS POR INDEXACION                  *" << endl;
+	cout << "*     GESTOR DE FICHEROS POR INDEXACION CON BLOQUES DE REGISTROS     *" << endl;
 	cout << "**********************************************************************" << endl;
 	do{
 		cout << "---------------------------------MENU---------------------------------\n";

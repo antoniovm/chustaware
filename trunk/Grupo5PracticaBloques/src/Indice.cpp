@@ -93,14 +93,25 @@ void Indice::eliminar(string clave){
  */
 void Indice::buscarP(string clave){
 	fstream archivoIP("IP.dat", ios::in | ios::binary);
+	fstream archivoDatos("zoo-data.dat", ios::in | ios::binary);
 	RegistroIP rIP;
+	Bloque bloque;
+	Animal* animal = NULL;
 	int posIP = indicesPS.buscarClaveP(clave);
 
 	cout << "Animal con clave primaria <" << clave << ">:" << endl;
-	archivoIP.seekg((streampos)posIP); //posicionamos el puntero del IP en la posicion en la que esta el animal que buscamos
+	archivoIP.seekg((streampos)posIP); //posicionamos el puntero del IP en la posicion en la que esta el registro
 	archivoIP.read((char*)&rIP, sizeof(RegistroIP)); //leemos el registro del IP
-	indicesPS.getES().leerRegistro(indicesPS.getES().calcularNumRegistro(rIP.getPosRegistro())); //leemos y mostramos el animal que se encuentra en el archivo de datos
-
+	archivoDatos.seekg((streampos)rIP.getPosRegistro());
+	archivoDatos.read((char*)&bloque, sizeof(Bloque));
+	animal = bloque.buscar(clave);
+	if (animal) {
+		cout << *animal << endl;
+		delete animal;
+		animal = NULL;
+		return;
+	}
+	cout << "No encontrado" << endl;
 }
 
 void Indice::lecturaOrdenada(){
