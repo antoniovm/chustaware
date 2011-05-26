@@ -285,7 +285,7 @@ void IndicesPS::eliminarRegistro(string clave, RegistroIP& rIP) {
 		return;
 	}
 	if (ret == 1) { // El registro ha sido eliminado pero el bloque no esta vacio
-		archivoDatos.seekg(archivoDatos.tellg()-(streampos)sizeof(Bloque));
+		archivoDatos.seekg((streampos)rIP.getPosRegistro());
 		archivoDatos.tellg();
 		archivoDatos.write((char*)&bloque, sizeof(Bloque)); // Sobreescribimos el bloque
 		archivoDatos.tellg();

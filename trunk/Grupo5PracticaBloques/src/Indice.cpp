@@ -50,21 +50,21 @@ void Indice::crearFicherosPS(){
 	IP.close();
 	zooData.close();
 
-	int i=1;
+	/*int i=1;
 	for(list<Animal*>::iterator it=animales.begin();it!=animales.end(); it++) {
 		cout << i << "\t" << *(*it) << endl;
 		i++;
-	}
-
+	}*/
 	while(!animales.empty()){
 		indicesPS.insertarDatos(animales.front());
 		delete *animales.begin();
 		animales.pop_front();
+
 	}
 }
 
 void Indice::eliminar(string clave){
-	fstream archivoIP("IP.dat", ios::in | ios::binary);
+	fstream archivoIP("IP.dat", ios::in | ios::out| ios::binary);
 	RegistroIP rIP;
 	streampos posicionIP = indicesPS.buscarClaveP(clave);
 	// Leemos el registro
@@ -121,6 +121,11 @@ void Indice::lecturaOrdenada(){
 	int nBloquesLeidos = 0;
 
 	archivoIP.read((char*)&cabecera,sizeof(Cabecera));
+
+	if(indicesPS.comprobarArchivoVacio(archivoIP)||cabecera.getNRegistros()==0){
+		cout << "El archivo está vacio" << endl;
+		return;
+	}
 
 	while(1){
 		archivoIP.tellg();
