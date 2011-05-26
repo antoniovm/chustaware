@@ -45,7 +45,7 @@ Bloque* Bloque::insertar(Registro registro)
 		int i;
 		for (i = nRegistros-1; i >= 0; i--) {
 			if (registros[i].getAnimal(false)->getName() < registro.getAnimal(false)->getName()) {
-				registros[i+1] = registro;	// aki es i+1 no i
+				registros[i+1] = registro;
 				nRegistros++;
 				return NULL;
 			}
@@ -64,9 +64,14 @@ Bloque* Bloque::insertar(Registro registro)
 		nRegistros--;
 	}
     // Si la clave que queremos insertar es menor que la primera clave del bloque nuevo, insertamos en el antiguo
-    if (registro.getAnimal(false)->getName() < bloque->getPrimerRegistro()->getAnimal(false)->getName()) {
-    	registros[nRegistros++] = registro;
+    if (registro.getAnimal(false)->getName() < this->getUltimoRegistro()->getAnimal(false)->getName()) {
+    	this->insertar(registro);
     	return bloque;
+	}
+    // Si esta entre el ultimo registro del primer bloque y el priro del segundo
+    if (registro.getAnimal(false)->getName() < bloque->getPrimerRegistro()->getAnimal(false)->getName()) {
+		registros[nRegistros++] = registro;
+		return bloque;
 	}
     // Si no, insertamos en el nuevo
     bloque->insertar(registro);

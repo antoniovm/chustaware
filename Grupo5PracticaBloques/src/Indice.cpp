@@ -43,8 +43,7 @@ void Indice::crearFicherosPS(){
 	list<Animal*> animales;
 	indicesPS.getES().leerTexto();	//lee el fichero zoo-data.txt para almacenar los animales en MP
 	animales=indicesPS.getES().getAnimals();
-	//desordenar(animales);
-    int posicionDatos=0;
+	desordenar(animales);
 
 	fstream IP("IP.dat",ios::binary|ios::out);	//borrado de archivos
 	fstream zooData("zoo-data.dat",ios::binary|ios::out);
@@ -97,11 +96,6 @@ void Indice::buscarP(string clave){
 	RegistroIP rIP;
 	int posIP = indicesPS.buscarClaveP(clave);
 
-	if (posIP == -1) {
-		cout << "No se ha encontrado ningun registro con clave <" << clave << ">" << endl;
-		archivoIP.close();
-		return;
-	}
 	cout << "Animal con clave primaria <" << clave << ">:" << endl;
 	archivoIP.seekg((streampos)posIP); //posicionamos el puntero del IP en la posicion en la que esta el animal que buscamos
 	archivoIP.read((char*)&rIP, sizeof(RegistroIP)); //leemos el registro del IP
