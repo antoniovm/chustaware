@@ -100,6 +100,15 @@ int Bloque::eliminar(string clave) {
 	return 0;
 }
 
+Animal* Bloque::buscar(string clave) {
+	for (int i = 0; i < nRegistros; i++) {
+		if (registros[i].getAnimal(false)->getName() == clave) {
+			return registros[i].getAnimal(false);
+		}
+	}
+	return NULL;
+}
+
 bool Bloque::getValido() const
 {
     return valido;

@@ -9,6 +9,7 @@
 #define BLOQUE_H_
 
 #include "Registro.h"
+#include "Animal.h"
 
 using namespace std;
 
@@ -25,6 +26,7 @@ public:
     Registro* getUltimoRegistro();
     Bloque* insertar(Registro);
     int eliminar(string);
+    Animal* buscar(string);
     void mostrar();
     bool getValido() const;
     void setValido(bool valido);
