@@ -161,7 +161,7 @@ public class Afinador extends Thread{
 		for (j = 1; aux > notas[i%12]; j++) {
 			aux/=2;
 		}
-		return j-1;
+		return j;
 	}
 	public double calcularPuntoMedio(int nota,int octava){
 		if(nota==notas.length-1)

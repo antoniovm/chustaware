@@ -17,7 +17,7 @@ public class Slider extends JComponent {
 		barra = new ImageIcon("."+File.separator+"bin"+File.separator+"afinador"+File.separator+"img"+File.separator+"barraSeparacion3.png");
 		pua = new ImageIcon("."+File.separator+"bin"+File.separator+"afinador"+File.separator+"img"+File.separator+"puaCW.png");
 		try{
-			this.setPreferredSize(new Dimension(barra.getIconWidth(), pua.getIconHeight()+15));
+			this.setPreferredSize(new Dimension(barra.getIconWidth(), barra.getIconHeight()));
 		} catch (Exception e) {
 			System.out.println("No se encuentran las imágenes");
 		}
@@ -27,7 +27,7 @@ public class Slider extends JComponent {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		g.drawImage(barra.getImage(), 0, getHeight()/2+7, barra.getIconWidth(), barra.getIconHeight(), this);
+		g.drawImage(barra.getImage(), 0, 0, barra.getIconWidth(), barra.getIconHeight(), this);
 		//g.drawImage(pua.getImage(), this.getWidth()/2-pua.getIconWidth()/2+offset, 0, pua.getIconWidth(), pua.getIconHeight(), this);
 		g.drawImage(pua.getImage(), this.getWidth()/2-pua.getIconWidth()/2+offset, 0, pua.getIconWidth(), pua.getIconHeight(), this);
 	}
@@ -37,7 +37,7 @@ public class Slider extends JComponent {
 	}
 
 	public void setOffset(int offset) {
-		this.offset = offset*(barra.getIconWidth()/2)/50;	//escala del slider
+		this.offset = offset*((barra.getIconWidth()*5/12)/50);	//escala del slider
 		repaint();
 	}
 
