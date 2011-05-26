@@ -65,28 +65,18 @@ void Indice::crearFicherosPS(){
 
 void Indice::eliminar(string clave){
 	fstream archivoIP("IP.dat", ios::in | ios::binary);
-	fstream archivoDatos("zoo-data.dat", ios::in | ios::binary);
 	RegistroIP rIP;
-	Registro rDatos;
-	long posicionIP = indicesPS.buscarClaveP(clave);
-	if(posicionIP == -1){
-		cout << "El animal no esta en el archivo de datos" << endl;
-		archivoIP.close();
-		return;
-	}
-	archivoIP.seekg((streampos)posicionIP);
+	streampos posicionIP = indicesPS.buscarClaveP(clave);
+	// Leemos el registro
+	archivoIP.seekg(posicionIP);
 	archivoIP.read((char*)&rIP, sizeof(RegistroIP));
-	if(rIP.getPosRegistro() == -1) {
-		cout << "El animal no esta en el archivo de datos" << endl;
-		archivoIP.close();
-		return;
+
+	indicesPS.eliminarRegistro(clave, rIP); // Eliminamos el registro
+
+	if (rIP.getPosRegistro() == -1) { // El bloque se ha quedado vacio al eliminar el registro
+		indicesPS.borrarIP(posicionIP); // Eliminamos la entrada del indice, porque no apunta a nada
 	}
-	archivoDatos.seekg((streampos)rIP.getPosRegistro());
-	archivoDatos.read((char*)&rDatos, sizeof(Registro));
-	archivoDatos.close();
 	archivoIP.close();
-	indicesPS.getES().eliminar(indicesPS.getES().calcularNumRegistro(rIP.getPosRegistro()));
-	indicesPS.borrarIP(clave);
 }
 /**
  * Muestra por pantalla el animal con esa clave primaria(nombre)
@@ -188,8 +178,4 @@ void Indice::mostrar(string nombre) {
 IndicesPS& Indice::getIndicesPS()
 {
     return indicesPS;
-}
-
-void Indice::crearFicheroBloques(){
-
 }

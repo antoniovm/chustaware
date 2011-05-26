@@ -189,78 +189,6 @@ void IndicesPS::insertarIP(fstream& archivoIP, RegistroIP rIPInsertar) {
 }
 
 /**
- * Inserta en fichero de datos e Indice Primario y devuelve la posicion del fichero de datos
- */
-/*int IndicesPS::insertarIP(Animal* a) {
-	fstream archivoIP("IP.dat", ios::out | ios::in | ios::binary);
-	int posDatos = es.insertar(a); //inserta el animal en el archivo de datos
-	RegistroIP* rIP = new RegistroIP(a->getName(), posDatos);// Creamos el registro.
-	Cabecera cabecera;
-
-	if (comprobarArchivoVacio(archivoIP)) { // Comprobamos si el tamaño del archivo es 0
-		generarCabecera(archivoIP);
-		archivoIP.tellg();
-		archivoIP.write((char*) (rIP), sizeof(RegistroIP));
-		archivoIP.tellg();
-		archivoIP.close();
-		return posDatos;
-	}
-	archivoIP.read((char*) &cabecera, sizeof(Cabecera)); //Leemos cabecera
-
-	if (buscarClaveP(a->getName()) > 0) {
-		cout << "Ya existe un animal con ese nombre" << endl;
-		return -1; //Ya esta insertado
-	}
-
-	archivoIP.seekg(sizeof(Cabecera) + (int) cabecera.getNRegistros()
-			* sizeof(RegistroIP));//ios::end
-
-	while (archivoIP.tellg() > sizeof(Cabecera)) {
-		archivoIP.seekg(archivoIP.tellg() - (streampos) sizeof(RegistroIP)); // Posicionamos el puntero en la posicion del registro anterior.
-		archivoIP.tellg();
-		archivoIP.read((char*) (rIP), sizeof(RegistroIP)); // Leemos el registro.
-		// Si la clave del registro que vamos a insertar es mayor que la clave del registro que acabamos de leer, insertamos el registro.
-		archivoIP.tellg();//-----------------------------------------------IS THE KEY!!
-		if (a->getName() > rIP->getClavePrimaria()) {
-			delete rIP;
-			rIP = new RegistroIP(a->getName(), posDatos); // Creamos el nuevo registro.
-			archivoIP.tellg();
-			archivoIP.write((char*) (rIP), sizeof(RegistroIP));
-			archivoIP.tellg();
-			cabecera.setNRegistros(cabecera.getNRegistros() + 1); //Actualizamos la cabecera
-			archivoIP.seekg(0, ios::beg);
-			archivoIP.tellg();
-			archivoIP.write((char*) (&cabecera), sizeof(Cabecera));
-			archivoIP.tellg();
-			delete rIP;
-			archivoIP.close();
-			return posDatos;
-		}
-		// Si no, copiamos el registro en la siguiente posicion y posicionamos el puntero en la posicion anterior.
-		archivoIP.tellg();
-		archivoIP.write((char*) (rIP), sizeof(RegistroIP));
-		archivoIP.tellg();
-		archivoIP.seekg(archivoIP.tellg()
-				- (streampos) (sizeof(RegistroIP) * 2));
-		archivoIP.tellg();
-
-	}
-	delete rIP;
-	rIP = new RegistroIP(a->getName(), posDatos); // insercion en el top del fichero
-	archivoIP.tellg();
-	archivoIP.write((char*) (rIP), sizeof(RegistroIP));
-	cabecera.setNRegistros(cabecera.getNRegistros()+1);
-	archivoIP.seekg(0,ios::beg);
-	archivoIP.tellg();
-	archivoIP.write((char*) (&cabecera), sizeof(Cabecera));
-	archivoIP.tellg();
-	delete rIP;
-	archivoIP.close();
-	return posDatos;
-
-}*/
-
-/**
  * Busqueda Binaria.Devuelve la posicion del regIP en el ficheroIP o -1 si no esta
  */
 long IndicesPS::buscarClaveP(string clave)
@@ -310,25 +238,85 @@ long IndicesPS::buscarClaveP(string clave)
 	archivo.close();
 	return inferior*sizeof(RegistroIP)+sizeof(Cabecera);
 }
+
+/*
+ * Elimina un registro de un bloque del archivo de datos.
+ * El registroIP que se le pasa por referencia es el que apunta al bloque que contiene el registro.
+ * Tras eliminar, el registro va a contener la posicion del bloque en datos, o -1 en caso de que el bloque
+ * haya quedado vacio al eliminar el registro.
+ */
+void IndicesPS::eliminarRegistro(string clave, RegistroIP& rIP) {
+	fstream archivoDatos("zoo-data.dat", ios::in | ios::out | ios::binary);
+	Cabecera cabeceraDatos;
+	Bloque bloque;
+	int ret, posicion;
+
+	archivoDatos.read((char*)&cabeceraDatos, sizeof(Cabecera));
+
+	archivoDatos.seekg((streampos)rIP.getPosRegistro());
+	archivoDatos.read((char*)&bloque, sizeof(Bloque));
+	ret = bloque.eliminar(clave);
+
+	if (ret == -1) { // No se ha eliminado nada
+		archivoDatos.close();
+		return;
+	}
+	if (ret == 0) { // El bloque se ha quedado vacio
+		// Desactivamos el bloque
+		bloque.setValido(false);
+		bloque.setSiguiente(cabeceraDatos.getPrimerHueco());
+		archivoDatos.seekg(archivoDatos.tellg()-(streampos)sizeof(Bloque));
+		posicion = archivoDatos.tellg(); // Posicion del bloque en datos
+		archivoDatos.write((char*)&bloque, sizeof(Bloque)); // Sobreescribimos el bloque
+		archivoDatos.tellg();
+		// Actualizamos la cabecera
+		cabeceraDatos.setNEliminados(cabeceraDatos.getNEliminados()+1);
+		cabeceraDatos.setNRegistros(cabeceraDatos.getNRegistros()-1);
+		cabeceraDatos.setPrimerHueco(posicion);
+		archivoDatos.seekg(0, ios::beg);
+		archivoDatos.tellg();
+		archivoDatos.write((char*)&cabeceraDatos, sizeof(Cabecera)); // Sobreescribimos la cabecera
+		archivoDatos.tellg();
+		// Actualizamos la posicion del registro del IP
+		// Como el bloque queda vacio apuntamos a -1, habra que comprobar fuera del metodo si rIP apunta a -1 y eliminarlo
+		rIP.setPosRegistro(-1);
+
+		archivoDatos.close();
+		return;
+	}
+	if (ret == 1) { // El registro ha sido eliminado pero el bloque no esta vacio
+		archivoDatos.seekg(archivoDatos.tellg()-(streampos)sizeof(Bloque));
+		archivoDatos.tellg();
+		archivoDatos.write((char*)&bloque, sizeof(Bloque)); // Sobreescribimos el bloque
+		archivoDatos.tellg();
+		// Actualizamos la clave del registro del IP
+		rIP.setClavePrimaria(bloque.getUltimoRegistro()->getAnimal(false)->getName());
+
+		archivoDatos.close();
+		return;
+	}
+}
+
 /**
  * Elimina un registro en el indice primario.
  */
-void IndicesPS::borrarIP(string clave) {
+void IndicesPS::borrarIP(streampos posRegistro) {
 	fstream archivo("IP.dat", ios::in | ios::out | ios::binary);
 	RegistroIP rIP;
 	Cabecera cabecera;
 	vector<RegistroIP> registros;
 	vector<RegistroIP>::iterator it;
+	streampos posicion;
 
 	// Leemos la cabecera
 	archivo.read((char*)&cabecera, sizeof(Cabecera));
 	// Cargamos en memoria todos los registros excepto el registro que queremos eliminar.
 	while (!archivo.eof()) {
-		archivo.tellg();
+		posicion = archivo.tellg();
 		archivo.read((char*) (&rIP), sizeof(RegistroIP));
 		archivo.tellg();
 		if (archivo.eof()) break;
-		if (rIP.getClavePrimaria() != clave) {
+		if (posicion != posRegistro) {
 			registros.push_back(rIP);
 		}
 	}

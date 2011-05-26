@@ -81,6 +81,8 @@ Bloque* Bloque::insertar(Registro registro)
 int Bloque::eliminar(string clave) {
 	bool eliminado = false;
 
+	if (nRegistros == 0) return 0; // El bloque esta vacio
+
 	for (int i = 0; i < nRegistros-1; i++) {
 		if ((registros[i].getAnimal(false)->getName() == clave) && !eliminado) {
 			eliminado = true;
@@ -89,15 +91,15 @@ int Bloque::eliminar(string clave) {
 			registros[i] = registros[i+1];
 		}
 	}
-	if (registros[nRegistros-1].getAnimal(false)->getName() == clave) {
+	if ((registros[nRegistros-1].getAnimal(false)->getName() == clave) && !eliminado) {
 		eliminado = true;
 	}
 	if (eliminado) {
 		nRegistros--;
 	}
-	if (nRegistros == 0) return -1;
-	if (eliminado) return 1;
-	return 0;
+	if (nRegistros == 0) return 0; // El bloque se ha quedado vacio
+	if (eliminado) return 1; // El registro se ha eliminado y quedan registros en el bloque
+	return -1; // El registro que se ha intentado eliminar no estaba en el bloque.
 }
 
 Animal* Bloque::buscar(string clave) {
