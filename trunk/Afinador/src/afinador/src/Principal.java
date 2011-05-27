@@ -13,7 +13,6 @@ public class Principal {
 		InterfazGrafica ig=new InterfazGrafica(afinador);
 		afinador.start();
 		ig.pintar();
-		
 	}
 
 }
