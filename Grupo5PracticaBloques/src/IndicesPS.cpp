@@ -215,10 +215,10 @@ long IndicesPS::buscarClaveP(string clave)
 		archivo.read((char*)(rIP), sizeof(RegistroIP));
 		archivo.tellg();
 
-		/*if(rIP->getClavePrimaria()==clave){
+		if(rIP->getClavePrimaria() == clave){
 			archivo.close();
 			return centro*sizeof(RegistroIP)+sizeof(Cabecera);
-		}*/
+		}
 		if (superior - inferior == 0) {
 			if ((rIP->getClavePrimaria() < clave) && (centro+1 < cabecera.getNRegistros())) {
 				centro += 1;
