@@ -224,22 +224,23 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 		areaInfo.setEditable(false);
 		areaInfo.setText(titulo+" es un programa creado con la intención de facilitar el trabajo a la hora de afinar una guitarra\n" +
 				"eléctrica.\n" +
-				"Para ello, tan solo hay que conectar la guitarra eléctrica al ordenador a través de la tarjeta de sonido o\n" +
+				"Para ello, tan solo hay que conectar la guitarra eléctrica al ordenador a través de la linea de entrada de su tarjeta de sonido o\n" +
 				"a través de la interfaz del micrófono.\n" +
 				"Una vez conectada, al tocar una nota, dicha nota se mostrará en la pantalla, y en caso de coincidir con\n" +
 				"alguna de las notas que aparecen en la parte inferior de la pantalla, se encenderá la luz correspondiente\n" +
-				"en verde, indicándonos que dicha cuerda está afinada.\n" +
+				"en verde, indicándonos que dicha nota es la que suena.\n" +
 				"Si la cuerda está afinada, estará marcada la posición 0 en la barra central, en caso contrario, se muestra\n" +
 				"el grado de desafinio aproximado.\n");
 		
 		areaDisplay.setFont(fuente);
 		areaDisplay.setEditable(false);
-		areaDisplay.setText("En este display se muestra la nota que está sonando.");
+		areaDisplay.setText("En este display se muestra la nota que está sonando.\n"+
+				"Se mostrará la nota pertinente junto a su octava.");
 		
 		areaSlider.setFont(fuente);
 		areaSlider.setEditable(false);
 		areaSlider.setText("Si la nota está afinada, la púa estará situada en la posición 0.\n" +
-				"Cuanto más lejos se encuentre del 0, más desafinado está el instrumento.");
+				"Cuanto más lejos se encuentre del 0, más desafinado está dicha nota.");
 		
 		areaBombillaOn.setFont(fuente);
 		areaBombillaOn.setEditable(false);
@@ -502,7 +503,7 @@ public class InterfazGrafica extends JPanel implements ActionListener {
 			if((afinador.getNotaReal()%12==4)&&(afinador.getOctava()==2)) {activarBombilla(0);return;}
 			if((afinador.getNotaReal()%12==9)&&(afinador.getOctava()==2)) {activarBombilla(1);return;}
 			if((afinador.getNotaReal()%12==2)&&(afinador.getOctava()==3)) {activarBombilla(2);return;}
-			if((afinador.getNotaReal()%12==6)&&(afinador.getOctava()==3)) {activarBombilla(3);return;}
+			if((afinador.getNotaReal()%12==7)&&(afinador.getOctava()==3)) {activarBombilla(3);return;}
 			if((afinador.getNotaReal()%12==11)&&(afinador.getOctava()==3)){ activarBombilla(4);return;}
 			if((afinador.getNotaReal()%12==4)&&(afinador.getOctava()==4)) {activarBombilla(5);return;}
 			activarBombilla(-1);

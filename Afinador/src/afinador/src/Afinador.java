@@ -4,7 +4,7 @@ package afinador.src;
  */
 public class Afinador extends Thread{
 	
-	private final int UMBRAL=100000;
+	private final int UMBRAL=50000;
 
 	//Captura de audio
 	private Captura captura;
@@ -119,11 +119,10 @@ public class Afinador extends Thread{
 	}
 	public void afinarPitch(){
 		int pico=20; 
-		int candidatoPitch=20;
 		captura.capturar();
 		afinando=true;
 		while (afinando) {
-			for (int i = 20; i < (frecuencia[canal].length-1)/2; i++) {
+			for (int i = 30; i < (frecuencia[canal].length-1)/2; i++) {
 				//System.out.println(frecuencia[canal][i]);
 				if(frecuencia[canal][i]<UMBRAL) continue;	//Si no supera el umbral, no se busca
 				
@@ -132,11 +131,15 @@ public class Afinador extends Thread{
 				
 				pico=i;	//Al haber una bajada, hemos encontrado un pico
 				
-				
-				if((frecuencia[canal][pico*2]>UMBRAL)&&(frecuencia[canal][pico*2]>(frecuencia[canal][pico]/2))){
-					pitch=pico;
-					calcularNotaDeUnaVez();
-					break;
+				if(pico*3>frecuencia[canal].length)continue;
+				if((frecuencia[canal][pico*2]>UMBRAL)&&(frecuencia[canal][pico*2]>(frecuencia[canal][pico*2]/2))){
+					if((frecuencia[canal][pico*3]>UMBRAL)&&(frecuencia[canal][pico*3]>(frecuencia[canal][pico*2]/2))){
+						if((frecuencia[canal][(int)(pico*3/2)]<UMBRAL)){
+							pitch=pico;
+							calcularNotaDeUnaVez();
+							break;
+						}
+					}
 				}
 				/*if((pico/candidatoPitch==2)||((pico/candidatoPitch+candidatoPitch)==2))		//Si un pico es multiplo del otro, el primero es el pitch
 					if((Math.abs(pico%candidatoPitch)<2)||(Math.abs(pico%candidatoPitch+candidatoPitch)<2)){
@@ -155,10 +158,10 @@ public class Afinador extends Thread{
 			
 		}
 	}
-	public int calcularOctava(int i){
-		double aux=notasTot[i];
+	public int calcularOctava(int i, int notaInf){
+		double aux=escalarFrecuencia();
 		int j;
-		for (j = 1; aux > notas[i%12]; j++) {
+		for (j = 0; aux > notas[notaInf%12]; j++) {
 			aux/=2;
 		}
 		return j;
@@ -183,9 +186,9 @@ public class Afinador extends Thread{
 					
 				else
 					notaReal=notaSup;
-				
-				octava=calcularOctava(notaReal);
+			
 				desafinio=calcularDesafinio(notasTot[notaReal], media, frecuencia);
+				octava=calcularOctava(notaReal, notaInf);
 				return;
 			}				
 			/*if(frecuencia < notasTot[i] && i!=0){	//si encuentra una menor que no es la primera
@@ -215,13 +218,13 @@ public class Afinador extends Thread{
 		for (int i = 0; i < notas.length; i++) {
 			if((escalarFrecuencia()%notas[i])<exceso){	//Vemos si esta cerca por encima de la nota
 				exceso=escalarFrecuencia()%notas[i];
-				octavaExceso=calcularOctava(i);
+				//octavaExceso=calcularOctava(i);
 				//if(exceso<calcularPuntoMedio(nota, octavaDefecto))
 				notaExceso=i;
 			}
 			if((escalarFrecuencia()%notas[i]-notas[i])>defecto){//Vemos si esta cerca por debajo de la nota
 				defecto=escalarFrecuencia()%notas[i]-notas[i];
-				octavaDefecto=calcularOctava(i);
+				//octavaDefecto=calcularOctava(i);
 				notaDefecto=i;
 			}
 				
